@@ -1,0 +1,17 @@
+.container {
+    word-wrap: break-word;
+}
+
+.titleContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.buttonContainer {
+    margin-left: auto;
+    margin-right: 0px;
+}
+
+.button {
+    height: 100%;
+}

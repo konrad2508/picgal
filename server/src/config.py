@@ -1,0 +1,14 @@
+HOST = '127.0.0.1'
+PORT = 3001
+ROUTE_PREFIX = '/api/v1'
+
+SEP = '/'
+HIGHRES = 2000 * 2000
+ABSURDRES = 3000 * 3000
+
+DATABASE_PATH = '../../database.sqlite'
+
+PREVIEWS_DIR = '../../previews'
+PREVIEW_SIZE = 150, 150
+
+COUNT_PER_PAGE = 40

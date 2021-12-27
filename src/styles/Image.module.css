@@ -1,0 +1,13 @@
+.container {
+    min-height: inherit;
+    min-width: inherit;
+}
+
+.img {
+    width: auto;
+    height: 90vh;
+    min-width: inherit;
+    min-height: inherit;
+    object-fit: contain;
+    object-position: left top;
+}
