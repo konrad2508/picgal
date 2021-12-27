@@ -1,4 +1,5 @@
 import flask
+from peewee import IntegrityError
 from repositories.image_repository import ImageRepository
 from services.model_converter_service import ModelConverterService
 from services.image_controller_service import ImageControllerService
@@ -32,9 +33,13 @@ def construct_blueprint(route_prefix):
     def put_info(id):
         modifications = flask.request.get_json(force=True)
 
-        modified_image = original_service.modify_info(image_route, preview_route, id, modifications)
+        try:
+            modified_image = original_service.modify_info(image_route, preview_route, id, modifications)
 
-        return flask.jsonify(modified_image)
+            return flask.jsonify(modified_image)
+        
+        except IntegrityError:
+            flask.abort(409)
 
     @original.route(f'{info_route}/count', methods=['GET'])
     def get_infos_count():
