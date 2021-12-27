@@ -2,6 +2,7 @@ import React from 'react';
 import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
 import ModifiableTagListCommand from '../enums/ModifiableTagListCommand';
+import TagType from '../enums/TagType';
 
 const useModifiableTagListState = (tags) => {
     const startingTags = tags.map((e) => ({ name: e, type: TagState.NORMAL }));
@@ -10,16 +11,39 @@ const useModifiableTagListState = (tags) => {
     const [tagListState, setTagListState] = React.useState(TagListState.NORMAL);
     const [newTagName, setNewTagName] = React.useState('');
 
+    const checkIfDuplicateExists = (existingTags, tagType, toAdd) => {
+        const potentialDuplicate = existingTags.find(e => e.name === toAdd);
+
+        let numericalTagType;
+        if (tagType === TagType.CHARACTERS) {
+            numericalTagType = 1;
+        }
+        else if (tagType === TagType.SOURCES) {
+            numericalTagType = 2;
+        }
+        else if (tagType === TagType.GENERAL) {
+            numericalTagType = 3;
+        }
+        else if (tagType === TagType.META) {
+            numericalTagType = 4;
+        }
+        else {
+            numericalTagType = 9999;
+        }
+
+        return potentialDuplicate !== undefined && potentialDuplicate.type !== numericalTagType;
+    };
+
     const setModifiableTagListState = (command, args) => {
         switch (command) {
             case ModifiableTagListCommand.ADD_TAG: {
-                const { event, tagType, onModificationsChange } = args;
+                const { event, tagType, onModificationsChange, existingTags } = args;
 
                 event.preventDefault();
 
                 const toAdd = newTagName.trim();
-
-                if (!tagList.map(e => e.name).includes(toAdd)) {
+                
+                if (!checkIfDuplicateExists(existingTags, tagType, toAdd) && !tagList.map(e => e.name).includes(toAdd)) {
                     onModificationsChange(`${tagType.toLowerCase()}Added`, toAdd);
 
                     setTagList([...tagList, { name: toAdd, type: TagState.ADDED }])
