@@ -1,0 +1,29 @@
+.input {
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.suggestionsOuterContainer {
+    position: relative;
+}
+
+.suggestionsInnerContainer {
+    position: absolute;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    border-width: 0px 1px 1px 1px;
+    border-style: solid;
+    border-color: gray;
+    background-color: white;
+}
+
+.suggestionBox {
+    border-width: 1px 0px 0px 0px;
+    border-style: solid;
+    border-color: gray;
+}
+
+.suggestion {
+    margin: 2px;
+}

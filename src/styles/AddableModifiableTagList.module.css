@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    flex-direction: row;
+}
+
+.inputContainer {
+    width: 200px;
+}
+
+.buttonContainer {
+    margin-left: auto;
+    margin-right: 0px;
+}
+
+.button {
+    height: 100%;
+}
+
+.input {
+    width: 200px;
+}
