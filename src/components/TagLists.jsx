@@ -11,24 +11,6 @@ const TagLists = ({ img, onClickTag, onSaveModifiedTagsClick, existingTags }) =>
     const onModificationsChange  = (op, element) => setTagListsState(TagListsCommand.ADD_MODIFICATION, { op, element });
     const changeModificationMode = (mode)        => setTagListsState(TagListsCommand.SWITCH_MODE,      { id: img.id, onSaveModifiedTagsClick, mode });
 
-    const filterExistingTags = (tagType) => {
-        if (tagType === TagType.CHARACTERS) {
-            return existingTags.filter(e => e.type === 1);
-        }
-        else if (tagType === TagType.SOURCES) {
-            return existingTags.filter(e => e.type === 2);
-        }
-        else if (tagType === TagType.GENERAL) {
-            return existingTags.filter(e => e.type === 3);
-        }
-        else if (tagType === TagType.META) {
-            return existingTags.filter(e => e.type === 4);
-        }
-        else {
-            return [];
-        };
-    };
-
     return (
         <>
             <TagListsTitleBar modificationMode={tagListsState.modificationMode} changeModificationMode={changeModificationMode}/>
@@ -38,7 +20,7 @@ const TagLists = ({ img, onClickTag, onSaveModifiedTagsClick, existingTags }) =>
                 onClickTag={onClickTag}
                 modificationMode={tagListsState.modificationMode}
                 onModificationsChange={onModificationsChange}
-                existingTags={filterExistingTags(TagType.CHARACTERS)}
+                existingTags={existingTags}
             />
             <TagList
                 tagType={TagType.SOURCES}
@@ -46,7 +28,7 @@ const TagLists = ({ img, onClickTag, onSaveModifiedTagsClick, existingTags }) =>
                 onClickTag={onClickTag}
                 modificationMode={tagListsState.modificationMode}
                 onModificationsChange={onModificationsChange}
-                existingTags={filterExistingTags(TagType.SOURCES)}
+                existingTags={existingTags}
             />
             <TagList
                 tagType={TagType.GENERAL}
@@ -54,7 +36,7 @@ const TagLists = ({ img, onClickTag, onSaveModifiedTagsClick, existingTags }) =>
                 onClickTag={onClickTag}
                 modificationMode={tagListsState.modificationMode}
                 onModificationsChange={onModificationsChange}
-                existingTags={filterExistingTags(TagType.GENERAL)}
+                existingTags={existingTags}
             />
             <TagList
                 tagType={TagType.META}
@@ -62,7 +44,7 @@ const TagLists = ({ img, onClickTag, onSaveModifiedTagsClick, existingTags }) =>
                 onClickTag={onClickTag}
                 modificationMode={tagListsState.modificationMode}
                 onModificationsChange={onModificationsChange}
-                existingTags={filterExistingTags(TagType.META)}
+                existingTags={existingTags}
             />
         </>
     );
