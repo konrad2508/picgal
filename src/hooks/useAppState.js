@@ -153,7 +153,8 @@ const useAppState = () => {
                         imageService
                             .getTags()
                             .then(tags => setExistingTags(tags));
-                    });
+                    })
+                    .catch(error => {});
                 
                 break;
             }
