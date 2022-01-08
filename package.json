@@ -17,10 +17,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "serve": "npx serve build",
     "backend": "cd server/src && python app.py",
-    "app": "concurrently \"npm run serve\" \"npm run backend\""
+    "serve": "npx serve build",
+    "electron": "electron .",
+    "app": "concurrently -k -n \"BE,APP\" \"npm run backend\" \"npm run electron\"",
+    "app-browser": "concurrently \"npm run backend\" \"npm run serve\""
   },
+  "main": "src/electron.js",
+  "homepage": ".",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -41,6 +45,7 @@
   },
   "devDependencies": {
     "concurrently": "^6.5.1",
+    "electron": "^16.0.6",
     "serve": "^13.0.2"
   }
 }
