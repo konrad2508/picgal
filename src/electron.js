@@ -10,7 +10,7 @@ let mainWindow;
 const createWindow = () => {
     mainWindow = new BrowserWindow({ width: 1250, height: 900 });
 
-    const startUrl = process.env.ELECTRON_START_URL || url.format({
+    const startUrl = url.format({
         pathname: path.join(__dirname, '/../build/index.html'),
         protocol: 'file:',
         slashes: true
