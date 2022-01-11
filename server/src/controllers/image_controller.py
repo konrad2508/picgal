@@ -1,6 +1,7 @@
 import flask
 from peewee import IntegrityError
 from repositories.image_repository import ImageRepository
+from services.path_resolver_service import PathResolverService
 from services.model_converter_service import ModelConverterService
 from services.image_controller_service import ImageControllerService
 
@@ -12,7 +13,8 @@ def construct_blueprint(route_prefix):
 
     original_repository = ImageRepository()
     model_converter = ModelConverterService()
-    original_service = ImageControllerService(original_repository, model_converter)
+    path_resolver = PathResolverService()
+    original_service = ImageControllerService(original_repository, model_converter, path_resolver)
 
     original = flask.Blueprint('image', __name__)
 
@@ -77,7 +79,7 @@ def construct_blueprint(route_prefix):
     def get_image(id):
         try:
             image_path = original_service.get_image_path(id)
-            
+
             return flask.send_file(image_path, mimetype='image/jpeg')
         
         except FileNotFoundError:
@@ -87,7 +89,7 @@ def construct_blueprint(route_prefix):
     def get_preview(id):
         try:
             preview_path = original_service.get_preview_path(id)
-            
+
             return flask.send_file(preview_path, mimetype='image/jpeg')
         
         except FileNotFoundError:

@@ -1,6 +1,5 @@
 import styles from '../styles/ImagePreview.module.css';
 import React from 'react';
-import Config from '../Config';
 
 const ImagePreview = ({ img, onClick }) => {
     const MAX_DIM = 150;
@@ -23,7 +22,7 @@ const ImagePreview = ({ img, onClick }) => {
         newHeight = MAX_DIM;
     }
 
-    const imgSource = `${Config.BACKEND}${img.preview}`;
+    const imgSource = `http://127.0.0.1:3001${img.preview}`;
 
     return (
         <div className={styles.container}>

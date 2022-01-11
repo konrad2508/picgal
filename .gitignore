@@ -12,8 +12,10 @@ package-lock.json
 # testing
 /coverage
 
-# production
+# build
 /build
+/server/build
+/server/dist
 
 # misc
 .DS_Store

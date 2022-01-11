@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+cd server
+pyinstaller --onefile --name picgal-server src/app.py
+rm -rf build picgal-server.spec 
+pyinstaller --onefile --name picgal-populate-database src/populate_database.py
+rm -rf build picgal-populate-database.spec
+cd ..
+
+npx electron-packager . picgal --platform=linux --arch=x64 --ignore="(server/src*|server/requirements.txt|\.gitignore|\.vscode|node_modules|build-linux-x64|public*|previews*|database\.sqlite)"

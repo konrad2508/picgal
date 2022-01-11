@@ -1,7 +1,8 @@
 class ImageControllerService(object):
-    def __init__(self, repository, converter):
+    def __init__(self, repository, converter, path_resolver):
         self.repository = repository
         self.converter = converter
+        self.path_resolver = path_resolver
 
     def get_all_infos(self, image_url, preview_url, page):
         images = self.repository.get_all_images(page)
@@ -61,7 +62,7 @@ class ImageControllerService(object):
         image = self.repository.get_image(id)
 
         try:
-            return image.file
+            return self.path_resolver.resolve_path(image.file)
 
         except AttributeError:
             raise FileNotFoundError()
@@ -70,7 +71,7 @@ class ImageControllerService(object):
         image = self.repository.get_image(id)
 
         try:
-            return image.preview
+            return self.path_resolver.resolve_path(image.preview)
 
         except AttributeError:
             raise FileNotFoundError()

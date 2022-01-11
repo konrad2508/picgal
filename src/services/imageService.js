@@ -1,7 +1,6 @@
 import axios from 'axios';
-import Config from '../Config';
 
-const BASE_URL = `${Config.BACKEND}/api/v1`;
+const BASE_URL = `http://127.0.0.1:3001/api/v1`;
 
 const getAllImages = async () => {
     const { data } = await axios.get(`${BASE_URL}/original/info`);

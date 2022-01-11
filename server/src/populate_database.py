@@ -1,4 +1,3 @@
-import sys
 import glob
 import os
 from PIL import Image as Img
@@ -20,9 +19,9 @@ PREVIEW_SIZE = config.PREVIEW_SIZE
 # STRUCTURE
 # /<ROOT>/<SOURCE>/<CHARACTER>/<image>
 
-root = sys.argv[1]
+ROOT = config.PICTURES_ROOT
 
-pictures = glob.glob(f'{root}/*/*/*')
+pictures = glob.glob(f'{ROOT}/*/*/*')
 
 db.create_tables([Image, Tag, ImageTag], safe=True)
 
