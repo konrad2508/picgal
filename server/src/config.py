@@ -1,14 +1,20 @@
-HOST = '127.0.0.1'
-PORT = 3001
-ROUTE_PREFIX = '/api/v1'
+import json
 
-SEP = '/'
-HIGHRES = 2000 * 2000
-ABSURDRES = 3000 * 3000
+cfg = json.loads(open('../../config.json').read())
 
-DATABASE_PATH = '../../database.sqlite'
+HOST = cfg['host']
+PORT = cfg['port']
+ROUTE_PREFIX = cfg['routePrefix']
 
-PREVIEWS_DIR = '../../previews'
-PREVIEW_SIZE = 150, 150
+SEP = cfg['sep']
+HIGHRES = cfg['highres']
+ABSURDRES = cfg['absurdres']
 
-COUNT_PER_PAGE = 40
+DATABASE_PATH = cfg['databasePath']
+
+PICTURES_ROOT = cfg['picturesRoot']
+
+PREVIEWS_DIR = cfg['previewsDir']
+PREVIEW_SIZE = cfg['previewSize']
+
+COUNT_PER_PAGE = cfg['countPerPage']
