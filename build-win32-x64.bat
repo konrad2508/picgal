@@ -1,5 +1,4 @@
-#!/usr/bin/env bash
-rmdir /s out/picgal-win32-x64
+rmdir /s /q out\picgal-win32-x64
 
 npm install
 
