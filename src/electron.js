@@ -1,7 +1,15 @@
 const electron = require('electron');
 const path = require('path');
 const url = require('url');
-const { execFile } = require('child_process');
+const { execFile, exec } = require('child_process');
+
+const serverExeName = 'picgal-server';
+
+const backend = execFile(`${__dirname}/../server/dist/${serverExeName}`, {cwd: `${__dirname}/../server/dist`}, (error) => {
+    if (error) {
+        throw error;
+    }
+});
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
@@ -24,17 +32,17 @@ const createWindow = () => {
     mainWindow.on('closed', () => mainWindow = null);
 };
 
-const backend = execFile(`${__dirname}/../server/dist/picgal-server`, {cwd: `${__dirname}/../server/dist`}, (error) => {
-  if (error) {
-    throw error;
-  }
-});
-
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
-        backend.kill();
+        if (process.platform === 'win32') {
+            exec(`taskkill /im ${serverExeName}.exe /f /t`);
+        }
+        else {
+            backend.kill();
+        }
+
         app.quit();
     }
 });
