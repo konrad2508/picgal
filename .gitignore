@@ -16,6 +16,7 @@ package-lock.json
 /build
 /server/build
 /server/dist
+/out
 
 # misc
 .DS_Store
