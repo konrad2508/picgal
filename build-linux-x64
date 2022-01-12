@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 rm -rf out/picgal-linux-x64
 
+npm install
+
 rm -rf build
 npm run build
 
