@@ -1,20 +1,20 @@
-rmdir /s /q out\picgal-win32-x64
+@echo off
 
-npm install
+call rmdir /s /q out\picgal-win32-x64
 
-rmdir /s build
-npm run build
+call rmdir /s /q build
+call npm run build
 
-cd server
+call cd server
 
-pyinstaller --onefile --name picgal-server src/app.py
-rmdir /s build
-del picgal-server.spec 
+call pyinstaller --onefile --name picgal-server src/app.py
+call rmdir /s /q build
+call del picgal-server.spec 
 
-pyinstaller --onefile --name picgal-populate-database src/populate_database.py
-rmdir /s build
-del picgal-populate-database.spec
+call pyinstaller --onefile --name picgal-populate-database src/populate_database.py
+call rmdir /s /q build
+call del picgal-populate-database.spec
 
-cd ..
+call cd ..
 
-npx electron-packager . picgal --out=out/ --platform=win32 --arch=x64 --ignore="(server/src*|server/requirements.txt|node_modules|.gitignore|.vscode|build-linux-x64|build-win32-x64.bat|public*|previews*|database.sqlite)"
+call npx electron-packager . picgal --out=out/ --platform=win32 --arch=x64 --ignore="(server/src*|server/requirements.txt|node_modules|.gitignore|.vscode|build-linux-x64|build-win32-x64.bat|public*|previews*|database.sqlite)"
