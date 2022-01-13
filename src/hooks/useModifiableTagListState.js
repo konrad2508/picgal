@@ -41,7 +41,7 @@ const useModifiableTagListState = (tags) => {
 
                 event.preventDefault();
 
-                const toAdd = newTagName.trim();
+                const toAdd = newTagName.trim().replaceAll('_', ' ');
                 
                 if (!checkIfDuplicateExists(existingTags, tagType, toAdd) && !tagList.map(e => e.name).includes(toAdd)) {
                     onModificationsChange(`${tagType.toLowerCase()}Added`, toAdd);
