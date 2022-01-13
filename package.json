@@ -1,6 +1,6 @@
 {
   "name": "picgal",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -39,7 +39,7 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.24.0",
     "concurrently": "^6.5.1",
-    "electron": "^16.0.6",
+    "electron": "^15.3.5",
     "electron-packager": "^15.4.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
