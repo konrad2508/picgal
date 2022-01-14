@@ -1,5 +1,6 @@
 import styles from '../styles/Image.module.css';
 import React from 'react';
+import networkService from '../services/networkService';
 
 const Image = ({ img }) => {
     const MAX_WIDTH = 800;
@@ -25,13 +26,11 @@ const Image = ({ img }) => {
         maxHeight: newHeight
     };
 
-    const imgSource = `http://127.0.0.1:3001${img.path}`;
-
     return (
         <div className={styles.container}>
             <img
                 className={styles.img}
-                src={imgSource}
+                src={networkService.getURLToBackend(img.path)}
                 alt={img.path}
                 style={styleImg}
             />
