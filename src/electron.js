@@ -1,9 +1,15 @@
-const electron = require('electron');
 const path = require('path');
 const url = require('url');
 const { execFile, exec } = require('child_process');
+const electron = require('electron');
+const contextMenu = require('electron-context-menu');
 
 const serverExeName = 'picgal-server';
+
+contextMenu({
+    showInspectElement: false,
+    shouldShowMenu: (event, parameters) => parameters.titleText === ' '
+});
 
 const backend = execFile(`${__dirname}/../server/dist/${serverExeName}`, {cwd: `${__dirname}/../server/dist`}, (error) => {
     if (error) {

@@ -33,6 +33,7 @@ const Image = ({ img }) => {
                 src={networkService.getURLToBackend(img.path)}
                 alt={img.path}
                 style={styleImg}
+                title=' '
             />
         </div>
     );
