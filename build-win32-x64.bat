@@ -21,4 +21,4 @@ call del picgal-rebuild-previews.spec
 
 call cd ..
 
-call npx electron-packager . picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --ignore="(server/src*|server/requirements.txt|node_modules|.gitignore|.vscode|build-linux-x64|build-win32-x64.bat|public*|previews*|database.sqlite|src/components*|src/enums*|src/forms*|src/hooks*|src/services*|src/styles*|src/App.jsx|src/index.jsx)"
+call npx electron-packager . picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --ignore="(server/src*|server/requirements.txt|node_modules/@*|.gitignore|.vscode|build-linux-x64|build-win32-x64.bat|public*|previews*|database.sqlite|src/components*|src/enums*|src/forms*|src/hooks*|src/services*|src/styles*|src/App.jsx|src/index.jsx)"
