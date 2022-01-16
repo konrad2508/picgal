@@ -26,15 +26,47 @@ pictures = glob.glob(f'{ROOT}/*/*/*')
 db.create_tables([Image, Tag, ImageTag], safe=True)
 
 with db.atomic():
+    # deleting
+    deleted_counter = 0
+
+    existing_pictures = Image.select()
+
+    for existing_picture in existing_pictures:
+        if not os.path.isfile(existing_picture.file):
+
+            if os.path.isfile(existing_picture.preview):
+                os.remove(existing_picture.preview)
+            
+            ImageTag.delete().where(ImageTag.image_id == existing_picture.image_id).execute()
+            existing_picture.delete_instance()
+
+            deleted_counter += 1
+    
+    print(f'Removed {deleted_counter} images')
+
+    # adding images and restoring previews
+    add_counter = 0
+    restored_counter = 0
+
     for picture in pictures:
         try:
-            Image.get(Image.file == picture)
+            existing_picture = Image.get(Image.file == picture)
+
+            if not os.path.isfile(existing_picture.preview):
+
+                with Img.open(existing_picture.file) as opened:
+                    opened.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
+
+                    preview_parent_dir = SEP.join(existing_picture.preview.split(SEP)[:-1])
+                    os.makedirs(preview_parent_dir, exist_ok=True)
+                    opened.save(existing_picture.preview, 'PNG')
+
+                    restored_counter += 1
 
         except DoesNotExist:
             source = picture.split(SEP)[-3]
             character = picture.split(SEP)[-2]
-            image = picture.split(SEP)[-1].split('.')[:-1]
-            image = ''.join(image)
+            image = ''.join(picture.split(SEP)[-1].split('.')[:-1])
 
             preview_loc = f'{PREVIEWS_DIR}/{source}/{character}'
 
@@ -91,3 +123,11 @@ with db.atomic():
 
                 meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
                 ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
+            
+            add_counter += 1
+    
+    print(f'Restored {restored_counter} previews')
+    print(f'Added {add_counter} images')
+
+print()
+input('Press any key to continue . . . ')
