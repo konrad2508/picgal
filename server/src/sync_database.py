@@ -9,6 +9,37 @@ from models.tag import Tag
 from models.tag_types import TAG_TYPE
 from models.image_tag import ImageTag
 
+def is_animated(image):
+    try:
+        return image.is_animated
+    except AttributeError:
+        return False
+
+def thumbnail_animated(image, save_as):
+    frames = []
+    for frame in range(1, image.n_frames):
+        image.seek(frame)
+        new_frame = image.copy()
+        new_frame.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
+        frames.append(new_frame)
+    
+    frames[0].save(save_as,
+        'WEBP',
+        save_all=True,
+        append_images=frames[1:],
+        background = (0, 0, 0, 0))
+
+def thumbnail_static(image, save_as):
+    image.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
+    image.save(save_as, 'WEBP')
+
+def make_thumbnail(image, save_as):
+    if is_animated(image):
+        thumbnail_animated(image, save_as)
+
+    else:
+        thumbnail_static(image, save_as)
+
 SEP = config.SEP
 HIGHRES = config.HIGHRES
 ABSURDRES = config.ABSURDRES
@@ -33,7 +64,6 @@ with db.atomic():
     old_root = SEP.join(example_pic.file.split(SEP)[:-3])
 
     if old_root != ROOT:
-
         for existing_picture in existing_pictures:
             picture_path = SEP.join(existing_picture.file.split(SEP)[-3:])
 
@@ -49,7 +79,6 @@ with db.atomic():
 
     for existing_picture in existing_pictures:
         if not os.path.isfile(existing_picture.file):
-
             if os.path.isfile(existing_picture.preview):
                 os.remove(existing_picture.preview)
             
@@ -69,15 +98,13 @@ with db.atomic():
             existing_picture = Image.get(Image.file == picture)
 
             if not os.path.isfile(existing_picture.preview):
-
                 with Img.open(existing_picture.file) as opened:
-                    opened.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
-
                     preview_parent_dir = SEP.join(existing_picture.preview.split(SEP)[:-1])
                     os.makedirs(preview_parent_dir, exist_ok=True)
-                    opened.save(existing_picture.preview, 'WEBP')
 
-                    restored_counter += 1
+                    make_thumbnail(opened, existing_picture.preview)
+
+                restored_counter += 1
 
         except DoesNotExist:
             source = picture.split(SEP)[-3]
@@ -88,15 +115,15 @@ with db.atomic():
 
             with Img.open(picture) as opened:
                 width, height = opened.size
+                preview_file = f'{preview_loc}/{image}.webp'
 
-                opened.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
-                
                 os.makedirs(preview_loc, exist_ok=True)
-                opened.save(f'{preview_loc}/{image}.webp', 'WEBP')
+
+                make_thumbnail(opened, preview_file)
 
             pic = {
                 'file': picture,
-                'preview': f'{preview_loc}/{image}.webp',
+                'preview': preview_file,
                 'width': width,
                 'height': height,
                 'favourite': False,
