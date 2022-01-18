@@ -25,7 +25,7 @@ with db.atomic():
         image = ''.join(image)
 
         preview_loc = f'{PREVIEWS_DIR}/{source}/{character}'
-        preview_image = f'{preview_loc}/{image}.png'
+        preview_image = f'{preview_loc}/{image}.webp'
 
         with Img.open(file_path) as opened:
             width, height = opened.size
@@ -33,7 +33,10 @@ with db.atomic():
             opened.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
             
             os.makedirs(preview_loc, exist_ok=True)
-            opened.save(preview_image, 'PNG')
+            opened.save(preview_image, 'WEBP')
 
         picture.preview = preview_image
         picture.save()
+
+print()
+input('Press any key to continue . . . ')

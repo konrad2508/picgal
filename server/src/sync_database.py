@@ -75,7 +75,7 @@ with db.atomic():
 
                     preview_parent_dir = SEP.join(existing_picture.preview.split(SEP)[:-1])
                     os.makedirs(preview_parent_dir, exist_ok=True)
-                    opened.save(existing_picture.preview, 'PNG')
+                    opened.save(existing_picture.preview, 'WEBP')
 
                     restored_counter += 1
 
@@ -92,11 +92,11 @@ with db.atomic():
                 opened.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
                 
                 os.makedirs(preview_loc, exist_ok=True)
-                opened.save(f'{preview_loc}/{image}.png', 'PNG')
+                opened.save(f'{preview_loc}/{image}.webp', 'WEBP')
 
             pic = {
                 'file': picture,
-                'preview': f'{preview_loc}/{image}.png',
+                'preview': f'{preview_loc}/{image}.webp',
                 'width': width,
                 'height': height,
                 'favourite': False,
