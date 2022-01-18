@@ -26,6 +26,22 @@ pictures = glob.glob(f'{ROOT}/*/*/*')
 db.create_tables([Image, Tag, ImageTag], safe=True)
 
 with db.atomic():
+    # syncing root
+    existing_pictures = list(Image.select())
+
+    example_pic = existing_pictures[0]
+    old_root = SEP.join(example_pic.file.split(SEP)[:-3])
+
+    if old_root != ROOT:
+
+        for existing_picture in existing_pictures:
+            picture_path = SEP.join(existing_picture.file.split(SEP)[-3:])
+
+            existing_picture.file = f'{ROOT}/{picture_path}'
+            existing_picture.save()
+
+        print("Synchronized the gallery's root")
+
     # deleting
     deleted_counter = 0
 
