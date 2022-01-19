@@ -56,8 +56,8 @@ with db.atomic():
         image = file_path.split(SEP)[-1].split('.')[:-1]
         image = ''.join(image)
 
-        preview_loc = f'{PREVIEWS_DIR}/{source}/{character}'
-        preview_image = f'{preview_loc}/{image}.webp'
+        preview_loc = f'{PREVIEWS_DIR}{SEP}{source}{SEP}{character}'
+        preview_image = f'{preview_loc}{SEP}{image}.webp'
 
         with Img.open(file_path) as opened:
             os.makedirs(preview_loc, exist_ok=True)
