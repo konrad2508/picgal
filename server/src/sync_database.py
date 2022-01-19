@@ -65,7 +65,7 @@ with db.atomic():
         for existing_picture in existing_pictures:
             picture_path = SEP.join(existing_picture.file.split(SEP)[-3:])
 
-            existing_picture.file = f'{ROOT}/{picture_path}'
+            existing_picture.file = f'{ROOT}{SEP}{picture_path}'
             existing_picture.save()
 
         print("[INFO] Synchronized the gallery's root")
@@ -111,7 +111,7 @@ with db.atomic():
             character = picture.split(SEP)[-2]
             image = ''.join(picture.split(SEP)[-1].split('.')[:-1])
 
-            preview_loc = f'{PREVIEWS_DIR}/{source}/{character}'
+            preview_loc = f'{PREVIEWS_DIR}{SEP}{source}{SEP}{character}'
 
             if source.lower() == character.lower() == 'none':
                 print(f'[ERROR] Picture {picture} is unsearchable, skipping...')
@@ -119,7 +119,7 @@ with db.atomic():
 
             with Img.open(picture) as opened:
                 width, height = opened.size
-                preview_file = f'{preview_loc}/{image}.webp'
+                preview_file = f'{preview_loc}{SEP}{image}.webp'
 
                 os.makedirs(preview_loc, exist_ok=True)
 
