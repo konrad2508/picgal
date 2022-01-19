@@ -52,8 +52,6 @@ PREVIEW_SIZE = config.PREVIEW_SIZE
 
 ROOT = config.PICTURES_ROOT
 
-pictures = glob.glob(f'{ROOT}/*/*/*')
-
 db.create_tables([Image, Tag, ImageTag], safe=True)
 
 with db.atomic():
@@ -70,7 +68,7 @@ with db.atomic():
             existing_picture.file = f'{ROOT}/{picture_path}'
             existing_picture.save()
 
-        print("Synchronized the gallery's root")
+        print("[INFO] Synchronized the gallery's root")
 
     # deleting
     deleted_counter = 0
@@ -87,11 +85,13 @@ with db.atomic():
 
             deleted_counter += 1
     
-    print(f'Removed {deleted_counter} images')
+    print(f'[INFO] Removed {deleted_counter} images')
 
     # adding images and restoring previews
     add_counter = 0
     restored_counter = 0
+
+    pictures = glob.glob(f'{ROOT}/*/*/*')
 
     for picture in pictures:
         try:
@@ -113,6 +113,10 @@ with db.atomic():
 
             preview_loc = f'{PREVIEWS_DIR}/{source}/{character}'
 
+            if source.lower() == character.lower() == 'none':
+                print(f'[ERROR] Picture {picture} is unsearchable, skipping...')
+                continue
+
             with Img.open(picture) as opened:
                 width, height = opened.size
                 preview_file = f'{preview_loc}/{image}.webp'
@@ -130,26 +134,28 @@ with db.atomic():
                 'created_time': os.path.getmtime(picture)
             }
 
-            source_tag = {
-                'name': source.lower(),
-                'type': TAG_TYPE['source']
-            }
-
-            character_tag = {
-                'name': character.lower(),
-                'type': TAG_TYPE['character']
-            }
-
             img_ref = Image.create(**pic)
 
-            src_tag_ref, _ = Tag.get_or_create(**source_tag)
-            ImageTag.create(image_id=img_ref, tag_id=src_tag_ref)
+            if source.lower() != 'none':
+                source_tag = {
+                    'name': source.lower(),
+                    'type': TAG_TYPE['source']
+                }
 
-            char_tag_ref, _ = Tag.get_or_create(**character_tag)
-            ImageTag.create(image_id=img_ref, tag_id=char_tag_ref)
+                src_tag_ref, _ = Tag.get_or_create(**source_tag)
+                ImageTag.create(image_id=img_ref, tag_id=src_tag_ref)
+
+            if character.lower() != 'none':
+                character_tag = {
+                    'name': character.lower(),
+                    'type': TAG_TYPE['character']
+                }
+
+                char_tag_ref, _ = Tag.get_or_create(**character_tag)
+                ImageTag.create(image_id=img_ref, tag_id=char_tag_ref)
 
             im_quality = width * height
-            if im_quality >= ABSURDRES:
+            if ABSURDRES > 0 and im_quality >= ABSURDRES:
                 meta_tag = {
                     'name': 'absurdres',
                     'type': TAG_TYPE['meta']
@@ -158,7 +164,7 @@ with db.atomic():
                 meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
                 ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
 
-            elif im_quality >= HIGHRES:
+            elif HIGHRES > 0 and im_quality >= HIGHRES:
                 meta_tag = {
                     'name': 'highres',
                     'type': TAG_TYPE['meta']
@@ -169,8 +175,8 @@ with db.atomic():
             
             add_counter += 1
     
-    print(f'Restored {restored_counter} previews')
-    print(f'Added {add_counter} images')
+    print(f'[INFO] Restored {restored_counter} previews')
+    print(f'[INFO] Added {add_counter} images')
 
 print()
 input('Press any key to continue . . . ')
