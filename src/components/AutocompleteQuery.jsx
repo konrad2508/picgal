@@ -20,10 +20,43 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         switchAutocompleteState(AutocompleteCommand.DISABLE, {  });
     }
 
+    const getSuggestions = () => {
+        /*
+        variables: input, suggestion
+        sorting priorities:
+        1. suggestion has more value if it starts with input
+        2. suggestion has more value if it more closely resembles input, ie suggestion length is close to input length
+        */
+
+        return existingTags
+            .filter(e => e.name.toLowerCase().includes(rightQuery) && rightQuery)
+            .sort((a, b) => {
+                let aScore = 0;
+                let bScore = 0;
+
+                if (a.name.startsWith(rightQuery)) {
+                    aScore += 2;
+                }
+                if (b.name.startsWith(rightQuery)) {
+                    bScore += 2;
+                }
+
+                if (a.name.length < b.name.length) {
+                    aScore += 1;
+                }
+                else if (b.name.length < a.name.length) {
+                    bScore += 1;
+                }
+
+                return bScore - aScore;
+            })
+            .slice(0, 5);
+    }
+
     const renderSuggestions = () => {
         return (
             <>
-                { existingTags.filter(e => e.name.toLowerCase().startsWith(rightQuery) && rightQuery).map((e, i) => (
+                { getSuggestions().map((e, i) => (
                     <div key={i} onClick={() => addSuggestion(e)} className={styles.suggestionBox}>
                         <p className={styles.suggestion}>{e.name}</p>
                     </div>
