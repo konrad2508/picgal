@@ -16,7 +16,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE, {  });
 
     const addSuggestion = (e) => {
-        handleQueryChange({ target: { value: `${leftQuery} ${e.name.replace(' ', '_')} `.trimStart() } });
+        handleQueryChange({ target: { value: `${leftQuery} ${e.name.replaceAll(' ', '_')} `.trimStart() } });
         switchAutocompleteState(AutocompleteCommand.DISABLE, {  });
     }
 
