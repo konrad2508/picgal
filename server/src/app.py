@@ -1,4 +1,5 @@
 import flask
+import waitress
 import config
 import controllers.image_controller as image
 from flask_cors import CORS
@@ -10,4 +11,4 @@ app.register_blueprint(image.construct_blueprint(
     route_prefix=config.ROUTE_PREFIX
 ))
 
-app.run(host=config.HOST, port=config.PORT)
+waitress.serve(app, host=config.HOST, port=config.PORT)
