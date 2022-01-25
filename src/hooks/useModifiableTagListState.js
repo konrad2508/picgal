@@ -3,6 +3,7 @@ import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
 import ModifiableTagListCommand from '../enums/ModifiableTagListCommand';
 import TagType from '../enums/TagType';
+import queryService from '../services/queryService';
 
 const useModifiableTagListState = (tags) => {
     const startingTags = tags.map((e) => ({ name: e, type: TagState.NORMAL }));
@@ -41,7 +42,7 @@ const useModifiableTagListState = (tags) => {
 
                 event.preventDefault();
 
-                const toAdd = newTagName.trim().replaceAll('_', ' ');
+                const toAdd = queryService.inputTagToNormalTag(newTagName);
                 
                 if (!checkIfDuplicateExists(existingTags, tagType, toAdd) && !tagList.map(e => e.name).includes(toAdd)) {
                     onModificationsChange(`${tagType.toLowerCase()}Added`, toAdd);

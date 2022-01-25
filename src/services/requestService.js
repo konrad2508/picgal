@@ -16,17 +16,13 @@ const getAllImagesStats = async () => {
 };
 
 const getImages = async (query, page) => {
-    const tagsFormatted = query.trimEnd().replace(' ', '+');
-
-    const { data } = await axios.get(`${BASE_URL}/original/info?page=${page}&tags=${tagsFormatted}`);
+    const { data } = await axios.get(`${BASE_URL}/original/info?page=${page}&tags=${query}`);
 
     return data;
 };
 
 const getImagesStats = async (query) => {
-    const tagsFormatted = query.trimEnd().replace(' ', '+');
-
-    const { data } = await axios.get(`${BASE_URL}/original/info/count?tags=${tagsFormatted}`);
+    const { data } = await axios.get(`${BASE_URL}/original/info/count?tags=${query}`);
 
     return data;
 };
@@ -55,7 +51,7 @@ const getTags = async () => {
     return data;
 };
 
-const imageService = {
+const requestService = {
     getAllImages,
     getAllImagesStats,
     getImages,
@@ -65,4 +61,4 @@ const imageService = {
     getFavouriteImagesStats,
     getTags
 };
-export default imageService;
+export default requestService;
