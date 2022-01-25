@@ -1,5 +1,6 @@
 import React from 'react';
-import imageService from '../services/imageService'
+import requestService from '../services/requestService'
+import queryService from '../services/queryService';
 import Command from '../enums/Command';
 import AppState from '../enums/AppState';
 
@@ -23,7 +24,7 @@ const useAppState = () => {
     const [history, setHistory] = React.useState([clearState]);
 
     React.useEffect(() => {
-        imageService
+        requestService
             .getTags()
             .then(tags => setExistingTags(tags));
     }, []);
@@ -36,12 +37,14 @@ const useAppState = () => {
 
                 const cmd = () => (
                     (query) => {
-                        imageService
-                            .getImagesStats(query)
+                        const urlFormattedQuery = queryService.inputQueryToUrlQuery(query);
+
+                        requestService
+                            .getImagesStats(urlFormattedQuery)
                             .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
         
-                        imageService
-                            .getImages(query, 1)
+                        requestService
+                            .getImages(urlFormattedQuery, 1)
                             .then(images => setImagesToShow(images));
         
                         setAppState(AppState.BROWSING);
@@ -86,18 +89,19 @@ const useAppState = () => {
 
                 const cmd = () => (
                     (tag) => {
-                        const queryableTag = tag.replaceAll(' ', '_');
-        
-                        imageService
-                            .getImagesStats(queryableTag)
+                        const inputTag = queryService.normalTagToInputTag(tag);
+                        const urlFormattedQuery = queryService.inputQueryToUrlQuery(inputTag);
+
+                        requestService
+                            .getImagesStats(urlFormattedQuery)
                             .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
-        
-                        imageService
-                            .getImages(queryableTag)
+
+                        requestService
+                            .getImages(urlFormattedQuery)
                             .then(images => setImagesToShow(images));
                         
                         setAppState(AppState.BROWSING);
-                        setUsedQuery(queryableTag);
+                        setUsedQuery(inputTag);
                         setQuery('');
                         setCurrentPage(1);
                     }
@@ -124,9 +128,10 @@ const useAppState = () => {
                 const cmd = () => (
                     (query, pageNum, pageStep) => {
                         const newPageNum = pageNum + pageStep;
-        
-                        imageService
-                            .getImages(query, newPageNum)
+                        const urlFormattedQuery = queryService.inputQueryToUrlQuery(query);
+
+                        requestService
+                            .getImages(urlFormattedQuery, newPageNum)
                             .then(images => setImagesToShow(images));
                         
                         setAppState(AppState.BROWSING);
@@ -145,12 +150,12 @@ const useAppState = () => {
             case Command.MODIFY_IMG: {
                 const { id, modifications } = args;
 
-                imageService
+                requestService
                     .modifyImage(id, modifications)
                     .then(modifiedImage => {
                         setImagesToShow([modifiedImage]);
 
-                        imageService
+                        requestService
                             .getTags()
                             .then(tags => setExistingTags(tags));
                     });
@@ -161,11 +166,11 @@ const useAppState = () => {
             case Command.CLICK_FAVOURITES: {
                 const cmd = () => (
                     () => {
-                        imageService
+                        requestService
                             .getFavouriteImagesStats()
                             .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
         
-                        imageService
+                        requestService
                             .getFavouriteImages(1)
                             .then(images => setImagesToShow(images));
         

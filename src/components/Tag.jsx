@@ -1,7 +1,8 @@
 import React from 'react';
+import queryService from '../services/queryService';
 
 const Tag = ({ tag, onClickTag }) => {
-    const displayName = tag.replaceAll('_', ' ');
+    const displayName = queryService.inputTagToNormalTag(tag);
 
     return (
         <li onClick={() => onClickTag(tag)}>{displayName}</li>

@@ -2,6 +2,7 @@ import styles from '../styles/ModifiableTag.module.css';
 import React from 'react';
 import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
+import queryService from '../services/queryService';
 
 const ModifiableTag = ({ tag, tagListState, onRemoveTag, onCancelModification }) => {
     const getColour = (type) => {
@@ -20,7 +21,7 @@ const ModifiableTag = ({ tag, tagListState, onRemoveTag, onCancelModification })
         color: getColour(tag.type)
     };
 
-    const displayName = tag.name.replaceAll('_', ' ');
+    const displayName = queryService.inputTagToNormalTag(tag.name);
 
     if (tagListState === TagListState.REMOVE && tag.type === TagState.NORMAL) {
         return (

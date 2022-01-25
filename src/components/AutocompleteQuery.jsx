@@ -2,6 +2,7 @@ import styles from '../styles/Autocomplete.module.css';
 import React from 'react';
 import useAutocompleteState from '../hooks/useAutocompleteState';
 import AutocompleteCommand from '../enums/AutocompleteCommand';
+import queryService from '../services/queryService';
 
 const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     const { state, switchAutocompleteState } = useAutocompleteState();
@@ -15,8 +16,10 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
 
     const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE, {  });
 
-    const addSuggestion = (e) => {
-        handleQueryChange({ target: { value: `${leftQuery} ${e.name.replaceAll(' ', '_')} `.trimStart() } });
+    const addSuggestion = (suggestion) => {
+        const newInput = `${leftQuery} ${queryService.normalTagToInputTag(suggestion.name)} `.trimStart()
+
+        handleQueryChange({ target: { value: newInput } });
         switchAutocompleteState(AutocompleteCommand.DISABLE, {  });
     }
 
