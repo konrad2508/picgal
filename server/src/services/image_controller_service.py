@@ -5,16 +5,10 @@ class ImageControllerService(object):
         self.converter = converter
         self.path_resolver = path_resolver
 
-    def get_all_infos(self, image_url, preview_url, page):
-        images = self.repository.get_all_images(page)
-        images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url) for img in images ]
+    def get_infos(self, image_url, preview_url, tags, page):
+        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
 
-        return images
-
-    def get_tagged_infos(self, image_url, preview_url, tags, page):
-        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tags)
-
-        images = self.repository.get_tagged_images(page, normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
+        images = self.repository.get_images(page, normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
         images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url) for img in images ]
 
         return images
@@ -25,16 +19,10 @@ class ImageControllerService(object):
 
         return image
 
-    def get_all_infos_count(self):
-        count = self.repository.get_all_images_count()
-        count = self.converter.convert_count(count)
+    def get_infos_count(self, tags):
+        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
 
-        return count
-
-    def get_tagged_infos_count(self, tags):
-        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tags)
-
-        count = self.repository.get_tagged_images_count(normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
+        count = self.repository.get_images_count(normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
         count = self.converter.convert_count(count)
 
         return count

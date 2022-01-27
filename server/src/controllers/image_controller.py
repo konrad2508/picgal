@@ -25,11 +25,7 @@ def construct_blueprint(route_prefix):
         tags = flask.request.args.get('tags')
         page = flask.request.args.get('page', type=int, default=1)
 
-        if not tags:
-            info = original_service.get_all_infos(image_url=image_route, preview_url=preview_route, page=page)
-
-        else:
-            info = original_service.get_tagged_infos(image_url=image_route, preview_url=preview_route, tags=tags, page=page)
+        info = original_service.get_infos(image_url=image_route, preview_url=preview_route, tags=tags, page=page)
 
         return flask.jsonify(info)
 
@@ -49,11 +45,7 @@ def construct_blueprint(route_prefix):
     def get_infos_count():
         tags = flask.request.args.get('tags')
 
-        if not tags:
-            count = original_service.get_all_infos_count()
-
-        else:
-            count = original_service.get_tagged_infos_count(tags)
+        count = original_service.get_infos_count(tags)
 
         return flask.jsonify(count)
 
