@@ -4,13 +4,14 @@ import useAutocompleteState from '../hooks/useAutocompleteState';
 import AutocompleteCommand from '../enums/AutocompleteCommand';
 
 const AutocompleteNewTag = ({ query, handleQueryChange, existingTags }) => {
-    const { state, switchAutocompleteState } = useAutocompleteState();
+    const { autocompleteState, switchAutocompleteState } = useAutocompleteState();
 
-    const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE, {  });
+    const enableDisplay =  () => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY,  {  });
+    const disableDisplay = () => switchAutocompleteState(AutocompleteCommand.DISABLE_DISPLAY, {  });
 
     const addSuggestion = (e) => {
         handleQueryChange({ target: { value: e.name.trim() } });
-        switchAutocompleteState(AutocompleteCommand.DISABLE, {  });
+        disableDisplay();
     }
 
     const renderSuggestions = () => {
@@ -26,14 +27,14 @@ const AutocompleteNewTag = ({ query, handleQueryChange, existingTags }) => {
     };
 
     return (
-        <div ref={state.wrapperRef}>
+        <div ref={autocompleteState.wrapperRef}>
             <input
                 value={query}
                 onChange={handleQueryChange}
                 className={styles.input}
                 onClick={enableDisplay}
             />
-            { state.display && (
+            { autocompleteState.display && (
                 <div className={styles.suggestionsOuterContainer}>
                     <div className={styles.suggestionsInnerContainer}>
                     { renderSuggestions() }

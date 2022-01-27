@@ -6,8 +6,8 @@ import config
 from models.base_model import db
 from models.image import Image
 from models.tag import Tag
-from models.tag_types import TAG_TYPE
 from models.image_tag import ImageTag
+from enums.tag_types import TAG_TYPE
 
 def is_animated(image):
     try:

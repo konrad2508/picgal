@@ -1,8 +1,9 @@
 import flask
 from peewee import IntegrityError
 from repositories.image_repository import ImageRepository
+from repositories.virtual_tag_repository import VirtualTagRepository
 from services.path_resolver_service import PathResolverService
-from services.model_converter_service import ModelConverterService
+from services.converter_service import ConverterService
 from services.image_controller_service import ImageControllerService
 
 def construct_blueprint(route_prefix):
@@ -12,9 +13,10 @@ def construct_blueprint(route_prefix):
     preview_route = f'{route_prefix}/preview/image'
 
     original_repository = ImageRepository()
-    model_converter = ModelConverterService()
+    virtual_tag_repository = VirtualTagRepository()
+    converter = ConverterService(virtual_tag_repository)
     path_resolver = PathResolverService()
-    original_service = ImageControllerService(original_repository, model_converter, path_resolver)
+    original_service = ImageControllerService(original_repository, virtual_tag_repository, converter, path_resolver)
 
     original = flask.Blueprint('image', __name__)
 

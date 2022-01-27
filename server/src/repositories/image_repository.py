@@ -4,7 +4,7 @@ from models.base_model import db
 from models.image import Image
 from models.tag import Tag
 from models.image_tag import ImageTag
-from models.tag_types import TAG_TYPE
+from enums.tag_types import TAG_TYPE
 
 class ImageRepository(object):
     def __init__(self):
@@ -74,15 +74,23 @@ class ImageRepository(object):
         
         return images
 
-    def get_tagged_images(self, tags, page):
+    def get_tagged_images(self, page, normal_tags=None, virtual_tags=None):
         with self.db.atomic():
-            images = (Image
-                        .select()
-                        .join(ImageTag, on=ImageTag.image_id == Image.image_id)
-                        .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
-                        .where(fn.Lower(Tag.name) << tags)
-                        .group_by(Image.image_id)
-                        .having(fn.Count() == len(tags))
+            images = Image.select()
+
+            if virtual_tags is not None:
+                for virtual_tag in virtual_tags:
+                    images = images.where(virtual_tag())
+
+            if normal_tags is not None:
+                images = (images
+                            .join(ImageTag, on=ImageTag.image_id == Image.image_id)
+                            .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
+                            .where(fn.Lower(Tag.name) << normal_tags)
+                            .group_by(Image.image_id)
+                            .having(fn.Count() == len(normal_tags)))
+
+            images = (images
                         .order_by(Image.created_time.desc())
                         .paginate(page, paginate_by=config.COUNT_PER_PAGE))
 
@@ -99,16 +107,23 @@ class ImageRepository(object):
 
         return count
 
-    def get_tagged_images_count(self, tags):
+    def get_tagged_images_count(self, normal_tags=None, virtual_tags=None):
         with self.db.atomic():
-            count = (Image
-                        .select(fn.Count().over())
-                        .join(ImageTag, on=ImageTag.image_id == Image.image_id)
-                        .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
-                        .where(fn.Lower(Tag.name) << tags)
-                        .group_by(Image.image_id)
-                        .having(fn.Count() == len(tags))
-                        .scalar())
+            count = Image.select(fn.Count().over())
+
+            if virtual_tags is not None:
+                for virtual_tag in virtual_tags:
+                    count = count.where(virtual_tag())
+            
+            if normal_tags is not None:
+                count = (count
+                            .join(ImageTag, on=ImageTag.image_id == Image.image_id)
+                            .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
+                            .where(fn.Lower(Tag.name) << normal_tags)
+                            .group_by(Image.image_id)
+                            .having(fn.Count() == len(normal_tags)))
+
+            count = count.scalar()
 
         if count is None:
             count = 0

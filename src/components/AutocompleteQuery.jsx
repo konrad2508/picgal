@@ -2,57 +2,88 @@ import styles from '../styles/Autocomplete.module.css';
 import React from 'react';
 import useAutocompleteState from '../hooks/useAutocompleteState';
 import AutocompleteCommand from '../enums/AutocompleteCommand';
+import TagMetatype from '../enums/TagMetatype';
 import queryService from '../services/queryService';
 
 const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
-    const { state, switchAutocompleteState } = useAutocompleteState();
+    const { autocompleteState, switchAutocompleteState } = useAutocompleteState(existingTags);
+
+    const enableDisplay         = ()        => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY,           {  });
+    const disableDisplay        = ()        => switchAutocompleteState(AutocompleteCommand.DISABLE_DISPLAY,          {  });
+    const enableVirtualTagMode  = (subtags) => switchAutocompleteState(AutocompleteCommand.ENABLE_VIRTUAL_TAG_MODE,  { subtags });
+    const disableVirtualTagMode = ()        => switchAutocompleteState(AutocompleteCommand.DISABLE_VIRTUAL_TAG_MODE, {  });
 
     let rightQuery, leftQuery;
     if (query) {
         const splittedQuery = query.split(' ');
         rightQuery = splittedQuery.at(-1);
         leftQuery = splittedQuery.slice(0, -1).join(' ');
+
+        if (rightQuery.includes(':')) {
+            const potentialVirtualTag = queryService.findPotentialVirtualTag(rightQuery, existingTags);
+
+            if (potentialVirtualTag !== undefined && !autocompleteState.virtualTagMode) {
+                enableVirtualTagMode(potentialVirtualTag.subtags);
+            }
+        }
+        else if (autocompleteState.virtualTagMode) {
+            disableVirtualTagMode();
+        }
     }
 
-    const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE, {  });
+    const handleSuggestionClick = (suggestion) => {
+        if (suggestion.tagType === TagMetatype.VIRTUAL) {
+            activateSubtags(suggestion);
+        }
+        else if (suggestion.tagType === TagMetatype.NORMAL) {
+            addSuggestion(suggestion);
+        }
+    };
+
+    const activateSubtags = (suggestion) => {
+        const newInput = `${leftQuery} ${queryService.normalVirtualTagToInputVirtualTag(suggestion.name)}`.trimStart()
+        
+        handleQueryChange({ target: { value: newInput } });
+        enableVirtualTagMode(suggestion.subtags);
+    };
 
     const addSuggestion = (suggestion) => {
         const newInput = `${leftQuery} ${queryService.normalTagToInputTag(suggestion.name)} `.trimStart()
 
         handleQueryChange({ target: { value: newInput } });
-        switchAutocompleteState(AutocompleteCommand.DISABLE, {  });
+        disableDisplay();
+        disableVirtualTagMode();
     }
 
     const getSuggestions = () => {
-        /*
-        variables: input, suggestion
-        sorting priorities:
-        1. suggestion has more value if it starts with input
-        2. suggestion has more value if it more closely resembles input, ie suggestion length is close to input length
-        */
+        const sortingFunction = (a, b) => {
+            let aScore = 0;
+            let bScore = 0;
 
-        return existingTags
+            if (a.name.startsWith(rightQuery)) {
+                aScore += 2;
+            }
+            if (b.name.startsWith(rightQuery)) {
+                bScore += 2;
+            }
+
+            if (a.name.length < b.name.length) {
+                aScore += 1;
+            }
+            else if (b.name.length < a.name.length) {
+                bScore += 1;
+            }
+
+            return bScore - aScore;
+        };
+
+        const suggestions = autocompleteState.virtualTagMode
+            ? autocompleteState.subtagList
+            : existingTags;
+
+        return suggestions
             .filter(e => e.name.toLowerCase().includes(rightQuery) && rightQuery)
-            .sort((a, b) => {
-                let aScore = 0;
-                let bScore = 0;
-
-                if (a.name.startsWith(rightQuery)) {
-                    aScore += 2;
-                }
-                if (b.name.startsWith(rightQuery)) {
-                    bScore += 2;
-                }
-
-                if (a.name.length < b.name.length) {
-                    aScore += 1;
-                }
-                else if (b.name.length < a.name.length) {
-                    bScore += 1;
-                }
-
-                return bScore - aScore;
-            })
+            .sort(sortingFunction)
             .slice(0, 5);
     }
 
@@ -60,7 +91,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         return (
             <>
                 { getSuggestions().map((e, i) => (
-                    <div key={i} onClick={() => addSuggestion(e)} className={styles.suggestionBox}>
+                    <div key={i} onClick={() => handleSuggestionClick(e)} className={styles.suggestionBox}>
                         <p className={styles.suggestion}>{e.name}</p>
                     </div>
                 ))}
@@ -69,14 +100,14 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     };
 
     return (
-        <div ref={state.wrapperRef}>
+        <div ref={autocompleteState.wrapperRef}>
             <input
                 value={query}
                 onChange={handleQueryChange}
                 className={styles.input}
                 onClick={enableDisplay}
             />
-            { state.display && (
+            { autocompleteState.display && (
                 <div className={styles.suggestionsOuterContainer}>
                     <div className={styles.suggestionsInnerContainer}>
                     { renderSuggestions() }

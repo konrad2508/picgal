@@ -2,11 +2,11 @@ import time
 import math
 import playhouse.shortcuts
 import config
-from models.tag_types import TAG_TYPE
+from enums.tag_types import TAG_TYPE
 
-class ModelConverterService(object):
-    def __init__(self):
-        pass
+class ConverterService(object):
+    def __init__(self, virtual_tag_repository):
+        self.virtual_tag_repository = virtual_tag_repository
 
     def convert_image(self, image, loc_original=None, loc_preview=None):
         converted_image = playhouse.shortcuts.model_to_dict(image, backrefs=True)
@@ -28,10 +28,43 @@ class ModelConverterService(object):
             'id': tag.tag_id,
             'name': tag.name.lower(),
             'type': tag.type,
-            'count': tag.count
+            'count': tag.count,
+            'tagType': 'normal'
         }
 
         return converted_tag
+
+    def convert_virtual_tags(self, virtual_tag):
+        converted_virtual_tag = {
+            'name': virtual_tag.name,
+            'subtags': [
+                { 
+                    'name': f'{virtual_tag.name}:{subtag.name}',
+                    'tagType': 'normal'
+                }
+                for subtag in virtual_tag.subtags
+            ],
+            'tagType': 'virtual'
+        }
+
+        return converted_virtual_tag
+
+    def convert_tagstring(self, tagstring):
+        tag_array = tagstring.split(' ')
+        tag_array = list(map(lambda e: e.lower().replace('_', ' '), tag_array))
+        normal_tag_array = list(filter(lambda e: ':' not in e, tag_array))
+
+        if len(normal_tag_array) == 0:
+            normal_tag_array = None
+
+        tag_array = list(filter(lambda e: ':' in e, tag_array))
+        tag_array = list(map(lambda e: e.split(':'), tag_array))
+        virtual_tag_array = self.virtual_tag_repository.get_conditions(tag_array)
+
+        if len(virtual_tag_array) == 0:
+            virtual_tag_array = None
+
+        return normal_tag_array, virtual_tag_array
 
     def _modeldict_to_response(self, image, loc_original, loc_preview):
         tags = [ { 'name': t['tag_id']['name'], 'type': t['tag_id']['type'] } for t in image['imagetag_set'] ]
