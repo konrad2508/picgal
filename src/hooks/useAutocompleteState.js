@@ -3,6 +3,8 @@ import AutocompleteCommand from '../enums/AutocompleteCommand';
 
 const useAutocompleteState = () => {
     const [ display, setDisplay ] = React.useState(false);
+    const [ virtualTagMode, setVirtualTagMode ] = React.useState(false);
+    const [ subtagList, setSubtagList ] = React.useState([]);
     const wrapperRef = React.useRef(null);
 
     const handleClickOutside = (event) => {
@@ -23,14 +25,30 @@ const useAutocompleteState = () => {
 
     const switchAutocompleteState = (command, args) => {
         switch (command) {
-            case AutocompleteCommand.ENABLE: {
+            case AutocompleteCommand.ENABLE_DISPLAY: {
                 setDisplay(true);
 
                 break;
             }
 
-            case AutocompleteCommand.DISABLE: {
+            case AutocompleteCommand.DISABLE_DISPLAY: {
                 setDisplay(false);
+
+                break;
+            }
+
+            case AutocompleteCommand.ENABLE_VIRTUAL_TAG_MODE: {
+                const { subtags } = args;
+
+                setSubtagList(subtags);
+                setVirtualTagMode(true);
+
+                break;
+            }
+
+            case AutocompleteCommand.DISABLE_VIRTUAL_TAG_MODE: {
+                setSubtagList([]);
+                setVirtualTagMode(false);
 
                 break;
             }
@@ -40,7 +58,7 @@ const useAutocompleteState = () => {
     };
 
     return {
-        state: { display, wrapperRef },
+        autocompleteState: { display, wrapperRef, virtualTagMode, subtagList },
         switchAutocompleteState
     };
 };

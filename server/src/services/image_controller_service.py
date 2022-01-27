@@ -1,6 +1,7 @@
 class ImageControllerService(object):
-    def __init__(self, repository, converter, path_resolver):
+    def __init__(self, repository, virtual_tag_repository, converter, path_resolver):
         self.repository = repository
+        self.virtual_tag_repository = virtual_tag_repository
         self.converter = converter
         self.path_resolver = path_resolver
 
@@ -11,10 +12,9 @@ class ImageControllerService(object):
         return images
 
     def get_tagged_infos(self, image_url, preview_url, tags, page):
-        tag_array = tags.split(' ')
-        tag_array = list(map(lambda e: e.lower().replace('_', ' '), tag_array))
+        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tags)
 
-        images = self.repository.get_tagged_images(tag_array, page)
+        images = self.repository.get_tagged_images(page, normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
         images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url) for img in images ]
 
         return images
@@ -32,10 +32,9 @@ class ImageControllerService(object):
         return count
 
     def get_tagged_infos_count(self, tags):
-        tag_array = tags.split(' ')
-        tag_array = list(map(lambda e: e.lower().replace('_', ' '), tag_array))
+        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tags)
 
-        count = self.repository.get_tagged_images_count(tag_array)
+        count = self.repository.get_tagged_images_count(normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
         count = self.converter.convert_count(count)
 
         return count
@@ -53,8 +52,13 @@ class ImageControllerService(object):
         return count
 
     def get_tags(self):
-        tags = self.repository.get_tags()
-        tags = [ self.converter.convert_tags(tag) for tag in tags ]
+        normal_tags = self.repository.get_tags()
+        normal_tags = [ self.converter.convert_tags(normal_tag) for normal_tag in normal_tags ]
+
+        virtual_tags = self.virtual_tag_repository.get_virtual_tags()
+        virtual_tags = [ self.converter.convert_virtual_tags(virtual_tag) for virtual_tag in virtual_tags ]
+
+        tags = normal_tags + virtual_tags
 
         return tags
 

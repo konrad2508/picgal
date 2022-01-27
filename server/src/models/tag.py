@@ -1,4 +1,3 @@
-from enum import unique
 import peewee
 from models.base_model import BaseModel
 
