@@ -49,7 +49,10 @@ class ConverterService(object):
 
         return converted_virtual_tag
 
-    def convert_tagstring(self, tagstring):
+    def convert_tagstring(self, tagstring=None):
+        if not tagstring:
+            return None, None
+
         tag_array = tagstring.split(' ')
         tag_array = list(map(lambda e: e.lower().replace('_', ' '), tag_array))
         normal_tag_array = list(filter(lambda e: ':' not in e, tag_array))
