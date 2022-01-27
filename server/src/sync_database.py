@@ -1,8 +1,8 @@
 import glob
 import os
+import config
 from PIL import Image as Img
 from peewee import DoesNotExist
-import config
 from models.base_model import db
 from models.image import Image
 from models.tag import Tag
@@ -15,12 +15,12 @@ def is_animated(image):
     except AttributeError:
         return False
 
-def thumbnail_animated(image, save_as):
+def thumbnail_animated(image, save_as, size):
     frames = []
     for frame in range(1, image.n_frames):
         image.seek(frame)
         new_frame = image.copy()
-        new_frame.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
+        new_frame.thumbnail(size, Img.ANTIALIAS)
         frames.append(new_frame)
     
     frames[0].save(save_as,
@@ -29,16 +29,16 @@ def thumbnail_animated(image, save_as):
         append_images=frames[1:],
         background = (0, 0, 0, 0))
 
-def thumbnail_static(image, save_as):
-    image.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
+def thumbnail_static(image, save_as, size):
+    image.thumbnail(size, Img.ANTIALIAS)
     image.save(save_as, 'WEBP')
 
-def make_thumbnail(image, save_as):
+def make_thumbnail(image, save_as, size):
     if is_animated(image):
-        thumbnail_animated(image, save_as)
+        thumbnail_animated(image, save_as, size)
 
     else:
-        thumbnail_static(image, save_as)
+        thumbnail_static(image, save_as, size)
 
 SEP = config.SEP
 HIGHRES = config.HIGHRES
@@ -46,6 +46,9 @@ ABSURDRES = config.ABSURDRES
 
 PREVIEWS_DIR = config.PREVIEWS_DIR
 PREVIEW_SIZE = config.PREVIEW_SIZE
+
+SAMPLES_DIR = config.SAMPLES_DIR
+SAMPLE_SIZE = config.SAMPLE_SIZE
 
 # STRUCTURE
 # /<ROOT>/<SOURCE>/<CHARACTER>/<image>
@@ -89,7 +92,8 @@ with db.atomic():
 
     # adding images and restoring previews
     add_counter = 0
-    restored_counter = 0
+    restored_previews_counter = 0
+    restored_samples_counter = 0
 
     pictures = glob.glob(f'{ROOT}/*/*/*')
 
@@ -102,9 +106,18 @@ with db.atomic():
                     preview_parent_dir = SEP.join(existing_picture.preview.split(SEP)[:-1])
                     os.makedirs(preview_parent_dir, exist_ok=True)
 
-                    make_thumbnail(opened, existing_picture.preview)
+                    make_thumbnail(opened, existing_picture.preview, PREVIEW_SIZE)
 
-                restored_counter += 1
+                restored_previews_counter += 1
+
+            if not os.path.isfile(existing_picture.sample):
+                with Img.open(existing_picture.file) as opened:
+                    sample_parent_dir = SEP.join(existing_picture.sample.split(SEP)[:-1])
+                    os.makedirs(sample_parent_dir, exist_ok=True)
+
+                    make_thumbnail(opened, existing_picture.sample, SAMPLE_SIZE)
+
+                restored_samples_counter += 1
 
         except DoesNotExist:
             source = picture.split(SEP)[-3]
@@ -112,6 +125,7 @@ with db.atomic():
             image = ''.join(picture.split(SEP)[-1].split('.')[:-1])
 
             preview_loc = f'{PREVIEWS_DIR}{SEP}{source}{SEP}{character}'
+            sample_loc = f'{SAMPLES_DIR}{SEP}{source}{SEP}{character}'
 
             if source.lower() == character.lower() == 'none':
                 print(f'[ERROR] Picture {picture} is unsearchable, skipping...')
@@ -120,14 +134,18 @@ with db.atomic():
             with Img.open(picture) as opened:
                 width, height = opened.size
                 preview_file = f'{preview_loc}{SEP}{image}.webp'
+                sample_file = f'{sample_loc}{SEP}{image}.webp'
 
                 os.makedirs(preview_loc, exist_ok=True)
+                os.makedirs(sample_loc, exist_ok=True)
 
-                make_thumbnail(opened, preview_file)
+                make_thumbnail(opened.copy(), preview_file, PREVIEW_SIZE)
+                make_thumbnail(opened.copy(), sample_file, SAMPLE_SIZE)
 
             pic = {
                 'file': picture,
                 'preview': preview_file,
+                'sample': sample_file,
                 'width': width,
                 'height': height,
                 'favourite': False,
@@ -175,7 +193,8 @@ with db.atomic():
             
             add_counter += 1
     
-    print(f'[INFO] Restored {restored_counter} previews')
+    print(f'[INFO] Restored {restored_previews_counter} previews')
+    print(f'[INFO] Restored {restored_samples_counter} samples')
     print(f'[INFO] Added {add_counter} images')
 
 print()

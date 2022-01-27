@@ -9,5 +9,7 @@
     "picturesRoot": "",
     "previewsDir": "../../previews",
     "previewSize": [150, 150],
+    "samplesDir": "../../samples",
+    "sampleSize": [800, 800],
     "countPerPage": 40
 }

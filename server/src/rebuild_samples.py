@@ -1,0 +1,71 @@
+import shutil
+import os
+import config
+from PIL import Image as Img
+from models.base_model import db
+from models.image import Image
+
+def is_animated(image):
+    try:
+        return image.is_animated
+    except AttributeError:
+        return False
+
+def thumbnail_animated(image, save_as):
+    frames = []
+    for frame in range(1, image.n_frames):
+        image.seek(frame)
+        new_frame = image.copy()
+        new_frame.thumbnail(SAMPLE_SIZE, Img.ANTIALIAS)
+        frames.append(new_frame)
+    
+    frames[0].save(save_as,
+        'WEBP',
+        save_all=True,
+        append_images=frames[1:],
+        background = (0, 0, 0, 0))
+
+def thumbnail_static(image, save_as):
+    image.thumbnail(SAMPLE_SIZE, Img.ANTIALIAS)
+    image.save(save_as, 'WEBP')
+
+def make_thumbnail(image, save_as):
+    if is_animated(image):
+        thumbnail_animated(image, save_as)
+
+    else:
+        thumbnail_static(image, save_as)
+
+
+SEP = config.SEP
+
+SAMPLES_DIR = config.SAMPLES_DIR
+SAMPLE_SIZE = config.SAMPLE_SIZE
+
+if os.path.isdir(SAMPLES_DIR):
+    shutil.rmtree(SAMPLES_DIR)
+
+with db.atomic():
+    pictures = Image.select()
+
+    for picture in pictures:
+        file_path = picture.file
+
+        source = file_path.split(SEP)[-3]
+        character = file_path.split(SEP)[-2]
+        image = file_path.split(SEP)[-1].split('.')[:-1]
+        image = ''.join(image)
+
+        sample_loc = f'{SAMPLES_DIR}{SEP}{source}{SEP}{character}'
+        sample_image = f'{sample_loc}{SEP}{image}.webp'
+
+        with Img.open(file_path) as opened:
+            os.makedirs(sample_loc, exist_ok=True)
+
+            make_thumbnail(opened, sample_image)
+
+        picture.sample = sample_image
+        picture.save()
+
+print()
+input('Press any key to continue . . . ')

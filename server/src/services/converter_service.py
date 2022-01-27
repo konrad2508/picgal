@@ -8,9 +8,9 @@ class ConverterService(object):
     def __init__(self, virtual_tag_repository):
         self.virtual_tag_repository = virtual_tag_repository
 
-    def convert_image(self, image, loc_original=None, loc_preview=None):
+    def convert_image(self, image, loc_original=None, loc_preview=None, loc_sample=None):
         converted_image = playhouse.shortcuts.model_to_dict(image, backrefs=True)
-        converted_image = self._modeldict_to_response(converted_image, loc_original, loc_preview)
+        converted_image = self._modeldict_to_response(converted_image, loc_original, loc_preview, loc_sample)
 
         return converted_image
 
@@ -69,7 +69,7 @@ class ConverterService(object):
 
         return normal_tag_array, virtual_tag_array
 
-    def _modeldict_to_response(self, image, loc_original, loc_preview):
+    def _modeldict_to_response(self, image, loc_original, loc_preview, loc_sample):
         tags = [ { 'name': t['tag_id']['name'], 'type': t['tag_id']['type'] } for t in image['imagetag_set'] ]
 
         img = {
@@ -90,6 +90,9 @@ class ConverterService(object):
 
         if loc_preview:
             img['preview'] = f'{loc_preview}/{img["id"]}'
+
+        if loc_sample:
+            img['sample'] = f'{loc_sample}/{img["id"]}'
 
         for tag in tags:
             if tag['type'] == TAG_TYPE['character']:

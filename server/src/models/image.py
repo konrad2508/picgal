@@ -5,6 +5,7 @@ class Image(BaseModel):
     image_id = peewee.PrimaryKeyField()
     file = peewee.CharField(unique=True)
     preview = peewee.CharField(unique=True)
+    sample = peewee.CharField(unique=True)
     width = peewee.IntegerField()
     height = peewee.IntegerField()
     favourite = peewee.BooleanField()

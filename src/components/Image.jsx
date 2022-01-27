@@ -30,7 +30,7 @@ const Image = ({ img }) => {
         <div className={styles.container}>
             <img
                 className={styles.img}
-                src={networkService.getURLToBackend(img.path)}
+                src={networkService.getURLToBackend(img.sample)}
                 alt={img.path}
                 style={styleImg}
                 title=' '
