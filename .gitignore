@@ -32,6 +32,7 @@ yarn-error.log*
 # runtime
 database.sqlite
 previews/
+samples/
 
 # python cache
 __pycache__

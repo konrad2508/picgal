@@ -7,10 +7,12 @@ from services.converter_service import ConverterService
 from services.image_controller_service import ImageControllerService
 
 def construct_blueprint(route_prefix):
-    info_route = f'{route_prefix}/original/info'
-    image_route = f'{route_prefix}/original/image'
-    tag_route = f'{route_prefix}/original/tag'
-    preview_route = f'{route_prefix}/preview/image'
+    info_route = f'{route_prefix}/info'
+    favourite_route = f'{route_prefix}/info/favourite'
+    tag_route = f'{route_prefix}/tag'
+    image_route = f'{route_prefix}/image'
+    preview_route = f'{route_prefix}/preview'
+    sample_route = f'{route_prefix}/sample'
 
     original_repository = ImageRepository()
     virtual_tag_repository = VirtualTagRepository()
@@ -20,12 +22,12 @@ def construct_blueprint(route_prefix):
 
     original = flask.Blueprint('image', __name__)
 
-    @original.route(info_route, methods=['GET'])
+    @original.route(f'{info_route}', methods=['GET'])
     def get_infos():
         tags = flask.request.args.get('tags')
         page = flask.request.args.get('page', type=int, default=1)
 
-        info = original_service.get_infos(image_url=image_route, preview_url=preview_route, tags=tags, page=page)
+        info = original_service.get_infos(image_url=image_route, preview_url=preview_route, sample_url=sample_route, tags=tags, page=page)
 
         return flask.jsonify(info)
 
@@ -34,7 +36,7 @@ def construct_blueprint(route_prefix):
         modifications = flask.request.get_json(force=True)
 
         try:
-            modified_image = original_service.modify_info(image_route, preview_route, id, modifications)
+            modified_image = original_service.modify_info(image_route, preview_route, sample_route, id, modifications)
 
             return flask.jsonify(modified_image)
         
@@ -49,7 +51,7 @@ def construct_blueprint(route_prefix):
 
         return flask.jsonify(count)
 
-    @original.route(f'{info_route}/favourites', methods=['GET'])
+    @original.route(f'{favourite_route}', methods=['GET'])
     def get_favourite_infos():
         page = flask.request.args.get('page', type=int, default=1)
 
@@ -57,7 +59,7 @@ def construct_blueprint(route_prefix):
 
         return flask.jsonify(info)
 
-    @original.route(f'{info_route}/favourites/count', methods=['GET'])
+    @original.route(f'{favourite_route}/count', methods=['GET'])
     def get_favourite_infos_count():
         count = original_service.get_favourite_infos_count()
 
@@ -85,6 +87,16 @@ def construct_blueprint(route_prefix):
             preview_path = original_service.get_preview_path(id)
 
             return flask.send_file(preview_path, mimetype='image/jpeg')
+        
+        except FileNotFoundError:
+            flask.abort(404)
+
+    @original.route(f'{sample_route}/<id>', methods=['GET'])
+    def get_sample(id):
+        try:
+            sample_path = original_service.get_sample_path(id)
+
+            return flask.send_file(sample_path, mimetype='image/jpeg')
         
         except FileNotFoundError:
             flask.abort(404)

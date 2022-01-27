@@ -5,17 +5,17 @@ class ImageControllerService(object):
         self.converter = converter
         self.path_resolver = path_resolver
 
-    def get_infos(self, image_url, preview_url, tags, page):
+    def get_infos(self, image_url, preview_url, sample_url, tags, page):
         normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
 
         images = self.repository.get_images(page, normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
-        images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url) for img in images ]
+        images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url, loc_sample=sample_url) for img in images ]
 
         return images
 
-    def modify_info(self, image_url, preview_url, id, modifications):
+    def modify_info(self, image_url, preview_url, sample_url, id, modifications):
         image = self.repository.modify_image(id, modifications)
-        image = self.converter.convert_image(image, loc_original=image_url, loc_preview=preview_url)
+        image = self.converter.convert_image(image, loc_original=image_url, loc_preview=preview_url, loc_sample=sample_url)
 
         return image
 
@@ -64,6 +64,15 @@ class ImageControllerService(object):
 
         try:
             return self.path_resolver.resolve_path(image.preview)
+
+        except AttributeError:
+            raise FileNotFoundError()
+
+    def get_sample_path(self, id):
+        image = self.repository.get_image(id)
+
+        try:
+            return self.path_resolver.resolve_path(image.sample)
 
         except AttributeError:
             raise FileNotFoundError()
