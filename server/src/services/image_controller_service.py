@@ -27,9 +27,9 @@ class ImageControllerService(object):
 
         return count
 
-    def get_favourite_infos(self, image_url, preview_url, page):
+    def get_favourite_infos(self, image_url, preview_url, sample_url, page):
         images = self.repository.get_favourite_images(page)
-        images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url) for img in images ]
+        images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url, loc_sample=sample_url) for img in images ]
 
         return images
 
