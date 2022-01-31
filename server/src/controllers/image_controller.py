@@ -55,7 +55,7 @@ def construct_blueprint(route_prefix):
     def get_favourite_infos():
         page = flask.request.args.get('page', type=int, default=1)
 
-        info = original_service.get_favourite_infos(image_url=image_route, preview_url=preview_route, page=page)
+        info = original_service.get_favourite_infos(image_url=image_route, preview_url=preview_route, sample_url=sample_route, page=page)
 
         return flask.jsonify(info)
 
