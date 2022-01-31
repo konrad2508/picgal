@@ -1,5 +1,6 @@
 import styles from '../styles/CancelableModifiableTagList.module.css';
 import React from 'react';
+import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
 import TagState from '../enums/TagState';
 import ModifiableTag from './ModifiableTag';
 
@@ -15,14 +16,14 @@ const CancelableModifiableTagList = ({ tagType, tagList, tagListState, onCancelM
                         className={styles.button}
                         onClick={switchStateAdd}
                     >
-                        +
+                        <FaPlus/>
                     </button>
                     <button 
                         className={styles.button}
                         disabled={normalTags === 0 ? true : false}
                         onClick={switchStateRemove}
                     >
-                        -
+                        <FaRegTrashAlt/>
                     </button>
                 </div>
             </div>

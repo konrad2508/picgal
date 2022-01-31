@@ -1,5 +1,6 @@
 import styles from '../styles/RemovableModifiableTagList.module.css';
 import React from 'react';
+import { FaSave, FaTimes } from 'react-icons/fa';
 import ModifiableTag from './ModifiableTag';
 
 const RemovableModifiableTagList = ({ tagType, switchStateNormal, tagList, tagListState, onRemoveTag }) => {
@@ -12,13 +13,13 @@ const RemovableModifiableTagList = ({ tagType, switchStateNormal, tagList, tagLi
                         className={styles.button}
                         disabled={true}
                     >
-                        +
+                        <FaSave/>
                     </button>
                     <button
                         className={styles.button}
                         onClick={switchStateNormal}
                     >
-                        -
+                        <FaTimes/>
                     </button>
                 </div>
             </div>

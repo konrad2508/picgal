@@ -1,5 +1,6 @@
 import styles from '../styles/TagListsTitleBar.module.css'
 import React from 'react';
+import { FaPen, FaSave, FaTimes } from 'react-icons/fa';
 import ModificationMode from '../enums/ModificationMode';
 
 const TagListsTitleBar = ({ modificationMode, changeModificationMode }) => {
@@ -12,13 +13,13 @@ const TagListsTitleBar = ({ modificationMode, changeModificationMode }) => {
                         className={styles.button}
                         onClick={() => changeModificationMode(ModificationMode.SEND)}
                     >
-                        +
+                        <FaSave/>
                     </button>
                     <button
                         className={styles.button}
                         onClick={() => changeModificationMode(ModificationMode.CANCEL)}
                     >
-                        -
+                        <FaTimes/>
                     </button>
                 </div>
             </div>
@@ -33,7 +34,7 @@ const TagListsTitleBar = ({ modificationMode, changeModificationMode }) => {
                         className={styles.button}
                         onClick={() => changeModificationMode(ModificationMode.START)}
                     >
-                        M
+                        <FaPen/>
                     </button>
                 </div>
             </div>
