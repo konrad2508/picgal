@@ -13,13 +13,13 @@ const TagListsTitleBar = ({ modificationMode, changeModificationMode }) => {
                         className={styles.button}
                         onClick={() => changeModificationMode(ModificationMode.SEND)}
                     >
-                        <FaSave/>
+                        <FaSave className='fontAwesome'/>
                     </button>
                     <button
                         className={styles.button}
                         onClick={() => changeModificationMode(ModificationMode.CANCEL)}
                     >
-                        <FaTimes/>
+                        <FaTimes className='fontAwesome'/>
                     </button>
                 </div>
             </div>
@@ -34,7 +34,7 @@ const TagListsTitleBar = ({ modificationMode, changeModificationMode }) => {
                         className={styles.button}
                         onClick={() => changeModificationMode(ModificationMode.START)}
                     >
-                        <FaPen/>
+                        <FaPen className='fontAwesome'/>
                     </button>
                 </div>
             </div>

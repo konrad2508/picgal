@@ -13,13 +13,13 @@ const RemovableModifiableTagList = ({ tagType, switchStateNormal, tagList, tagLi
                         className={styles.button}
                         disabled={true}
                     >
-                        <FaSave/>
+                        <FaSave className='fontAwesome'/>
                     </button>
                     <button
                         className={styles.button}
                         onClick={switchStateNormal}
                     >
-                        <FaTimes/>
+                        <FaTimes className='fontAwesome'/>
                     </button>
                 </div>
             </div>

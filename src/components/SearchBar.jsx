@@ -15,7 +15,7 @@ const SearchBar = ({ sendQuery, onBackClick, appState, query, handleQueryChange,
                         onClick={onBackClick}
                         disabled={appState === AppState.START}
                     >
-                        <FaArrowLeft/>
+                        <FaArrowLeft className='fontAwesome'/>
                     </button>
                 </div>
                 <div className={styles.inputContainer}>
@@ -27,7 +27,7 @@ const SearchBar = ({ sendQuery, onBackClick, appState, query, handleQueryChange,
                 </div>
                 <div className={styles.goContainer}>
                     <button type="submit" className={styles.go}>
-                        <FaSearch/>
+                        <FaSearch className='fontAwesome'/>
                     </button>
                 </div>
             </div>

@@ -28,10 +28,10 @@ const AddableModifiableTagList = ({ tagType,
                 <h3>{tagType}</h3>
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} disabled={true}>
-                        <FaPlus/>
+                        <FaPlus className='fontAwesome'/>
                     </button>
                     <button className={styles.button} disabled={true}>
-                        <FaRegTrashAlt/>
+                        <FaRegTrashAlt className='fontAwesome'/>
                     </button>
                 </div>
             </div>
@@ -48,10 +48,10 @@ const AddableModifiableTagList = ({ tagType,
                         />
                     </div>
                     <button type='submit'>
-                        <FaSave/>
+                        <FaSave className='fontAwesome'/>
                     </button>
                     <button type='button' onClick={switchStateNormal}>
-                        <FaTimes/>
+                        <FaTimes className='fontAwesome'/>
                     </button>
                 </div>
             </form>
