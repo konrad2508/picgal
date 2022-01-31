@@ -1,5 +1,6 @@
 import styles from '../styles/ModifiableTag.module.css';
 import React from 'react';
+import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
 import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
 import queryService from '../services/queryService';
@@ -28,7 +29,9 @@ const ModifiableTag = ({ tag, tagListState, onRemoveTag, onCancelModification })
             <div className={styles.container}>
                 <li style={tagStyle}>{displayName}</li>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={() => onRemoveTag(tag.name)}>-</button>
+                    <button className={styles.button} onClick={() => onRemoveTag(tag.name)}>
+                        <FaRegTrashAlt/>
+                    </button>
                 </div>
             </div>
         );
@@ -43,7 +46,9 @@ const ModifiableTag = ({ tag, tagListState, onRemoveTag, onCancelModification })
             <div className={styles.container}>
                 <li style={tagStyle}>{displayName}</li>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={() => onCancelModification(tag.name, tag.type)}>X</button>
+                    <button className={styles.button} onClick={() => onCancelModification(tag.name, tag.type)}>
+                        <FaTimes/>
+                    </button>
                 </div>
             </div>
         );

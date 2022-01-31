@@ -1,5 +1,6 @@
 import styles from '../styles/SearchBar.module.css';
 import React from 'react';
+import { FaArrowLeft, FaSearch } from 'react-icons/fa';
 import AppState from '../enums/AppState';
 import AutocompleteQuery from './AutocompleteQuery';
 
@@ -14,7 +15,7 @@ const SearchBar = ({ sendQuery, onBackClick, appState, query, handleQueryChange,
                         onClick={onBackClick}
                         disabled={appState === AppState.START}
                     >
-                        {'<-'}
+                        <FaArrowLeft/>
                     </button>
                 </div>
                 <div className={styles.inputContainer}>
@@ -25,7 +26,9 @@ const SearchBar = ({ sendQuery, onBackClick, appState, query, handleQueryChange,
                     />
                 </div>
                 <div className={styles.goContainer}>
-                    <button type="submit" className={styles.go}>Go</button>
+                    <button type="submit" className={styles.go}>
+                        <FaSearch/>
+                    </button>
                 </div>
             </div>
         </form>

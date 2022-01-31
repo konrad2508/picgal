@@ -1,5 +1,6 @@
 import styles from '../styles/AddableModifiableTagList.module.css';
 import React from 'react';
+import { FaPlus, FaRegTrashAlt, FaSave, FaTimes } from 'react-icons/fa';
 import ModifiableTag from './ModifiableTag';
 import AutocompleteNewTag from './AutocompleteNewTag';
 
@@ -26,8 +27,12 @@ const AddableModifiableTagList = ({ tagType,
             <div className={styles.container}>
                 <h3>{tagType}</h3>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} disabled={true}>+</button>
-                    <button className={styles.button} disabled={true}>-</button>
+                    <button className={styles.button} disabled={true}>
+                        <FaPlus/>
+                    </button>
+                    <button className={styles.button} disabled={true}>
+                        <FaRegTrashAlt/>
+                    </button>
                 </div>
             </div>
             <ul>
@@ -42,8 +47,12 @@ const AddableModifiableTagList = ({ tagType,
                             existingTags={filterUsedTags()}
                         />
                     </div>
-                    <button type='submit'>+</button>
-                    <button type='button' onClick={switchStateNormal}>-</button>
+                    <button type='submit'>
+                        <FaSave/>
+                    </button>
+                    <button type='button' onClick={switchStateNormal}>
+                        <FaTimes/>
+                    </button>
                 </div>
             </form>
         </>

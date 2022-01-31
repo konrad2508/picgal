@@ -1,5 +1,6 @@
 import styles from '../styles/Metadata.module.css';
 import React from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import modificationForm from '../forms/modificationForm';
 
 const Metadata = ({ img, onSaveModifiedTagsClick }) => {
@@ -17,7 +18,7 @@ const Metadata = ({ img, onSaveModifiedTagsClick }) => {
                         className={styles.button}
                         onClick={flipFavourite}
                     >
-                        {img.favourite ? 'F' : 'NF'}
+                        {img.favourite ? <FaHeart/> : <FaRegHeart/>}
                     </button>
                 </div>
             </div>
