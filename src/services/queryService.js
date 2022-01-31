@@ -1,17 +1,17 @@
 const inputQueryToUrlQuery = (inputQuery) => {
-    return inputQuery.trim().replaceAll(' ', '+');
+    return inputQuery.trim().toLowerCase().replaceAll(' ', '+');
 };
 
 const inputTagToNormalTag = (inputTag) => {
-    return inputTag.trim().replaceAll('_', ' ');
+    return inputTag.trim().toLowerCase().replaceAll('_', ' ');
 };
 
 const normalTagToInputTag = (normalTag) => {
-    return normalTag.trim().replaceAll(' ', '_');
+    return normalTag.trim().toLowerCase().replaceAll(' ', '_');
 };
 
 const normalVirtualTagToInputVirtualTag = (normalVirtualTag) => {
-    return `${normalVirtualTag.trim().replaceAll(' ', '_')}:`
+    return `${normalVirtualTag.trim().toLowerCase().replaceAll(' ', '_')}:`
 };
 
 const findPotentialVirtualTag = (input, existingTags) => {
