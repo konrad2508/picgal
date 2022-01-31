@@ -16,14 +16,14 @@ const CancelableModifiableTagList = ({ tagType, tagList, tagListState, onCancelM
                         className={styles.button}
                         onClick={switchStateAdd}
                     >
-                        <FaPlus/>
+                        <FaPlus className='fontAwesome'/>
                     </button>
                     <button 
                         className={styles.button}
                         disabled={normalTags === 0 ? true : false}
                         onClick={switchStateRemove}
                     >
-                        <FaRegTrashAlt/>
+                        <FaRegTrashAlt className='fontAwesome'/>
                     </button>
                 </div>
             </div>

@@ -18,7 +18,7 @@ const Metadata = ({ img, onSaveModifiedTagsClick }) => {
                         className={styles.button}
                         onClick={flipFavourite}
                     >
-                        {img.favourite ? <FaHeart/> : <FaRegHeart/>}
+                        {img.favourite ? <FaHeart className='fontAwesome'/> : <FaRegHeart className='fontAwesome'/>}
                     </button>
                 </div>
             </div>

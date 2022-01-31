@@ -8,7 +8,7 @@ const Favourites = ({ onSearchFavouritesClick }) => {
             <h3>Favourites</h3>
             <div className={styles.favouritesButtonContainer}>
                 <button className={styles.favouritesButton} onClick={onSearchFavouritesClick}>
-                    <FaArrowRight/>
+                    <FaArrowRight className='fontAwesome'/>
                 </button>
             </div>
         </div>

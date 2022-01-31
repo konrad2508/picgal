@@ -30,7 +30,7 @@ const ModifiableTag = ({ tag, tagListState, onRemoveTag, onCancelModification })
                 <li style={tagStyle}>{displayName}</li>
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} onClick={() => onRemoveTag(tag.name)}>
-                        <FaRegTrashAlt/>
+                        <FaRegTrashAlt className='fontAwesome'/>
                     </button>
                 </div>
             </div>
@@ -47,7 +47,7 @@ const ModifiableTag = ({ tag, tagListState, onRemoveTag, onCancelModification })
                 <li style={tagStyle}>{displayName}</li>
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} onClick={() => onCancelModification(tag.name, tag.type)}>
-                        <FaTimes/>
+                        <FaTimes className='fontAwesome'/>
                     </button>
                 </div>
             </div>
