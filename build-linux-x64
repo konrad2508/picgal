@@ -10,18 +10,18 @@ npm run build
 
 cd server
 
-pyinstaller --onefile --name picgal-server src/app.py
+pyinstaller --onefile -i NONE --name picgal-server src/app.py
 rm -rf build picgal-server.spec 
 
-pyinstaller --onefile --name picgal-sync-database src/sync_database.py
+pyinstaller --onefile -i NONE --name picgal-sync-database src/sync_database.py
 rm -rf build picgal-sync-database.spec
 
-pyinstaller --onefile --name picgal-rebuild-previews src/rebuild_previews.py
+pyinstaller --onefile -i NONE --name picgal-rebuild-previews src/rebuild_previews.py
 rm -rf build picgal-rebuild-previews.spec
 
-pyinstaller --onefile --name picgal-rebuild-samples src/rebuild_samples.py
+pyinstaller --onefile -i NONE --name picgal-rebuild-samples src/rebuild_samples.py
 rm -rf build picgal-rebuild-samples.spec
 
 cd ..
 
-npx electron-packager . Picgal --out=out/ --platform=linux --arch=x64 --ignore="(^/server/src*|^/server/requirements\.txt|^/node_modules/@.*|^/node_modules/\.cache|^/node_modules/\.package-lock\.json|^/\.gitignore|^/\.vscode|^/build-linux-x64|^/build-win32-x64\.bat|^/public*|^/previews*|^/samples*|^/database\.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App\.jsx|^/src/index\.jsx)"
+npx electron-packager . Picgal --out=out/ --platform=linux --arch=x64 --icon=./build/icon.png --ignore="(^/server/src*|^/server/requirements\.txt|^/node_modules/@.*|^/node_modules/\.cache|^/node_modules/\.package-lock\.json|^/\.gitignore|^/\.vscode|^/build-linux-x64|^/build-win32-x64\.bat|^/public*|^/previews*|^/samples*|^/database\.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App\.jsx|^/src/index\.jsx)"
