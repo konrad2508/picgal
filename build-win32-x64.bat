@@ -28,4 +28,4 @@ call del picgal-rebuild-samples.spec
 
 call cd ..
 
-call npx electron-packager . Picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --icon=./build/icon.png --ignore="(^/server/src*|^/server/requirements.txt|^/node_modules/@.*|^/node_modules/.cache|^/node_modules/.package-lock.json|^/.gitignore|^/.vscode|^/build-linux-x64|^/build-win32-x64.bat|^/public*|^/previews*|^/samples*|^/database.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App.jsx|^/src/index.jsx)"
+call npx electron-packager . Picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --icon=./build/icon.ico --ignore="(^/server/src*|^/server/requirements.txt|^/node_modules/@.*|^/node_modules/.cache|^/node_modules/.package-lock.json|^/.gitignore|^/.vscode|^/build-linux-x64|^/build-win32-x64.bat|^/public*|^/previews*|^/samples*|^/database.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App.jsx|^/src/index.jsx)"
