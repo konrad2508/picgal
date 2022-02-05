@@ -110,28 +110,6 @@ class ImageRepository(object):
 
         return count
 
-    def get_favourite_images(self, page):
-        with self.db.atomic():
-            images = (Image
-                        .select()
-                        .where(Image.favourite == True)
-                        .order_by(Image.created_time.desc())
-                        .paginate(page, paginate_by=config.COUNT_PER_PAGE))
-        
-        return images
-
-    def get_favourite_images_count(self):
-        with self.db.atomic():
-            count = (Image
-                        .select(fn.Count())
-                        .where(Image.favourite == True)
-                        .scalar())
-        
-        if count is None:
-            count = 0
-
-        return count
-
     def get_tags(self):
         with self.db.atomic():
             it = ImageTag.alias()
