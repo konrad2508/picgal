@@ -27,18 +27,6 @@ class ImageControllerService(object):
 
         return count
 
-    def get_favourite_infos(self, image_url, preview_url, sample_url, page):
-        images = self.repository.get_favourite_images(page)
-        images = [ self.converter.convert_image(img, loc_original=image_url, loc_preview=preview_url, loc_sample=sample_url) for img in images ]
-
-        return images
-
-    def get_favourite_infos_count(self):
-        count = self.repository.get_favourite_images_count()
-        count = self.converter.convert_count(count)
-
-        return count
-
     def get_tags(self):
         normal_tags = self.repository.get_tags()
         normal_tags = [ self.converter.convert_tags(normal_tag) for normal_tag in normal_tags ]

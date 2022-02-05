@@ -166,21 +166,25 @@ const useAppState = () => {
             case Command.CLICK_FAVOURITES: {
                 const cmd = () => (
                     () => {
+                        const favouriteQuery = 'favourite:yes';
+
+                        const urlFormattedQuery = queryService.inputQueryToUrlQuery(favouriteQuery);
+
                         requestService
-                            .getFavouriteImagesStats()
+                            .getImagesStats(urlFormattedQuery)
                             .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
-        
+
                         requestService
-                            .getFavouriteImages(1)
+                            .getImages(urlFormattedQuery, 1)
                             .then(images => setImagesToShow(images));
-        
+
                         setAppState(AppState.BROWSING);
-                        setUsedQuery('Favourites');
+                        setUsedQuery(favouriteQuery);
                         setQuery('');
                         setCurrentPage(1);
                     }
                 )();
-        
+
                 cmd();
                 setHistory([...history, cmd]);
 

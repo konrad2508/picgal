@@ -33,18 +33,6 @@ const modifyImage = async (id, modifications) => {
     return data;
 };
 
-const getFavouriteImages = async (page) => {
-    const { data } = await axios.get(`${BASE_URL}/info/favourite?page=${page}`)
-
-    return data;
-};
-
-const getFavouriteImagesStats = async () => {
-    const { data } = await axios.get(`${BASE_URL}/info/favourite/count`)
-
-    return data;
-};
-
 const getTags = async () => {
     const { data } = await axios.get(`${BASE_URL}/tag`)
 
@@ -57,8 +45,6 @@ const requestService = {
     getImages,
     getImagesStats, 
     modifyImage,
-    getFavouriteImages,
-    getFavouriteImagesStats,
     getTags
 };
 export default requestService;
