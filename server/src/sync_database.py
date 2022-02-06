@@ -4,9 +4,9 @@ import config
 from PIL import Image as Img
 from peewee import DoesNotExist
 from models.base_model import db
-from models.image import Image
-from models.tag import Tag
-from models.image_tag import ImageTag
+from models.image.image import Image
+from models.image.tag import Tag
+from models.image.image_tag import ImageTag
 from enums.tag_types import TAG_TYPE
 
 def is_animated(image):

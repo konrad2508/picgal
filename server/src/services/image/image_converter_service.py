@@ -4,7 +4,7 @@ import playhouse.shortcuts
 import config
 from enums.tag_types import TAG_TYPE
 
-class ConverterService(object):
+class ImageConverterService(object):
     def __init__(self, virtual_tag_repository):
         self.virtual_tag_repository = virtual_tag_repository
 

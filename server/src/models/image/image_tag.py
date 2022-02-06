@@ -1,7 +1,7 @@
 import peewee
 from models.base_model import BaseModel
-from models.image import Image
-from models.tag import Tag
+from models.image.image import Image
+from models.image.tag import Tag
 
 class ImageTag(BaseModel):
     image_id = peewee.ForeignKeyField(Image)
