@@ -1,5 +1,5 @@
-from models.virtual_tag import VirtualTag
-from models.image import Image
+from models.image.virtual_tag import VirtualTag
+from models.image.image import Image
 
 def generate_virtual_tags():
     tags = [

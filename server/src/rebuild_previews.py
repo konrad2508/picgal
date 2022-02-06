@@ -3,7 +3,7 @@ import os
 import config
 from PIL import Image as Img
 from models.base_model import db
-from models.image import Image
+from models.image.image import Image
 
 def is_animated(image):
     try:
