@@ -62,18 +62,20 @@ const ModifiableSavedQueriesList = ({ onClickExitEdit,
                 </div>
             </div>
 
-            <div className={styles.savedQueriesContainer}>
-                { modifiableSavedQueriesListState.addingSavedQuery && renderAddingSavedQuery() }
+            <div className={styles.savedQueriesOuterContainer}>
+                <div className={styles.savedQueriesInnerContainer}>
+                    { modifiableSavedQueriesListState.addingSavedQuery && renderAddingSavedQuery() }
 
-                <StubFavourites/>
-                
-                { savedQueries.map((e) => <ModifiableSavedQuery
-                    key={e.id} savedQuery={e}
-                    onModifySavedQuery={onModifySavedQuery}
-                    onDeleteSavedQuery={onDeleteSavedQuery}
-                    existingTags={existingTags}
-                    canUseSavedQueryName={canUseSavedQueryName}
-                />)}
+                    <StubFavourites/>
+
+                    { savedQueries.map((e) => <ModifiableSavedQuery
+                        key={e.id} savedQuery={e}
+                        onModifySavedQuery={onModifySavedQuery}
+                        onDeleteSavedQuery={onDeleteSavedQuery}
+                        existingTags={existingTags}
+                        canUseSavedQueryName={canUseSavedQueryName}
+                    />)}
+                </div>
             </div>
         </>
     );

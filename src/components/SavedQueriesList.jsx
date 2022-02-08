@@ -31,9 +31,11 @@ const SavedQueriesList = ({ onSearchFavouritesClick,
 
     const renderSavedQueries = () => {
         return (
-            <div className={styles.savedQueriesContainer}>
-                <SavedQuery savedQueryName={'Favourites'} onClickSavedQuery={executeSearchFavourites}/>
-                { savedQueries.map((e) => <SavedQuery key={e.id} savedQueryName={e.name} onClickSavedQuery={() => executeSavedQuery(e)}/>)}
+            <div className={styles.savedQueriesOuterContainer}>
+                <div className={styles.savedQueriesInnerContainer}>
+                    <SavedQuery savedQueryName={'Favourites'} onClickSavedQuery={executeSearchFavourites}/>
+                    { savedQueries.map((e) => <SavedQuery key={e.id} savedQueryName={e.name} onClickSavedQuery={() => executeSavedQuery(e)}/>)}
+                </div>
             </div>
         );
     };

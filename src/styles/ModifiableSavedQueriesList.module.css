@@ -12,7 +12,12 @@
     height: 100%;
 }
 
-.savedQueriesContainer {
+.savedQueriesOuterContainer {
+    width: 245px;
     overflow: auto;
     max-height: 300px;
+}
+
+.savedQueriesInnerContainer {
+    width: 230px;
 }
