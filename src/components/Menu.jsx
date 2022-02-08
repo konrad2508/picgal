@@ -14,7 +14,12 @@ const Menu = ({ sendQuery,
                 onClickTag,
                 onSaveModifiedTagsClick,
                 onSearchFavouritesClick,
-                existingTags }) => {
+                existingTags,
+                savedQueries,
+                onClickSavedQuery,
+                onModifySavedQuery,
+                onDeleteSavedQuery,
+                onAddSavedQuery }) => {
 
     const renderImageInfo = () => {
         const img = imagesToShow[0];
@@ -30,7 +35,7 @@ const Menu = ({ sendQuery,
                 <Metadata img={img} onSaveModifiedTagsClick={onSaveModifiedTagsClick}/>
             </>
         )
-    }
+    };
 
     return (
         <div className={styles.container}>
@@ -42,6 +47,11 @@ const Menu = ({ sendQuery,
                 onSearchFavouritesClick={onSearchFavouritesClick}
                 appState={appState}
                 existingTags={existingTags}
+                savedQueries={savedQueries}
+                onClickSavedQuery={onClickSavedQuery}
+                onModifySavedQuery={onModifySavedQuery}
+                onDeleteSavedQuery={onDeleteSavedQuery}
+                onAddSavedQuery={onAddSavedQuery}
             />
             { appState === AppState.PREVIEW && renderImageInfo() }
         </div>

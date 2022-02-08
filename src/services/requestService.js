@@ -28,14 +28,38 @@ const getImagesStats = async (query) => {
 };
 
 const modifyImage = async (id, modifications) => {
-    const { data } = await axios.put(`${BASE_URL}/info/${id}`, modifications)
+    const { data } = await axios.put(`${BASE_URL}/info/${id}`, modifications);
 
     return data;
 };
 
 const getTags = async () => {
-    const { data } = await axios.get(`${BASE_URL}/tag`)
+    const { data } = await axios.get(`${BASE_URL}/tag`);
 
+    return data;
+};
+
+const getSavedQueries = async () => {
+    const { data } = await axios.get(`${BASE_URL}/query`);
+
+    return data;
+};
+
+const modifySavedQuery = async (id, modifications) => {
+    const { data } = await axios.put(`${BASE_URL}/query/${id}`, modifications);
+
+    return data;
+};
+
+const deleteSavedQuery = async (id) => {
+    const { data } = await axios.delete(`${BASE_URL}/query/${id}`);
+
+    return data;
+};
+
+const createSavedQuery = async (newSavedQuery) => {
+    const { data } = await axios.post(`${BASE_URL}/query`, newSavedQuery);
+    
     return data;
 };
 
@@ -45,6 +69,10 @@ const requestService = {
     getImages,
     getImagesStats, 
     modifyImage,
-    getTags
+    getTags,
+    getSavedQueries,
+    modifySavedQuery,
+    deleteSavedQuery,
+    createSavedQuery
 };
 export default requestService;

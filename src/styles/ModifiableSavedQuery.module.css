@@ -1,0 +1,13 @@
+.savedQueryContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.savedQueryButtonContainer {
+    margin-left: auto;
+    margin-right: 0px;
+}
+
+.savedQueryButton {
+    height: 100%;
+}

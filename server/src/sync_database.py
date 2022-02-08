@@ -7,6 +7,7 @@ from models.base_model import db
 from models.image.image import Image
 from models.image.tag import Tag
 from models.image.image_tag import ImageTag
+from models.query.query import Query
 from enums.tag_types import TAG_TYPE
 
 def is_animated(image):
@@ -55,7 +56,7 @@ SAMPLE_SIZE = config.SAMPLE_SIZE
 
 ROOT = config.PICTURES_ROOT
 
-db.create_tables([Image, Tag, ImageTag], safe=True)
+db.create_tables([Image, Tag, ImageTag, Query], safe=True)
 
 with db.atomic():
     # syncing root

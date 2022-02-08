@@ -1,7 +1,7 @@
-import styles from '../styles/NavBar.module.css';
+import styles from '../styles/Navigation.module.css';
 import React from 'react';
 import SearchBar from './SearchBar';
-import Favourites from './Favourites';
+import SavedQueriesList from './SavedQueriesList';
 
 const Navigation = ({   query,
                         sendQuery,
@@ -9,7 +9,13 @@ const Navigation = ({   query,
                         handleQueryChange,
                         onSearchFavouritesClick,
                         appState,
-                        existingTags }) => {
+                        existingTags,
+                        savedQueries,
+                        onClickSavedQuery,
+                        onModifySavedQuery,
+                        onDeleteSavedQuery,
+                        onAddSavedQuery }) => {
+    
     return (
         <div className={styles.container}>
             <h2>Navigate</h2>
@@ -21,7 +27,15 @@ const Navigation = ({   query,
                 handleQueryChange={handleQueryChange}
                 existingTags={existingTags}
             />
-            <Favourites onSearchFavouritesClick={onSearchFavouritesClick}/>
+            <SavedQueriesList
+                onSearchFavouritesClick={onSearchFavouritesClick}
+                savedQueries={savedQueries}
+                onClickSavedQuery={onClickSavedQuery}
+                onModifySavedQuery={onModifySavedQuery}
+                onDeleteSavedQuery={onDeleteSavedQuery}
+                onAddSavedQuery={onAddSavedQuery}
+                existingTags={existingTags}
+            />
         </div>
     );
 };

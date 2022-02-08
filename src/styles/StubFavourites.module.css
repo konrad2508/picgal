@@ -1,0 +1,12 @@
+.stubFavouritesContainer {
+    display: flex;
+}
+
+.stubFavouritesButtonContainer {
+    margin-left: auto;
+    margin-right: 0px;
+}
+
+.stubFavouritesButton {
+    height: 100%;
+}

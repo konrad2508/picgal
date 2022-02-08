@@ -1,13 +1,9 @@
-.favouritesContainer {
+.savedQueryContainer {
     display: flex;
     flex-direction: row;
 }
 
-.favouritesButtonContainer {
+.savedQueryButtonContainer {
     margin-left: auto;
     margin-right: 0px;
-}
-
-.favouritesButton {
-    height: 100%;
 }

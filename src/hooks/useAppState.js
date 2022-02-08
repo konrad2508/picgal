@@ -12,6 +12,7 @@ const useAppState = () => {
     const [currentPage, setCurrentPage] = React.useState(1);
     const [maxPage, setMaxPage] = React.useState(1);
     const [existingTags, setExistingTags] = React.useState([]);
+    const [savedQueries, setSavedQueries] = React.useState([]);
 
     const clearState = () => {
         setQuery('');
@@ -27,6 +28,10 @@ const useAppState = () => {
         requestService
             .getTags()
             .then(tags => setExistingTags(tags));
+        
+        requestService
+            .getSavedQueries()
+            .then(queries => setSavedQueries(queries));
     }, []);
 
     const switchState = (command, args) => {
@@ -191,12 +196,84 @@ const useAppState = () => {
                 break;
             }
 
+            case Command.CLICK_SAVED_QUERY: {
+                const { savedQuery } = args;
+
+                const cmd = () => (
+                    (query) => {
+                        const urlFormattedQuery = queryService.inputQueryToUrlQuery(query);
+
+                        requestService
+                            .getImagesStats(urlFormattedQuery)
+                            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+
+                        requestService
+                            .getImages(urlFormattedQuery, 1)
+                            .then(images => setImagesToShow(images));
+
+                        setAppState(AppState.BROWSING);
+                        setUsedQuery(query);
+                        setQuery('');
+                        setCurrentPage(1);
+                    }
+                )(savedQuery.query);
+                
+                cmd();
+                setHistory([...history, cmd]);
+
+                break;
+            }
+
+            case Command.MODIFY_SAVED_QUERY: {
+                const { id, modifications } = args;
+
+                requestService
+                    .modifySavedQuery(id, modifications)
+                    .then(modifiedSavedQuery => {
+                        const newSavedQueries = [...savedQueries];
+                        
+                        const idx = newSavedQueries.findIndex((e) => e.id === id);
+                        newSavedQueries[idx] = modifiedSavedQuery;
+                        
+                        setSavedQueries(newSavedQueries);
+                    });
+
+                break;
+            }
+
+            case Command.DELETE_SAVED_QUERY: {
+                const { id } = args;
+
+                requestService
+                    .deleteSavedQuery(id)
+                    .then((_) => {
+                        const newSavedQueries = [...savedQueries];
+
+                        const idx = newSavedQueries.findIndex((e) => e.id === id);
+                        newSavedQueries.splice(idx, 1);
+
+                        setSavedQueries(newSavedQueries);
+                    });
+
+                break;
+            }
+            
+            case Command.ADD_SAVED_QUERY: {
+                const { newSavedQuery } = args;
+
+                requestService
+                    .createSavedQuery(newSavedQuery)
+                    .then((createdSavedQuery) => setSavedQueries([...savedQueries, createdSavedQuery]));
+
+                break;
+            }
+
             default: {}
         }        
     };
 
     return {
-        appState: { query, imagesToShow, appState, usedQuery, currentPage, maxPage, history, existingTags },
+        appState: { query, imagesToShow, appState, usedQuery, currentPage, maxPage, history, existingTags, savedQueries },
         switchState
     };
 };
