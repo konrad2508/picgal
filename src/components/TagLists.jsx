@@ -9,7 +9,7 @@ const TagLists = ({ img, onClickTag, onSaveModifiedTagsClick, existingTags }) =>
     const { tagListsState, setTagListsState } = useTagListsState();
 
     const onModificationsChange  = (op, element) => setTagListsState(TagListsCommand.ADD_MODIFICATION, { op, element });
-    const changeModificationMode = (mode)        => setTagListsState(TagListsCommand.SWITCH_MODE,      { id: img.id, onSaveModifiedTagsClick, mode });
+    const changeModificationMode = (mode)        => setTagListsState(TagListsCommand.SWITCH_MODE, { id: img.id, onSaveModifiedTagsClick, mode });
 
     return (
         <>

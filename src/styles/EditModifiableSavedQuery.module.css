@@ -1,0 +1,23 @@
+.savedQueryContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.formContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.nameInput {
+    width: 100%;
+}
+
+.buttonContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.button {
+    height: 100%;
+}

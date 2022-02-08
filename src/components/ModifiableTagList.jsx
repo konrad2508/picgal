@@ -13,10 +13,10 @@ const ModifiableTagList = ({ tagType, tags, onModificationsChange, existingTags 
     const switchStateNormal    = ()          => setModifiableTagListState(ModifiableTagListCommand.SWITCH_STATE, { state: TagListState.NORMAL });
     const switchStateAdd       = ()          => setModifiableTagListState(ModifiableTagListCommand.SWITCH_STATE, { state: TagListState.ADD });
     const switchStateRemove    = ()          => setModifiableTagListState(ModifiableTagListCommand.SWITCH_STATE, { state: TagListState.REMOVE });
-    const onAddTag             = (event)     => setModifiableTagListState(ModifiableTagListCommand.ADD_TAG,      { event, tagType, onModificationsChange, existingTags });
+    const onAddTag             = (event)     => setModifiableTagListState(ModifiableTagListCommand.ADD_TAG, { event, tagType, onModificationsChange, existingTags });
     const onInputChange        = (event)     => setModifiableTagListState(ModifiableTagListCommand.INPUT_CHANGE, { event });
-    const onRemoveTag          = (tag)       => setModifiableTagListState(ModifiableTagListCommand.REMOVE_TAG,   { tag, tagType, onModificationsChange });
-    const onCancelModification = (tag, type) => setModifiableTagListState(ModifiableTagListCommand.CANCEL,       { tag, type, tagType, onModificationsChange });
+    const onRemoveTag          = (tag)       => setModifiableTagListState(ModifiableTagListCommand.REMOVE_TAG, { tag, tagType, onModificationsChange });
+    const onCancelModification = (tag, type) => setModifiableTagListState(ModifiableTagListCommand.CANCEL, { tag, type, tagType, onModificationsChange });
 
     const filterExistingTags = (tagType) => {
         if (tagType === TagType.CHARACTERS) {
