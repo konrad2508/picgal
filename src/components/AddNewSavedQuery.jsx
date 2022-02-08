@@ -14,11 +14,13 @@ const AddNewSavedQuery = ({ inputNewName,
         <div className={styles.container}>
             <div className={styles.formContainer}>
                 <input className={styles.nameInput} value={inputNewName} onInput={onInputNewName}/>
-                <AutocompleteQuery
-                    query={inputNewQuery}
-                    handleQueryChange={onInputNewQuery}
-                    existingTags={existingTags}
-                />
+                <div className={styles.queryInput}>
+                    <AutocompleteQuery
+                        query={inputNewQuery}
+                        handleQueryChange={onInputNewQuery}
+                        existingTags={existingTags}
+                    />
+                </div>
             </div>
             <div className={styles.buttonContainer}>
                 <button className={styles.button} onClick={onClickAddNewSavedQuery}>

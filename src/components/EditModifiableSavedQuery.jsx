@@ -14,11 +14,13 @@ const EditModifiableSavedQuery = ({ inputName,
         <div className={styles.savedQueryContainer}>
             <div className={styles.formContainer}>
                 <input className={styles.nameInput} value={inputName} onInput={onInputName}/>
-                <AutocompleteQuery
-                    query={inputQuery}
-                    handleQueryChange={onInputQuery}
-                    existingTags={existingTags}
-                />
+                <div className={styles.queryInput}>
+                    <AutocompleteQuery
+                        query={inputQuery}
+                        handleQueryChange={onInputQuery}
+                        existingTags={existingTags}
+                    />
+                </div>
             </div>
             <div className={styles.buttonContainer}>
                 <button className={styles.button} onClick={onClickModifyQuery}>

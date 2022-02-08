@@ -89,18 +89,18 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
 
     const renderSuggestions = () => {
         return (
-            <>
+            <div className={styles.fixedContainer}>
                 { getSuggestions().map((e, i) => (
                     <div key={i} onClick={() => handleSuggestionClick(e)} className={styles.suggestionBox}>
                         <p className={styles.suggestion}>{e.name}</p>
                     </div>
                 ))}
-            </>
+            </div>
         );
     };
 
     return (
-        <div ref={autocompleteState.wrapperRef}>
+        <div className={styles.container} ref={autocompleteState.wrapperRef}>
             <input
                 value={query}
                 onChange={handleQueryChange}
@@ -110,7 +110,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             { autocompleteState.display && (
                 <div className={styles.suggestionsOuterContainer}>
                     <div className={styles.suggestionsInnerContainer}>
-                    { renderSuggestions() }
+                        { renderSuggestions() }
                     </div>
                 </div>
             )}

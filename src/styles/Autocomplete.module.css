@@ -1,3 +1,7 @@
+.container {
+    width: inherit;
+}
+
 .input {
     box-sizing: border-box;
     width: 100%;
@@ -5,17 +9,12 @@
 
 .suggestionsOuterContainer {
     position: relative;
+    width: inherit;
 }
 
 .suggestionsInnerContainer {
     position: absolute;
-    top: 0;
-    z-index: 1;
-    width: 100%;
-    border-width: 0px 1px 1px 1px;
-    border-style: solid;
-    border-color: gray;
-    background-color: white;
+    width: inherit;
 }
 
 .suggestionBox {
@@ -26,4 +25,13 @@
 
 .suggestion {
     margin: 2px;
+}
+
+.fixedContainer {
+    position: fixed;
+    width: inherit;
+    border-width: 0px 1px 1px 1px;
+    border-style: solid;
+    border-color: gray;
+    background-color: white;
 }

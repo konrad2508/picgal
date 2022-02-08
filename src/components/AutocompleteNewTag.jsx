@@ -16,18 +16,18 @@ const AutocompleteNewTag = ({ query, handleQueryChange, existingTags }) => {
 
     const renderSuggestions = () => {
         return (
-            <>
+            <div className={styles.fixedContainer}>
                 { existingTags.filter(e => e.name.toLowerCase().startsWith(query) && query).map((e, i) => (
                     <div key={i} onClick={() => addSuggestion(e)} className={styles.suggestionBox}>
                         <p className={styles.suggestion}>{e.name}</p>
                     </div>
                 ))}
-            </>
+            </div>
         );
     };
 
     return (
-        <div ref={autocompleteState.wrapperRef}>
+        <div className={styles.container} ref={autocompleteState.wrapperRef}>
             <input
                 value={query}
                 onChange={handleQueryChange}
