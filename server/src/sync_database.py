@@ -84,6 +84,9 @@ with db.atomic():
             if os.path.isfile(existing_picture.preview):
                 os.remove(existing_picture.preview)
             
+            if os.path.isfile(existing_picture.sample):
+                os.remove(existing_picture.sample)
+            
             ImageTag.delete().where(ImageTag.image_id == existing_picture.image_id).execute()
             existing_picture.delete_instance()
 
