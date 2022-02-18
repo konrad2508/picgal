@@ -1,11 +1,27 @@
-class ImageControllerService(object):
-    def __init__(self, repository, virtual_tag_repository, converter, path_resolver):
+from models.image.data.image_data import ImageData
+from models.image.data.count_data import CountData
+from models.image.data.tag_data import TagData
+from models.image.data.virtual_tag_data import VirtualTagData
+from models.image.request.image_modification_request import ImageModificationRequest
+from repositories.image_repository import ImageRepository
+from repositories.virtual_tag_repository import VirtualTagRepository
+from services.image.image_converter_service import ImageConverterService
+from services.path_resolver_service import PathResolverService
+
+
+class ImageControllerService:
+    def __init__(
+            self,
+            repository: ImageRepository,
+            virtual_tag_repository: VirtualTagRepository,
+            converter: ImageConverterService,
+            path_resolver: PathResolverService) -> None:
         self.repository = repository
         self.virtual_tag_repository = virtual_tag_repository
         self.converter = converter
         self.path_resolver = path_resolver
 
-    def get_infos(self, image_url, preview_url, sample_url, tags, page):
+    def get_infos(self, image_url: str, preview_url: str, sample_url: str, tags: str, page: int) -> list[ImageData]:
         normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
 
         images = self.repository.get_images(page, normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
@@ -13,13 +29,13 @@ class ImageControllerService(object):
 
         return images
 
-    def modify_info(self, image_url, preview_url, sample_url, id, modifications):
+    def modify_info(self, image_url: str, preview_url: str, sample_url: str, id: int, modifications: ImageModificationRequest) -> ImageData:
         image = self.repository.modify_image(id, modifications)
         image = self.converter.convert_image(image, loc_original=image_url, loc_preview=preview_url, loc_sample=sample_url)
 
         return image
 
-    def get_infos_count(self, tags):
+    def get_infos_count(self, tags: str) -> CountData:
         normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
 
         count = self.repository.get_images_count(normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
@@ -27,18 +43,18 @@ class ImageControllerService(object):
 
         return count
 
-    def get_tags(self):
+    def get_tags(self) -> list[TagData | VirtualTagData]:
         normal_tags = self.repository.get_tags()
         normal_tags = [ self.converter.convert_tags(normal_tag) for normal_tag in normal_tags ]
 
         virtual_tags = self.virtual_tag_repository.get_virtual_tags()
-        virtual_tags = [ self.converter.convert_virtual_tags(virtual_tag) for virtual_tag in virtual_tags ]
+        virtual_tags = [ self.converter.convert_virtual_tag(virtual_tag) for virtual_tag in virtual_tags ]
 
         tags = normal_tags + virtual_tags
 
         return tags
 
-    def get_image_path(self, id):
+    def get_image_path(self, id: int) -> str:
         image = self.repository.get_image(id)
 
         try:
@@ -47,7 +63,7 @@ class ImageControllerService(object):
         except AttributeError:
             raise FileNotFoundError()
 
-    def get_preview_path(self, id):
+    def get_preview_path(self, id: int) -> str:
         image = self.repository.get_image(id)
 
         try:
@@ -56,7 +72,7 @@ class ImageControllerService(object):
         except AttributeError:
             raise FileNotFoundError()
 
-    def get_sample_path(self, id):
+    def get_sample_path(self, id: int) -> str:
         image = self.repository.get_image(id)
 
         try:

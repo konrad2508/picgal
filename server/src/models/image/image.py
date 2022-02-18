@@ -1,5 +1,7 @@
 import peewee
+
 from models.base_model import BaseModel
+
 
 class Image(BaseModel):
     image_id = peewee.PrimaryKeyField()

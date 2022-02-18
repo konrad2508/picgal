@@ -1,7 +1,8 @@
 from models.image.virtual_tag import VirtualTag
 from models.image.image import Image
 
-def generate_virtual_tags():
+
+def generate_virtual_tags() -> list[VirtualTag]:
     tags = [
         (VirtualTag('orientation')
             .add_subtag('portrait', lambda: Image.height > Image.width)

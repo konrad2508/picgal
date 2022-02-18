@@ -1,17 +1,20 @@
-import shutil
 import os
-import config
+import shutil
 from PIL import Image as Img
+
+import config
 from models.base_model import db
 from models.image.image import Image
 
-def is_animated(image):
+
+def is_animated(image: Img.Image) -> bool:
     try:
         return image.is_animated
     except AttributeError:
         return False
 
-def thumbnail_animated(image, save_as):
+
+def thumbnail_animated(image: Img.Image, save_as: str) -> None:
     frames = []
     for frame in range(1, image.n_frames):
         image.seek(frame)
@@ -25,11 +28,13 @@ def thumbnail_animated(image, save_as):
         append_images=frames[1:],
         background = (0, 0, 0, 0))
 
-def thumbnail_static(image, save_as):
+
+def thumbnail_static(image: Img.Image, save_as: str) -> None:
     image.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
     image.save(save_as, 'WEBP')
 
-def make_thumbnail(image, save_as):
+
+def make_thumbnail(image: Img.Image, save_as: str) -> None:
     if is_animated(image):
         thumbnail_animated(image, save_as)
 

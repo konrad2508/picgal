@@ -1,23 +1,26 @@
 import json
 
-cfg = json.loads(open('../../config.json').read())
 
-HOST = cfg['host']
-PORT = cfg['port']
-ROUTE_PREFIX = cfg['routePrefix']
+with open('../../config.json') as cfg_file:
+    cfg_content = cfg_file.read()
+    cfg = json.loads(cfg_content)
 
-SEP = cfg['sep']
-HIGHRES = cfg['highres']
-ABSURDRES = cfg['absurdres']
+HOST: str = cfg['host']
+PORT: int = cfg['port']
+ROUTE_PREFIX: str = cfg['routePrefix']
 
-DATABASE_PATH = cfg['databasePath']
+SEP: str = cfg['sep']
+HIGHRES: int = cfg['highres']
+ABSURDRES: int = cfg['absurdres']
 
-PICTURES_ROOT = cfg['picturesRoot']
+DATABASE_PATH: str = cfg['databasePath']
 
-PREVIEWS_DIR = cfg['previewsDir']
-PREVIEW_SIZE = cfg['previewSize']
+PICTURES_ROOT: str = cfg['picturesRoot']
 
-SAMPLES_DIR = cfg['samplesDir']
-SAMPLE_SIZE = cfg['sampleSize']
+PREVIEWS_DIR: str = cfg['previewsDir']
+PREVIEW_SIZE: list[int] = cfg['previewSize']
 
-COUNT_PER_PAGE = cfg['countPerPage']
+SAMPLES_DIR: str = cfg['samplesDir']
+SAMPLE_SIZE: list[int] = cfg['sampleSize']
+
+COUNT_PER_PAGE: int = cfg['countPerPage']

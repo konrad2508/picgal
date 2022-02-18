@@ -1,22 +1,25 @@
 import glob
 import os
-import config
 from PIL import Image as Img
 from peewee import DoesNotExist
+
+import config
+from enums.tag_type import TagType
 from models.base_model import db
 from models.image.image import Image
 from models.image.tag import Tag
 from models.image.image_tag import ImageTag
 from models.query.query import Query
-from enums.tag_types import TAG_TYPE
 
-def is_animated(image):
+
+def is_animated(image: Img.Image) -> bool:
     try:
         return image.is_animated
     except AttributeError:
         return False
 
-def thumbnail_animated(image, save_as, size):
+
+def thumbnail_animated(image: Img.Image, save_as: str, size: list[int]) -> None:
     frames = []
     for frame in range(1, image.n_frames):
         image.seek(frame)
@@ -30,16 +33,19 @@ def thumbnail_animated(image, save_as, size):
         append_images=frames[1:],
         background = (0, 0, 0, 0))
 
-def thumbnail_static(image, save_as, size):
+
+def thumbnail_static(image: Img.Image, save_as: str, size: list[int]) -> None:
     image.thumbnail(size, Img.ANTIALIAS)
     image.save(save_as, 'WEBP')
 
-def make_thumbnail(image, save_as, size):
+
+def make_thumbnail(image: Img.Image, save_as: str, size: list[int]) -> None:
     if is_animated(image):
         thumbnail_animated(image, save_as, size)
 
     else:
         thumbnail_static(image, save_as, size)
+
 
 SEP = config.SEP
 HIGHRES = config.HIGHRES
@@ -161,7 +167,7 @@ with db.atomic():
             if source.lower() != 'none':
                 source_tag = {
                     'name': source.lower(),
-                    'type': TAG_TYPE['source']
+                    'type': TagType.SOURCE
                 }
 
                 src_tag_ref, _ = Tag.get_or_create(**source_tag)
@@ -170,7 +176,7 @@ with db.atomic():
             if character.lower() != 'none':
                 character_tag = {
                     'name': character.lower(),
-                    'type': TAG_TYPE['character']
+                    'type': TagType.CHARACTER
                 }
 
                 char_tag_ref, _ = Tag.get_or_create(**character_tag)
@@ -180,7 +186,7 @@ with db.atomic():
             if ABSURDRES > 0 and im_quality >= ABSURDRES:
                 meta_tag = {
                     'name': 'absurdres',
-                    'type': TAG_TYPE['meta']
+                    'type': TagType.META
                 }
 
                 meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
@@ -189,7 +195,7 @@ with db.atomic():
             elif HIGHRES > 0 and im_quality >= HIGHRES:
                 meta_tag = {
                     'name': 'highres',
-                    'type': TAG_TYPE['meta']
+                    'type': TagType.META
                 }
 
                 meta_tag_ref, _ = Tag.get_or_create(**meta_tag)

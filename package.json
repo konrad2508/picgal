@@ -1,6 +1,6 @@
 {
   "name": "picgal",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
@@ -38,6 +38,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.24.0",
+    "camelize": "^1.0.0",
     "concurrently": "^6.5.1",
     "electron": "^15.3.5",
     "electron-packager": "^15.4.0",
@@ -46,6 +47,7 @@
     "react-icons": "^4.3.1",
     "react-scripts": "4.0.3",
     "serve": "^13.0.2",
+    "snakeize": "^0.1.0",
     "web-vitals": "^1.1.2"
   },
   "dependencies": {

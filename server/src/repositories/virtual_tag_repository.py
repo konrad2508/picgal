@@ -1,23 +1,14 @@
-from datasources.virtual_tags import generate_virtual_tags
+from abc import ABC, abstractmethod
+from typing import Callable
 
-class VirtualTagRepository(object):
-    def __init__(self):
-        self.tags = generate_virtual_tags()
+from peewee import Expression
 
-    def get_virtual_tags(self):
-        return self.tags
+from models.image.virtual_tag import VirtualTag
 
-    def get_conditions(self, virtual_tags):
-        conditions = []
 
-        for virtual_tag in virtual_tags:
-            try:
-                virtual_tag_object = list(filter(lambda e: e.name == virtual_tag[0], self.tags))[0]
-                subtag_object = list(filter(lambda e: e.name == virtual_tag[1], virtual_tag_object.subtags))[0]
+class VirtualTagRepository(ABC):
+    @abstractmethod
+    def get_virtual_tags(self) -> list[VirtualTag]: ...
 
-                conditions.append(subtag_object.condition)
-            
-            except IndexError:
-                continue
-
-        return conditions
+    @abstractmethod
+    def get_conditions(self, virtual_tags: list[list[str]]) -> list[Callable[[], Expression]]: ...
