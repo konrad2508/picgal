@@ -1,27 +1,30 @@
 import flask
 from peewee import IntegrityError, DoesNotExist
-from repositories.query_repository import QueryRepository
+
+from models.query.request.query_request import QueryRequest
+from repositories.sqlite_query_repository import SqliteQueryRepository
 from services.query.query_converter_service import QueryConverterService
 from services.query.query_controller_service import QueryService
 
-def construct_blueprint(route_prefix):
+
+def construct_blueprint(route_prefix: str) -> flask.Blueprint:
     query_route = f'{route_prefix}/query'
 
-    query_repository = QueryRepository()
+    query_repository = SqliteQueryRepository()
     query_converter = QueryConverterService()
     query_service = QueryService(query_repository, query_converter)
 
     query_controller = flask.Blueprint('query', __name__)
 
     @query_controller.route(f'{query_route}', methods=['GET'])
-    def get_queries():
+    def get_queries() -> flask.Response:
         queries = query_service.get_queries()
 
         return flask.jsonify(queries)
-    
+
     @query_controller.route(f'{query_route}', methods=['POST'])
-    def post_query():
-        query = flask.request.get_json(force=True)
+    def post_query() -> flask.Response:
+        query = QueryRequest.from_json(flask.request.get_json(force=True))
 
         try:
             created_query = query_service.create_query(query)
@@ -32,8 +35,8 @@ def construct_blueprint(route_prefix):
             flask.abort(409)
 
     @query_controller.route(f'{query_route}/<id>', methods=['PUT'])
-    def put_query(id):
-        modifications = flask.request.get_json(force=True)
+    def put_query(id: int) -> flask.Response:
+        modifications = QueryRequest.from_json(flask.request.get_json(force=True))
 
         try:
             modified_query = query_service.modify_query(id, modifications)
@@ -44,7 +47,7 @@ def construct_blueprint(route_prefix):
             flask.abort(404)
 
     @query_controller.route(f'{query_route}/<id>', methods=['DELETE'])
-    def delete_query(id):
+    def delete_query(id: int) -> flask.Response:
         try:
             query_service.delete_query(id)
 

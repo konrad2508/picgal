@@ -1,20 +1,23 @@
 import flask
 from peewee import IntegrityError
-from repositories.image_repository import ImageRepository
-from repositories.virtual_tag_repository import VirtualTagRepository
+
+from models.image.request.image_modification_request import ImageModificationRequest
+from repositories.sqlite_image_repository import SqliteImageRepository
+from repositories.list_virtual_tag_repository import ListVirtualTagRepository
 from services.path_resolver_service import PathResolverService
 from services.image.image_converter_service import ImageConverterService
 from services.image.image_controller_service import ImageControllerService
 
-def construct_blueprint(route_prefix):
+
+def construct_blueprint(route_prefix: str) -> flask.Blueprint:
     info_route = f'{route_prefix}/info'
     tag_route = f'{route_prefix}/tag'
     image_route = f'{route_prefix}/image'
     preview_route = f'{route_prefix}/preview'
     sample_route = f'{route_prefix}/sample'
 
-    image_repository = ImageRepository()
-    virtual_tag_repository = VirtualTagRepository()
+    image_repository = SqliteImageRepository()
+    virtual_tag_repository = ListVirtualTagRepository()
     image_converter = ImageConverterService(virtual_tag_repository)
     path_resolver = PathResolverService()
     image_service = ImageControllerService(image_repository, virtual_tag_repository, image_converter, path_resolver)
@@ -22,7 +25,7 @@ def construct_blueprint(route_prefix):
     image_controller = flask.Blueprint('image', __name__)
 
     @image_controller.route(f'{info_route}', methods=['GET'])
-    def get_infos():
+    def get_infos() -> flask.Response:
         tags = flask.request.args.get('tags')
         page = flask.request.args.get('page', type=int, default=1)
 
@@ -31,8 +34,8 @@ def construct_blueprint(route_prefix):
         return flask.jsonify(info)
 
     @image_controller.route(f'{info_route}/<id>', methods=['PUT'])
-    def put_info(id):
-        modifications = flask.request.get_json(force=True)
+    def put_info(id: int) -> flask.Response:
+        modifications = ImageModificationRequest.from_json(flask.request.get_json(force=True))
 
         try:
             modified_image = image_service.modify_info(image_route, preview_route, sample_route, id, modifications)
@@ -43,7 +46,7 @@ def construct_blueprint(route_prefix):
             flask.abort(409)
 
     @image_controller.route(f'{info_route}/count', methods=['GET'])
-    def get_infos_count():
+    def get_infos_count() -> flask.Response:
         tags = flask.request.args.get('tags')
 
         count = image_service.get_infos_count(tags)
@@ -51,13 +54,13 @@ def construct_blueprint(route_prefix):
         return flask.jsonify(count)
 
     @image_controller.route(f'{tag_route}', methods=['GET'])
-    def get_tags():
+    def get_tags() -> flask.Response:
         tags = image_service.get_tags()
 
         return flask.jsonify(tags)
 
     @image_controller.route(f'{image_route}/<id>', methods=['GET'])
-    def get_image(id):
+    def get_image(id: int) -> flask.Response:
         try:
             image_path = image_service.get_image_path(id)
 
@@ -67,7 +70,7 @@ def construct_blueprint(route_prefix):
             flask.abort(404)
 
     @image_controller.route(f'{preview_route}/<id>', methods=['GET'])
-    def get_preview(id):
+    def get_preview(id: int) -> flask.Response:
         try:
             preview_path = image_service.get_preview_path(id)
 
@@ -77,7 +80,7 @@ def construct_blueprint(route_prefix):
             flask.abort(404)
 
     @image_controller.route(f'{sample_route}/<id>', methods=['GET'])
-    def get_sample(id):
+    def get_sample(id: int) -> flask.Response:
         try:
             sample_path = image_service.get_sample_path(id)
 

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import camelize from 'camelize';
+import snakeize from 'snakeize';
 import networkService from './networkService';
 
 const BASE_URL = networkService.getURLToBackend('/api/v1');
@@ -6,61 +8,61 @@ const BASE_URL = networkService.getURLToBackend('/api/v1');
 const getAllImages = async () => {
     const { data } = await axios.get(`${BASE_URL}/info`);
     
-    return data;
+    return camelize(data);
 };
 
 const getAllImagesStats = async () => {
     const { data } = await axios.get(`${BASE_URL}/info/count`);
 
-    return data;
+    return camelize(data);
 };
 
 const getImages = async (query, page) => {
     const { data } = await axios.get(`${BASE_URL}/info?page=${page}&tags=${query}`);
 
-    return data;
+    return camelize(data);
 };
 
 const getImagesStats = async (query) => {
     const { data } = await axios.get(`${BASE_URL}/info/count?tags=${query}`);
 
-    return data;
+    return camelize(data);
 };
 
 const modifyImage = async (id, modifications) => {
-    const { data } = await axios.put(`${BASE_URL}/info/${id}`, modifications);
+    const { data } = await axios.put(`${BASE_URL}/info/${id}`, snakeize(modifications));
 
-    return data;
+    return camelize(data);
 };
 
 const getTags = async () => {
     const { data } = await axios.get(`${BASE_URL}/tag`);
 
-    return data;
+    return camelize(data);
 };
 
 const getSavedQueries = async () => {
     const { data } = await axios.get(`${BASE_URL}/query`);
 
-    return data;
+    return camelize(data);
 };
 
 const modifySavedQuery = async (id, modifications) => {
-    const { data } = await axios.put(`${BASE_URL}/query/${id}`, modifications);
+    const { data } = await axios.put(`${BASE_URL}/query/${id}`, snakeize(modifications));
 
-    return data;
+    return camelize(data);
 };
 
 const deleteSavedQuery = async (id) => {
     const { data } = await axios.delete(`${BASE_URL}/query/${id}`);
 
-    return data;
+    return camelize(data);
 };
 
 const createSavedQuery = async (newSavedQuery) => {
-    const { data } = await axios.post(`${BASE_URL}/query`, newSavedQuery);
+    const { data } = await axios.post(`${BASE_URL}/query`, snakeize(newSavedQuery));
     
-    return data;
+    return camelize(data);
 };
 
 const requestService = {

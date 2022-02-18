@@ -1,9 +1,11 @@
 import flask
 import waitress
+from flask_cors import CORS
+
 import config
 import controllers.image_controller as image
 import controllers.query_controller as query
-from flask_cors import CORS
+
 
 app = flask.Flask(__name__)
 CORS(app)

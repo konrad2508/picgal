@@ -1,9 +1,11 @@
 import sys
-import config
 from pathlib import Path
 
-class PathResolverService(object):
-    def resolve_path(self, path):
+import config
+
+
+class PathResolverService:
+    def resolve_path(self, path: str) -> str:
         if getattr(sys, 'frozen', False) and not Path(path).is_absolute():
             basedir = sys.executable
             last_dir = basedir.rfind(config.SEP)
