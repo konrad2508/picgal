@@ -20,7 +20,7 @@ from repositories.virtual_tag_repository import VirtualTagRepository
 
 
 class ImageConverterService(object):
-    def __init__(self, virtual_tag_repository: VirtualTagRepository):
+    def __init__(self, virtual_tag_repository: VirtualTagRepository) -> None:
         self.virtual_tag_repository = virtual_tag_repository
 
     def convert_image(self, image: Image, loc_original: str = None, loc_preview: str = None, loc_sample: str = None) -> ImageData:
