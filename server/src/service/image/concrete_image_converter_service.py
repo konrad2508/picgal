@@ -9,7 +9,7 @@ import config
 from model.image.enum.tag_type import TagType
 from model.image.enum.tag_category import TagCategory
 from model.image.entity.image import Image
-from model.image.entity.tag import Tag
+from model.image.object.tag_with_count import TagWithCount
 from model.image.entity.virtual_tag import VirtualTag
 from model.image.data.image_data import ImageData
 from model.image.data.count_data import CountData
@@ -56,7 +56,7 @@ class ConcreteImageConverterService(ImageConverterService):
 
         return converted_count
 
-    def convert_tags(self, tag: Tag) -> TagData:
+    def convert_tags(self, tag: TagWithCount) -> TagData:
         converted_tag = TagData(
             id=tag.tag_id,
             name=tag.name.lower(),

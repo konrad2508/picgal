@@ -1,4 +1,4 @@
-from peewee import DoesNotExist, ModelSelect
+from peewee import DoesNotExist
 
 from model.base_model import db
 from model.query.entity.query import Query
@@ -10,7 +10,7 @@ class SqliteQueryRepository(QueryRepository):
     def __init__(self) -> None:
         self.db = db
 
-    def get_queries(self) -> ModelSelect:
+    def get_queries(self) -> list[Query]:
         with self.db.atomic():
             queries = Query.select()
 

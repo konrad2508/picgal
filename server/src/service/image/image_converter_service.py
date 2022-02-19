@@ -4,7 +4,7 @@ from typing import Callable
 from peewee import Expression
 
 from model.image.entity.image import Image
-from model.image.entity.tag import Tag
+from model.image.object.tag_with_count import TagWithCount
 from model.image.entity.virtual_tag import VirtualTag
 from model.image.data.image_data import ImageData
 from model.image.data.count_data import CountData
@@ -20,7 +20,7 @@ class ImageConverterService(ABC):
     def convert_count(self, count: int) -> CountData: ...
 
     @abstractmethod
-    def convert_tags(self, tag: Tag) -> TagData: ...
+    def convert_tags(self, tag: TagWithCount) -> TagData: ...
 
     @abstractmethod
     def convert_virtual_tag(self, virtual_tag: VirtualTag) -> VirtualTagData: ...

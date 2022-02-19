@@ -1,6 +1,6 @@
 from typing import Callable
 
-from peewee import DoesNotExist, fn, ModelSelect, Expression
+from peewee import DoesNotExist, fn, Expression
 
 import config
 from model.image.enum.tag_type import TagType
@@ -8,6 +8,7 @@ from model.base_model import db
 from model.image.entity.image import Image
 from model.image.entity.tag import Tag
 from model.image.entity.image_tag import ImageTag
+from model.image.object.tag_with_count import TagWithCount
 from model.image.request.image_modification_request import ImageModificationRequest
 from repository.image.image_repository import ImageRepository
 
@@ -59,7 +60,7 @@ class SqliteImageRepository(ImageRepository):
 
         return modified_image
 
-    def get_images(self, page: int, normal_tags: list[str] = None, virtual_tags: list[Callable[[], Expression]] = None) -> ModelSelect:
+    def get_images(self, page: int, normal_tags: list[str] = None, virtual_tags: list[Callable[[], Expression]] = None) -> list[Image]:
         with self.db.atomic():
             images = Image.select()
 
@@ -104,7 +105,7 @@ class SqliteImageRepository(ImageRepository):
 
         return count
 
-    def get_tags(self) -> ModelSelect:
+    def get_tags(self) -> list[TagWithCount]:
         with self.db.atomic():
             it = ImageTag.alias()
             tag_count = (it
