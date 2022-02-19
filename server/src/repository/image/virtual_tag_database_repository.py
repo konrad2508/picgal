@@ -6,7 +6,7 @@ from peewee import Expression
 from model.image.entity.virtual_tag import VirtualTag
 
 
-class VirtualTagRepository(ABC):
+class VirtualTagDatabaseRepository(ABC):
     @abstractmethod
     def get_virtual_tags(self) -> list[VirtualTag]: ...
 

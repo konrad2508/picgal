@@ -26,4 +26,8 @@ class ImageConverterService(ABC):
     def convert_virtual_tag(self, virtual_tag: VirtualTag) -> VirtualTagData: ...
 
     @abstractmethod
-    def convert_tagstring(self, tagstring: str | None = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]: ...
+    def convert_tagstring(
+            self,
+            get_conditions: Callable[[list[str]], list[Callable[[], Expression]]],
+            tagstring: str | None = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]:
+        ...

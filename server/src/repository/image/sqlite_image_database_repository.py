@@ -10,10 +10,10 @@ from model.image.entity.tag import Tag
 from model.image.entity.image_tag import ImageTag
 from model.image.object.tag_with_count import TagWithCount
 from model.image.request.image_modification_request import ImageModificationRequest
-from repository.image.image_repository import ImageRepository
+from repository.image.image_database_repository import ImageDatabaseRepository
 
 
-class SqliteImageRepository(ImageRepository):
+class SqliteImageDatabaseRepository(ImageDatabaseRepository):
     def __init__(self) -> None:
         self.db = db
 
