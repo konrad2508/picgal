@@ -1,14 +1,12 @@
 from abc import ABC, abstractmethod
 
-from peewee import ModelSelect
-
 from model.query.entity.query import Query
 from model.query.request.query_request import QueryRequest
 
 
 class QueryRepository(ABC):
     @abstractmethod
-    def get_queries(self) -> ModelSelect: ...
+    def get_queries(self) -> list[Query]: ...
 
     @abstractmethod
     def create_query(self, query: QueryRequest) -> Query: ...
