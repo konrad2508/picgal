@@ -4,10 +4,10 @@ from peewee import Expression
 
 from datasource.virtual_tags import generate_virtual_tags
 from model.image.entity.virtual_tag import VirtualTag
-from repository.image.virtual_tag_repository import VirtualTagRepository
+from repository.image.virtual_tag_database_repository import VirtualTagDatabaseRepository
 
 
-class ListVirtualTagRepository(VirtualTagRepository):
+class ListVirtualTagDatabaseRepository(VirtualTagDatabaseRepository):
     def __init__(self) -> None:
         self.tags = generate_virtual_tags()
 
