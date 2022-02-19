@@ -22,7 +22,7 @@ class SqliteImageRepository(ImageRepository):
                 image = (Image.get_by_id(id))
         
         except DoesNotExist:
-            return {}
+            raise FileNotFoundError()
 
         return image
 

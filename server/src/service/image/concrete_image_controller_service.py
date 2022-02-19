@@ -58,26 +58,14 @@ class ConcreteImageControllerService(ImageControllerService):
     def get_image_path(self, id: int) -> str:
         image = self.repository.get_image(id)
 
-        try:
-            return self.path_resolver.resolve_path(image.file)
-
-        except AttributeError:
-            raise FileNotFoundError()
+        return self.path_resolver.resolve_path(image.file)
 
     def get_preview_path(self, id: int) -> str:
         image = self.repository.get_image(id)
 
-        try:
-            return self.path_resolver.resolve_path(image.preview)
-
-        except AttributeError:
-            raise FileNotFoundError()
+        return self.path_resolver.resolve_path(image.preview)
 
     def get_sample_path(self, id: int) -> str:
         image = self.repository.get_image(id)
 
-        try:
-            return self.path_resolver.resolve_path(image.sample)
-
-        except AttributeError:
-            raise FileNotFoundError()
+        return self.path_resolver.resolve_path(image.sample)
