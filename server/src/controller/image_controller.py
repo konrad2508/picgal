@@ -1,26 +1,18 @@
 import flask
 from peewee import IntegrityError
 
+from factory.controller_service_factory import ControllerServiceFactory
 from model.image.request.image_modification_request import ImageModificationRequest
-from repository.image.sqlite_image_repository import SqliteImageRepository
-from repository.image.list_virtual_tag_repository import ListVirtualTagRepository
-from service.path_resolver_service import PathResolverService
-from service.image.image_converter_service import ImageConverterService
-from service.image.image_controller_service import ImageControllerService
 
 
-def construct_blueprint(route_prefix: str) -> flask.Blueprint:
+def construct_blueprint(factory: ControllerServiceFactory, route_prefix: str) -> flask.Blueprint:
     info_route = f'{route_prefix}/info'
     tag_route = f'{route_prefix}/tag'
     image_route = f'{route_prefix}/image'
     preview_route = f'{route_prefix}/preview'
     sample_route = f'{route_prefix}/sample'
 
-    image_repository = SqliteImageRepository()
-    virtual_tag_repository = ListVirtualTagRepository()
-    image_converter = ImageConverterService(virtual_tag_repository)
-    path_resolver = PathResolverService()
-    image_service = ImageControllerService(image_repository, virtual_tag_repository, image_converter, path_resolver)
+    image_service = factory.get_image_service()
 
     image_controller = flask.Blueprint('image', __name__)
 
