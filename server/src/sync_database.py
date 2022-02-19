@@ -4,12 +4,12 @@ from PIL import Image as Img
 from peewee import DoesNotExist
 
 import config
-from enums.tag_type import TagType
-from models.base_model import db
-from models.image.image import Image
-from models.image.tag import Tag
-from models.image.image_tag import ImageTag
-from models.query.query import Query
+from model.image.enum.tag_type import TagType
+from model.base_model import db
+from model.image.entity.image import Image
+from model.image.entity.tag import Tag
+from model.image.entity.image_tag import ImageTag
+from model.query.entity.query import Query
 
 
 def is_animated(image: Img.Image) -> bool:
@@ -19,7 +19,7 @@ def is_animated(image: Img.Image) -> bool:
         return False
 
 
-def thumbnail_animated(image: Img.Image, save_as: str, size: list[int]) -> None:
+def thumbnail_animated(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
     frames = []
     for frame in range(1, image.n_frames):
         image.seek(frame)
@@ -34,12 +34,12 @@ def thumbnail_animated(image: Img.Image, save_as: str, size: list[int]) -> None:
         background = (0, 0, 0, 0))
 
 
-def thumbnail_static(image: Img.Image, save_as: str, size: list[int]) -> None:
+def thumbnail_static(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
     image.thumbnail(size, Img.ANTIALIAS)
     image.save(save_as, 'WEBP')
 
 
-def make_thumbnail(image: Img.Image, save_as: str, size: list[int]) -> None:
+def make_thumbnail(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
     if is_animated(image):
         thumbnail_animated(image, save_as, size)
 
