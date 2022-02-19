@@ -1,5 +1,5 @@
 import flask
-from peewee import IntegrityError
+from peewee import IntegrityError, DoesNotExist
 
 from factory.controller_service_factory import ControllerServiceFactory
 from model.image.request.image_modification_request import ImageModificationRequest
@@ -58,7 +58,7 @@ def construct_blueprint(factory: ControllerServiceFactory, route_prefix: str) ->
 
             return flask.send_file(image_path, mimetype='image/jpeg')
         
-        except FileNotFoundError:
+        except DoesNotExist:
             flask.abort(404)
 
     @image_controller.route(f'{preview_route}/<id>', methods=['GET'])
@@ -68,7 +68,7 @@ def construct_blueprint(factory: ControllerServiceFactory, route_prefix: str) ->
 
             return flask.send_file(preview_path, mimetype='image/jpeg')
         
-        except FileNotFoundError:
+        except DoesNotExist:
             flask.abort(404)
 
     @image_controller.route(f'{sample_route}/<id>', methods=['GET'])
@@ -78,7 +78,7 @@ def construct_blueprint(factory: ControllerServiceFactory, route_prefix: str) ->
 
             return flask.send_file(sample_path, mimetype='image/jpeg')
         
-        except FileNotFoundError:
+        except DoesNotExist:
             flask.abort(404)
 
     return image_controller
