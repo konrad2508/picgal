@@ -21,7 +21,7 @@ class ImageControllerService:
         self.converter = converter
         self.path_resolver = path_resolver
 
-    def get_infos(self, image_url: str, preview_url: str, sample_url: str, tags: str, page: int) -> list[ImageData]:
+    def get_infos(self, image_url: str, preview_url: str, sample_url: str, tags: str | None, page: int) -> list[ImageData]:
         normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
 
         images = self.repository.get_images(page, normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
@@ -35,7 +35,7 @@ class ImageControllerService:
 
         return image
 
-    def get_infos_count(self, tags: str) -> CountData:
+    def get_infos_count(self, tags: str | None) -> CountData:
         normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
 
         count = self.repository.get_images_count(normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)

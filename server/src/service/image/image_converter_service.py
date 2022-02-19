@@ -23,7 +23,7 @@ class ImageConverterService(object):
     def __init__(self, virtual_tag_repository: VirtualTagRepository) -> None:
         self.virtual_tag_repository = virtual_tag_repository
 
-    def convert_image(self, image: Image, loc_original: str = None, loc_preview: str = None, loc_sample: str = None) -> ImageData:
+    def convert_image(self, image: Image, loc_original: str | None = None, loc_preview: str | None = None, loc_sample: str | None = None) -> ImageData:
         dict_image = playhouse.shortcuts.model_to_dict(image, backrefs=True)
 
         tags = [ { 'name': t['tag_id']['name'], 'type': t['tag_id']['type'] } for t in dict_image['imagetag_set'] ]
@@ -75,7 +75,7 @@ class ImageConverterService(object):
 
         return converted_virtual_tag
 
-    def convert_tagstring(self, tagstring: str = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]:
+    def convert_tagstring(self, tagstring: str | None = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]:
         if not tagstring:
             return None, None
 
