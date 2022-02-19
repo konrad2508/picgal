@@ -3,8 +3,8 @@ import waitress
 from flask_cors import CORS
 
 import config
-import controllers.image_controller as image
-import controllers.query_controller as query
+import controller.image_controller as image
+import controller.query_controller as query
 
 
 app = flask.Flask(__name__)

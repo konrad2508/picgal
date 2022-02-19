@@ -3,8 +3,8 @@ import shutil
 from PIL import Image as Img
 
 import config
-from models.base_model import db
-from models.image.image import Image
+from model.base_model import db
+from model.image.entity.image import Image
 
 
 def is_animated(image: Img.Image) -> bool:
