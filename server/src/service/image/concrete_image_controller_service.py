@@ -37,7 +37,7 @@ class ConcreteImageControllerService(ImageControllerService):
         return image
 
     def get_infos_count(self, tags: str | None) -> CountData:
-        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(tagstring=tags)
+        normal_tag_array, virtual_tag_array = self.converter.convert_tagstring(self.virtual_tag_repository.get_conditions, tagstring=tags)
 
         count = self.repository.get_images_count(normal_tags=normal_tag_array, virtual_tags=virtual_tag_array)
         count = self.converter.convert_count(count)
