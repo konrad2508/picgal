@@ -1,6 +1,6 @@
 from typing import Callable
 
-from peewee import fn, Expression
+from peewee import fn, Expression, DoesNotExist
 
 import config
 from model.image.enum.tag_type import TagType
@@ -25,6 +25,9 @@ class SqliteImageRepository(ImageRepository):
 
     def modify_image(self, id: int, modifications: ImageModificationRequest) -> Image:
         with self.db.atomic():
+            if not Image.select().where(Image.image_id == id).exists():
+                raise DoesNotExist
+
             for tag in modifications.characters_added:
                 self._add_tag_to_image(id, tag, TagType.CHARACTER)
 
