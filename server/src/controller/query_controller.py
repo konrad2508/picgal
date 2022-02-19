@@ -1,18 +1,14 @@
 import flask
 from peewee import IntegrityError, DoesNotExist
 
+from factory.controller_service_factory import ControllerServiceFactory
 from model.query.request.query_request import QueryRequest
-from repository.query.sqlite_query_repository import SqliteQueryRepository
-from service.query.query_converter_service import QueryConverterService
-from service.query.query_controller_service import QueryService
 
 
-def construct_blueprint(route_prefix: str) -> flask.Blueprint:
+def construct_blueprint(factory: ControllerServiceFactory, route_prefix: str) -> flask.Blueprint:
     query_route = f'{route_prefix}/query'
 
-    query_repository = SqliteQueryRepository()
-    query_converter = QueryConverterService()
-    query_service = QueryService(query_repository, query_converter)
+    query_service = factory.get_query_service()
 
     query_controller = flask.Blueprint('query', __name__)
 
