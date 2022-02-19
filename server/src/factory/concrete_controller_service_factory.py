@@ -15,7 +15,7 @@ class ConcreteControllerServiceFactory(ControllerServiceFactory):
     def get_image_service(self) -> ImageControllerService:
         image_repository = SqliteImageRepository()
         virtual_tag_repository = ListVirtualTagRepository()
-        image_converter = ConcreteImageConverterService(virtual_tag_repository)
+        image_converter = ConcreteImageConverterService()
         path_resolver = ConcretePathResolverService()
 
         image_service = ConcreteImageControllerService(image_repository, virtual_tag_repository, image_converter, path_resolver)

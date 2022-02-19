@@ -16,14 +16,10 @@ from model.image.data.count_data import CountData
 from model.image.data.tag_data import TagData
 from model.image.data.virtual_tag_data import VirtualTagData
 from model.image.data.subtag_data import SubtagData
-from repository.image.virtual_tag_repository import VirtualTagRepository
 from service.image.image_converter_service import ImageConverterService
 
 
 class ConcreteImageConverterService(ImageConverterService):
-    def __init__(self, virtual_tag_repository: VirtualTagRepository) -> None:
-        self.virtual_tag_repository = virtual_tag_repository
-
     def convert_image(self, image: Image, loc_original: str | None = None, loc_preview: str | None = None, loc_sample: str | None = None) -> ImageData:
         dict_image = playhouse.shortcuts.model_to_dict(image, backrefs=True)
 
@@ -76,14 +72,17 @@ class ConcreteImageConverterService(ImageConverterService):
 
         return converted_virtual_tag
 
-    def convert_tagstring(self, tagstring: str | None = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]:
+    def convert_tagstring(
+            self,
+            get_conditions: Callable[[list[str]], list[Callable[[], Expression]]],
+            tagstring: str | None = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]:
         if not tagstring:
             return None, None
 
         tag_array = [ tag.lower().replace('_', ' ') for tag in tagstring.split(' ') ]
 
         normal_tag_array = [ tag for tag in tag_array if ':' not in tag ]
-        virtual_tag_array = self.virtual_tag_repository.get_conditions([ tag for tag in tag_array if ':' in tag ])
+        virtual_tag_array = get_conditions([ tag for tag in tag_array if ':' in tag ])
 
         if len(normal_tag_array) == 0:
             normal_tag_array = None
