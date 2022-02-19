@@ -1,6 +1,6 @@
 from typing import Callable
 
-from peewee import DoesNotExist, fn, Expression
+from peewee import fn, Expression
 
 import config
 from model.image.enum.tag_type import TagType
@@ -18,13 +18,9 @@ class SqliteImageRepository(ImageRepository):
         self.db = db
 
     def get_image(self, id: int) -> Image:
-        try:
-            with self.db.atomic():
-                image = (Image.get_by_id(id))
+        with self.db.atomic():
+            image = (Image.get_by_id(id))
         
-        except DoesNotExist:
-            raise FileNotFoundError()
-
         return image
 
     def modify_image(self, id: int, modifications: ImageModificationRequest) -> Image:
