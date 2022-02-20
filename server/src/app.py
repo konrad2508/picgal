@@ -3,24 +3,26 @@ import waitress
 from flask_cors import CORS
 
 import config
-import controller.image_controller as image
-import controller.query_controller as query
-from factory.controller_service_factory import ControllerServiceFactory
+from factory.i_controller_factory import IControllerFactory
+from factory.controller_factory import ControllerFactory
 
 
-app = flask.Flask(__name__)
-CORS(app)
+class App:
+    def __init__(self, factory: IControllerFactory) -> None:
+        self.factory = factory
 
-controller_service_factory = ControllerServiceFactory()
+    def run(self) -> None:
+        app = flask.Flask(__name__)
+        CORS(app)
 
-app.register_blueprint(image.construct_blueprint(
-    factory=controller_service_factory,
-    route_prefix=config.ROUTE_PREFIX
-))
+        controllers = self.factory.get_controllers()
 
-app.register_blueprint(query.construct_blueprint(
-    factory=controller_service_factory,
-    route_prefix=config.ROUTE_PREFIX
-))
+        for controller in controllers:
+            app.register_blueprint(controller.initialize())
 
-waitress.serve(app, host=config.HOST, port=config.PORT)
+        waitress.serve(app, host=config.HOST, port=config.PORT)
+
+
+if __name__ == '__main__':
+    fac = ControllerFactory(config)
+    App(fac).run()
