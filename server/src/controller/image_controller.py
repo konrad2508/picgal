@@ -1,8 +1,9 @@
 import flask
-from peewee import IntegrityError, DoesNotExist
 
 from controller.i_controller import IController
 from factory.i_controller_service_factory import IControllerServiceFactory
+from model.exception.database_integrity_violated import DatabaseIntegrityViolated
+from model.exception.entity_not_found import EntityNotFound
 from model.image.request.image_modification_request import ImageModificationRequest
 
 
@@ -40,7 +41,10 @@ class ImageController(IController):
 
                 return flask.jsonify(modified_image)
             
-            except IntegrityError:
+            except EntityNotFound:
+                flask.abort(404)
+
+            except DatabaseIntegrityViolated:
                 flask.abort(409)
 
         @image_controller.route(f'{info_route}/count', methods=['GET'])
@@ -64,7 +68,7 @@ class ImageController(IController):
 
                 return flask.send_file(image_path, mimetype='image/jpeg')
             
-            except DoesNotExist:
+            except EntityNotFound:
                 flask.abort(404)
 
         @image_controller.route(f'{preview_route}/<id>', methods=['GET'])
@@ -74,7 +78,7 @@ class ImageController(IController):
 
                 return flask.send_file(preview_path, mimetype='image/jpeg')
             
-            except DoesNotExist:
+            except EntityNotFound:
                 flask.abort(404)
 
         @image_controller.route(f'{sample_route}/<id>', methods=['GET'])
@@ -84,7 +88,7 @@ class ImageController(IController):
 
                 return flask.send_file(sample_path, mimetype='image/jpeg')
             
-            except DoesNotExist:
+            except EntityNotFound:
                 flask.abort(404)
 
         return image_controller
