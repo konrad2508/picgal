@@ -1,3 +1,5 @@
+from peewee import SqliteDatabase
+
 from config import Config
 from factory.i_controller_service_factory import IControllerServiceFactory
 from repository.image.sqlite_and_list_image_repository import SqliteAndListImageRepository
@@ -13,14 +15,15 @@ from service.query.query_controller_service import QueryControllerService
 from service.query.query_converter_service import QueryConverterService
 
 
-class ControllerServiceFactory(IControllerServiceFactory):
-    def __init__(self, cfg: Config) -> None:
+class SqliteControllerServiceFactory(IControllerServiceFactory):
+    def __init__(self, db: SqliteDatabase, cfg: Config) -> None:
+        self.db = db
         self.cfg = cfg
 
     def get_image_service(self) -> IImageControllerService:
         image_database_converter = SqliteImageDatabaseConverterService(self.cfg)
         virtual_tag_database_converter = ListVirtualTagDatabaseConverterService()
-        image_repository = SqliteAndListImageRepository(self.cfg, image_database_converter, virtual_tag_database_converter)
+        image_repository = SqliteAndListImageRepository(self.db, self.cfg, image_database_converter, virtual_tag_database_converter)
 
         image_request_converter = ImageRequestConverterService()
         path_resolver = PathResolverService(self.cfg)
@@ -29,7 +32,7 @@ class ControllerServiceFactory(IControllerServiceFactory):
         return image_service
 
     def get_query_service(self) -> IQueryControllerService:
-        query_repository = SqliteQueryRepository()
+        query_repository = SqliteQueryRepository(self.db)
         query_converter = QueryConverterService()
         
         query_service = QueryControllerService(query_repository, query_converter)
