@@ -2,7 +2,7 @@ from typing import Callable
 
 from peewee import fn, Expression, DoesNotExist, IntegrityError
 
-import config
+from config import Config
 from model.image.enum.tag_type import TagType
 from model.base_model import db
 from model.exception.database_integrity_violated import DatabaseIntegrityViolated
@@ -19,8 +19,9 @@ from service.image.i_image_database_converter_service import IImageDatabaseConve
 
 
 class SqliteImageDatabaseRepository(IImageDatabaseRepository):
-    def __init__(self, converter: IImageDatabaseConverterService) -> None:
+    def __init__(self, cfg: Config, converter: IImageDatabaseConverterService) -> None:
         self.db = db
+        self.cfg = cfg
         self.image_database_converter = converter
 
     def get_images(
@@ -48,7 +49,7 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
 
             images = (images
                         .order_by(Image.created_time.desc())
-                        .paginate(page, paginate_by=config.COUNT_PER_PAGE))
+                        .paginate(page, paginate_by=self.cfg.COUNT_PER_PAGE))
 
         images = [ self.image_database_converter.convert_image(img, loc_original, loc_preview, loc_sample) for img in images ]
 

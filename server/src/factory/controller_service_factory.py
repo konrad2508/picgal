@@ -1,3 +1,4 @@
+from config import Config
 from factory.i_controller_service_factory import IControllerServiceFactory
 from repository.image.sqlite_and_list_image_repository import SqliteAndListImageRepository
 from repository.query.sqlite_query_repository import SqliteQueryRepository
@@ -13,13 +14,16 @@ from service.query.query_converter_service import QueryConverterService
 
 
 class ControllerServiceFactory(IControllerServiceFactory):
+    def __init__(self, cfg: Config) -> None:
+        self.cfg = cfg
+
     def get_image_service(self) -> IImageControllerService:
-        image_database_converter = SqliteImageDatabaseConverterService()
+        image_database_converter = SqliteImageDatabaseConverterService(self.cfg)
         virtual_tag_database_converter = ListVirtualTagDatabaseConverterService()
-        image_repository = SqliteAndListImageRepository(image_database_converter, virtual_tag_database_converter)
+        image_repository = SqliteAndListImageRepository(self.cfg, image_database_converter, virtual_tag_database_converter)
 
         image_request_converter = ImageRequestConverterService()
-        path_resolver = PathResolverService()
+        path_resolver = PathResolverService(self.cfg)
         image_service = ImageControllerService(image_repository, image_request_converter, path_resolver)
 
         return image_service

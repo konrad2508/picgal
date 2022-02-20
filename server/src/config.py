@@ -1,26 +1,31 @@
 import json
 
 
-with open('../../config.json') as cfg_file:
-    cfg_content = cfg_file.read()
-    cfg = json.loads(cfg_content)
+class Config:
+    def __init__(self, config_path: str) -> None:
+        with open(config_path) as cfg_file:
+            cfg_content = cfg_file.read()
+            cfg = json.loads(cfg_content)
+        
+        self.HOST: str = cfg['host']
+        self.PORT: int = cfg['port']
+        self.ROUTE_PREFIX: str = cfg['routePrefix']
 
-HOST: str = cfg['host']
-PORT: int = cfg['port']
-ROUTE_PREFIX: str = cfg['routePrefix']
+        self.SEP: str = cfg['sep']
+        self.HIGHRES: int = cfg['highres']
+        self.ABSURDRES: int = cfg['absurdres']
 
-SEP: str = cfg['sep']
-HIGHRES: int = cfg['highres']
-ABSURDRES: int = cfg['absurdres']
+        self.DATABASE_PATH: str = cfg['databasePath']
 
-DATABASE_PATH: str = cfg['databasePath']
+        self.PICTURES_ROOT: str = cfg['picturesRoot']
 
-PICTURES_ROOT: str = cfg['picturesRoot']
+        self.PREVIEWS_DIR: str = cfg['previewsDir']
+        self.PREVIEW_SIZE: tuple[int, int] = cfg['previewSize']
 
-PREVIEWS_DIR: str = cfg['previewsDir']
-PREVIEW_SIZE: tuple[int, int] = cfg['previewSize']
+        self.SAMPLES_DIR: str = cfg['samplesDir']
+        self.SAMPLE_SIZE: tuple[int, int] = cfg['sampleSize']
 
-SAMPLES_DIR: str = cfg['samplesDir']
-SAMPLE_SIZE: tuple[int, int] = cfg['sampleSize']
+        self.COUNT_PER_PAGE: int = cfg['countPerPage']
 
-COUNT_PER_PAGE: int = cfg['countPerPage']
+
+conf = Config('../../config.json')

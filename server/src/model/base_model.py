@@ -1,9 +1,9 @@
 import peewee
 
-import config
+from config import conf
 
 
-db = peewee.SqliteDatabase(config.DATABASE_PATH)
+db = peewee.SqliteDatabase(conf.DATABASE_PATH)
 
 
 class BaseModel(peewee.Model):

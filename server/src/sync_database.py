@@ -3,7 +3,7 @@ import os
 from PIL import Image as Img
 from peewee import DoesNotExist
 
-import config
+from config import conf
 from model.image.enum.tag_type import TagType
 from model.base_model import db
 from model.image.entity.image import Image
@@ -20,7 +20,7 @@ def is_animated(image: Img.Image) -> bool:
 
 
 def thumbnail_animated(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
-    frames = []
+    frames: list[Img.Image] = []
     for frame in range(1, image.n_frames):
         image.seek(frame)
         new_frame = image.copy()
@@ -47,26 +47,26 @@ def make_thumbnail(image: Img.Image, save_as: str, size: tuple[int, int]) -> Non
         thumbnail_static(image, save_as, size)
 
 
-SEP = config.SEP
-HIGHRES = config.HIGHRES
-ABSURDRES = config.ABSURDRES
+SEP = conf.SEP
+HIGHRES = conf.HIGHRES
+ABSURDRES = conf.ABSURDRES
 
-PREVIEWS_DIR = config.PREVIEWS_DIR
-PREVIEW_SIZE = config.PREVIEW_SIZE
+PREVIEWS_DIR = conf.PREVIEWS_DIR
+PREVIEW_SIZE = conf.PREVIEW_SIZE
 
-SAMPLES_DIR = config.SAMPLES_DIR
-SAMPLE_SIZE = config.SAMPLE_SIZE
+SAMPLES_DIR = conf.SAMPLES_DIR
+SAMPLE_SIZE = conf.SAMPLE_SIZE
 
 # STRUCTURE
 # /<ROOT>/<SOURCE>/<CHARACTER>/<image>
 
-ROOT = config.PICTURES_ROOT
+ROOT = conf.PICTURES_ROOT
 
 db.create_tables([Image, Tag, ImageTag, Query], safe=True)
 
 with db.atomic():
     # syncing root
-    existing_pictures = list(Image.select())
+    existing_pictures: list[Image] = list(Image.select())
 
     example_pic = existing_pictures[0]
     old_root = SEP.join(example_pic.file.split(SEP)[:-3])
@@ -83,7 +83,7 @@ with db.atomic():
     # deleting
     deleted_counter = 0
 
-    existing_pictures = Image.select()
+    existing_pictures: list[Image] = Image.select()
 
     for existing_picture in existing_pictures:
         if not os.path.isfile(existing_picture.file):
@@ -109,7 +109,7 @@ with db.atomic():
 
     for picture in pictures:
         try:
-            existing_picture = Image.get(Image.file == picture)
+            existing_picture: Image = Image.get(Image.file == picture)
 
             if not os.path.isfile(existing_picture.preview):
                 with Img.open(existing_picture.file) as opened:
