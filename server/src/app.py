@@ -4,7 +4,8 @@ from flask_cors import CORS
 
 from config import Config, conf
 from factory.i_controller_factory import IControllerFactory
-from factory.controller_factory import ControllerFactory
+from model.base_model import db
+from factory.sqlite_controller_factory import SqliteControllerFactory
 
 
 class App:
@@ -25,6 +26,6 @@ class App:
 
 
 if __name__ == '__main__':
-    fac = ControllerFactory(conf)
+    fac = SqliteControllerFactory(db, conf)
 
     App(conf, fac).run()

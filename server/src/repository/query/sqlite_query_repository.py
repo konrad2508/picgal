@@ -1,6 +1,5 @@
-from peewee import IntegrityError
+from peewee import SqliteDatabase, IntegrityError
 
-from model.base_model import db
 from model.exception.database_integrity_violated import DatabaseIntegrityViolated
 from model.exception.entity_not_found import EntityNotFound
 from model.query.entity.query import Query
@@ -9,7 +8,7 @@ from repository.query.i_query_repository import IQueryRepository
 
 
 class SqliteQueryRepository(IQueryRepository):
-    def __init__(self) -> None:
+    def __init__(self, db: SqliteDatabase) -> None:
         self.db = db
 
     def get_queries(self) -> list[Query]:

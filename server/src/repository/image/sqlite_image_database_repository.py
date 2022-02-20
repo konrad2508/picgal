@@ -1,10 +1,9 @@
 from typing import Callable
 
-from peewee import fn, Expression, DoesNotExist, IntegrityError
+from peewee import SqliteDatabase, fn, Expression, DoesNotExist, IntegrityError
 
 from config import Config
 from model.image.enum.tag_type import TagType
-from model.base_model import db
 from model.exception.database_integrity_violated import DatabaseIntegrityViolated
 from model.exception.entity_not_found import EntityNotFound
 from model.image.data.count_data import CountData
@@ -19,7 +18,7 @@ from service.image.i_image_database_converter_service import IImageDatabaseConve
 
 
 class SqliteImageDatabaseRepository(IImageDatabaseRepository):
-    def __init__(self, cfg: Config, converter: IImageDatabaseConverterService) -> None:
+    def __init__(self, db: SqliteDatabase, cfg: Config, converter: IImageDatabaseConverterService) -> None:
         self.db = db
         self.cfg = cfg
         self.image_database_converter = converter
