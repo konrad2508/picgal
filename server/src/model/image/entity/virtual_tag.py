@@ -1,7 +1,6 @@
 from __future__ import annotations
-from typing import Callable
 
-from peewee import Expression
+from model.image.entity.subtag_condition import SubtagCondition
 
 
 class VirtualTag:
@@ -9,12 +8,12 @@ class VirtualTag:
         self.name = name
         self.subtags: list[VirtualTag.Subtag] = []
 
-    def add_subtag(self, subtag_name: str, subtag_condition: Callable[[], Expression]) -> VirtualTag:
+    def add_subtag(self, subtag_name: str, subtag_condition: SubtagCondition) -> VirtualTag:
         self.subtags.append(VirtualTag.Subtag(subtag_name, subtag_condition))
 
         return self
 
     class Subtag:
-        def __init__(self, name: str, condition: Callable[[], Expression]) -> None:
+        def __init__(self, name: str, condition: SubtagCondition) -> None:
             self.name = name
             self.condition = condition

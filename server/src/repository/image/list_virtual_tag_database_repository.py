@@ -1,10 +1,7 @@
-from typing import Callable
-
-from peewee import Expression
-
 from datasource.virtual_tags import generate_virtual_tags
-from repository.image.i_virtual_tag_database_repository import IVirtualTagDatabaseRepository
 from model.image.data.virtual_tag_data import VirtualTagData
+from model.image.entity.subtag_condition import SubtagCondition
+from repository.image.i_virtual_tag_database_repository import IVirtualTagDatabaseRepository
 from service.image.i_virtual_tag_database_converter_service import IVirtualTagDatabaseConverterService
 
 
@@ -18,7 +15,7 @@ class ListVirtualTagDatabaseRepository(IVirtualTagDatabaseRepository):
 
         return virtual_tags
 
-    def get_conditions(self, virtual_tags: list[str]) -> list[Callable[[], Expression]]:
+    def get_conditions(self, virtual_tags: list[str]) -> list[SubtagCondition]:
         conditions = []
 
         splitter_virtual_tags = [ tag.split(':', 1) for tag in virtual_tags ]

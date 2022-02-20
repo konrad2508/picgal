@@ -1,15 +1,14 @@
 from typing import Callable
 
-from peewee import Expression
-
+from model.image.entity.subtag_condition import SubtagCondition
 from service.image.i_image_request_converter_service import IImageRequestConverterService
 
 
 class ImageRequestConverterService(IImageRequestConverterService):
     def convert_tagstring(
             self,
-            get_conditions: Callable[[list[str]], list[Callable[[], Expression]]],
-            tagstring: str | None = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]:
+            get_conditions: Callable[[list[str]], list[SubtagCondition]],
+            tagstring: str | None = None) -> tuple[list[str] | None, list[SubtagCondition] | None]:
         if not tagstring:
             return None, None
 
