@@ -1,6 +1,8 @@
-from peewee import DoesNotExist
+from peewee import IntegrityError
 
 from model.base_model import db
+from model.exception.database_integrity_violated import DatabaseIntegrityViolated
+from model.exception.entity_not_found import EntityNotFound
 from model.query.entity.query import Query
 from model.query.request.query_request import QueryRequest
 from repository.query.i_query_repository import IQueryRepository
@@ -17,24 +19,32 @@ class SqliteQueryRepository(IQueryRepository):
         return queries
 
     def create_query(self, query: QueryRequest) -> Query:
-        with self.db.atomic():
-            created = Query.create(name=query.name, query=query.query)
+        try:
+            with self.db.atomic():
+                created = Query.create(name=query.name, query=query.query)
 
-        return created
+            return created
+        
+        except IntegrityError:
+            raise DatabaseIntegrityViolated
 
     def update_query(self, id: int, modifications: QueryRequest) -> Query:
-        with self.db.atomic():
-            if not Query.select().where(Query.query_id == id).exists():
-                raise DoesNotExist
+        try:
+            with self.db.atomic():
+                if not Query.select().where(Query.query_id == id).exists():
+                    raise EntityNotFound
 
-            Query.update(name=modifications.name, query=modifications.query).where(Query.query_id == id).execute()
-            updated = Query.get_by_id(id)
+                Query.update(name=modifications.name, query=modifications.query).where(Query.query_id == id).execute()
+                updated = Query.get_by_id(id)
 
-        return updated
+            return updated
+        
+        except IntegrityError:
+            raise DatabaseIntegrityViolated
 
     def delete_query(self, id: int) -> None:
         with self.db.atomic():
             if not Query.select().where(Query.query_id == id).exists():
-                raise DoesNotExist
+                raise EntityNotFound
 
             Query.delete().where(Query.query_id == id).execute()

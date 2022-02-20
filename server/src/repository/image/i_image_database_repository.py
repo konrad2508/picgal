@@ -11,25 +11,6 @@ from model.image.request.image_modification_request import ImageModificationRequ
 
 class IImageDatabaseRepository(ABC):
     @abstractmethod
-    def get_image(
-            self,
-            id: int,
-            loc_original: str | None = None,
-            loc_preview: str | None = None,
-            loc_sample: str | None = None) -> ImageData:
-        ...
-
-    @abstractmethod
-    def modify_image(
-            self,
-            id: int,
-            modifications: ImageModificationRequest,
-            loc_original: str | None = None,
-            loc_preview: str | None = None,
-            loc_sample: str | None = None) -> ImageData:
-        ...
-
-    @abstractmethod
     def get_images(
             self,
             page: int,
@@ -38,6 +19,16 @@ class IImageDatabaseRepository(ABC):
             loc_original: str | None = None,
             loc_preview: str | None = None,
             loc_sample: str | None = None) -> list[ImageData]:
+        ...
+    
+    @abstractmethod
+    def modify_image(
+            self,
+            id: int,
+            modifications: ImageModificationRequest,
+            loc_original: str | None = None,
+            loc_preview: str | None = None,
+            loc_sample: str | None = None) -> ImageData:
         ...
 
     @abstractmethod

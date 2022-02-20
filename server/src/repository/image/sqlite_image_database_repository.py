@@ -1,10 +1,12 @@
 from typing import Callable
 
-from peewee import fn, Expression, DoesNotExist
+from peewee import fn, Expression, DoesNotExist, IntegrityError
 
 import config
 from model.image.enum.tag_type import TagType
 from model.base_model import db
+from model.exception.database_integrity_violated import DatabaseIntegrityViolated
+from model.exception.entity_not_found import EntityNotFound
 from model.image.data.count_data import CountData
 from model.image.data.image_data import ImageData
 from model.image.data.tag_data import TagData
@@ -20,62 +22,6 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
     def __init__(self, converter: IImageDatabaseConverterService) -> None:
         self.db = db
         self.image_database_converter = converter
-
-    def get_image(
-            self,
-            id: int,
-            loc_original: str | None = None,
-            loc_preview: str | None = None,
-            loc_sample: str | None = None) -> ImageData:
-        image = self._get_image_by_id(id)
-        
-        image = self.image_database_converter.convert_image(image, loc_original, loc_preview, loc_sample)
-
-        return image
-
-    def modify_image(
-            self,
-            id: int,
-            modifications: ImageModificationRequest,
-            loc_original: str | None = None,
-            loc_preview: str | None = None,
-            loc_sample: str | None = None) -> ImageData:
-        with self.db.atomic():
-            if not Image.select().where(Image.image_id == id).exists():
-                raise DoesNotExist
-
-            for tag in modifications.characters_added:
-                self._add_tag_to_image(id, tag, TagType.CHARACTER)
-
-            for tag in modifications.characters_removed:
-                self._delete_tag_to_image(id, tag)
-
-            for tag in modifications.sources_added:
-                self._add_tag_to_image(id, tag, TagType.SOURCE)
-
-            for tag in modifications.sources_removed:
-                self._delete_tag_to_image(id, tag)
-
-            for tag in modifications.general_added:
-                self._add_tag_to_image(id, tag, TagType.GENERAL)
-
-            for tag in modifications.general_removed:
-                self._delete_tag_to_image(id, tag)
-
-            for tag in modifications.meta_added:
-                self._add_tag_to_image(id, tag, TagType.META)
-
-            for tag in modifications.meta_removed:
-                self._delete_tag_to_image(id, tag)
-
-            if modifications.toggle_favourite:
-                Image.update(favourite=(~ Image.favourite)).where(Image.image_id == id).execute()
-
-            modified_image = Image.get_by_id(id)
-
-        modified_image = self.image_database_converter.convert_image(modified_image, loc_original, loc_preview, loc_sample)
-
-        return modified_image
 
     def get_images(
             self,
@@ -107,6 +53,54 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
         images = [ self.image_database_converter.convert_image(img, loc_original, loc_preview, loc_sample) for img in images ]
 
         return images
+
+    def modify_image(
+            self,
+            id: int,
+            modifications: ImageModificationRequest,
+            loc_original: str | None = None,
+            loc_preview: str | None = None,
+            loc_sample: str | None = None) -> ImageData:
+        try:
+            with self.db.atomic():
+                if not Image.select().where(Image.image_id == id).exists():
+                    raise EntityNotFound
+
+                for tag in modifications.characters_added:
+                    self._add_tag_to_image(id, tag, TagType.CHARACTER)
+
+                for tag in modifications.characters_removed:
+                    self._delete_tag_to_image(id, tag)
+
+                for tag in modifications.sources_added:
+                    self._add_tag_to_image(id, tag, TagType.SOURCE)
+
+                for tag in modifications.sources_removed:
+                    self._delete_tag_to_image(id, tag)
+
+                for tag in modifications.general_added:
+                    self._add_tag_to_image(id, tag, TagType.GENERAL)
+
+                for tag in modifications.general_removed:
+                    self._delete_tag_to_image(id, tag)
+
+                for tag in modifications.meta_added:
+                    self._add_tag_to_image(id, tag, TagType.META)
+
+                for tag in modifications.meta_removed:
+                    self._delete_tag_to_image(id, tag)
+
+                if modifications.toggle_favourite:
+                    Image.update(favourite=(~ Image.favourite)).where(Image.image_id == id).execute()
+
+                modified_image = Image.get_by_id(id)
+
+            modified_image = self.image_database_converter.convert_image(modified_image, loc_original, loc_preview, loc_sample)
+
+            return modified_image
+
+        except IntegrityError:
+            raise DatabaseIntegrityViolated
 
     def get_images_count(self, normal_tags: list[str] = None, virtual_tags: list[Callable[[], Expression]] = None) -> CountData:
         with self.db.atomic():
@@ -163,10 +157,14 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
         return image.sample
 
     def _get_image_by_id(self, id: int) -> Image:
-        with self.db.atomic():
-            image = Image.get_by_id(id)
+        try:
+            with self.db.atomic():
+                image = Image.get_by_id(id)
+
+            return image
         
-        return image
+        except DoesNotExist:
+            raise EntityNotFound
 
     def _add_tag_to_image(self, image_id: int, tag_name: str, tag_type: int) -> None:
         tag, _ = Tag.get_or_create(name=tag_name.lower(), type=tag_type)

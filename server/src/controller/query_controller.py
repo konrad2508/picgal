@@ -1,8 +1,9 @@
 import flask
-from peewee import IntegrityError, DoesNotExist
 
 from controller.i_controller import IController
 from factory.i_controller_service_factory import IControllerServiceFactory
+from model.exception.database_integrity_violated import DatabaseIntegrityViolated
+from model.exception.entity_not_found import EntityNotFound
 from model.query.request.query_request import QueryRequest
 
 
@@ -33,7 +34,7 @@ class QueryController(IController):
 
                 return flask.jsonify(created_query)
 
-            except IntegrityError:
+            except DatabaseIntegrityViolated:
                 flask.abort(409)
 
         @query_controller.route(f'{query_route}/<id>', methods=['PUT'])
@@ -44,9 +45,12 @@ class QueryController(IController):
                 modified_query = query_service.modify_query(id, modifications)
 
                 return flask.jsonify(modified_query)
-            
-            except DoesNotExist:
+
+            except EntityNotFound:
                 flask.abort(404)
+
+            except DatabaseIntegrityViolated:
+                flask.abort(409)
 
         @query_controller.route(f'{query_route}/<id>', methods=['DELETE'])
         def delete_query(id: int) -> flask.Response:
@@ -55,7 +59,7 @@ class QueryController(IController):
 
                 return flask.Response(status=204)
 
-            except DoesNotExist:
+            except EntityNotFound:
                 flask.abort(404)
 
         return query_controller
