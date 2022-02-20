@@ -3,7 +3,7 @@ import time
 
 import playhouse.shortcuts
 
-import config
+from config import Config
 from model.image.data.image_data import ImageData
 from model.image.data.count_data import CountData
 from model.image.data.tag_data import TagData
@@ -15,6 +15,9 @@ from service.image.i_image_database_converter_service import IImageDatabaseConve
 
 
 class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
+    def __init__(self, cfg: Config) -> None:
+        self.cfg = cfg
+
     def convert_image(
             self,
             image: Image,
@@ -46,8 +49,8 @@ class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
     def convert_count(self, count: int) -> CountData:
         converted_count = CountData(
             images_count=count,
-            images_per_page=config.COUNT_PER_PAGE,
-            pages_count=math.ceil(count / config.COUNT_PER_PAGE)
+            images_per_page=self.cfg.COUNT_PER_PAGE,
+            pages_count=math.ceil(count / self.cfg.COUNT_PER_PAGE)
         )
 
         return converted_count

@@ -2,7 +2,7 @@ import os
 import shutil
 from PIL import Image as Img
 
-import config
+from config import conf
 from model.base_model import db
 from model.image.entity.image import Image
 
@@ -15,13 +15,13 @@ def is_animated(image: Img.Image) -> bool:
 
 
 def thumbnail_animated(image: Img.Image, save_as: str) -> None:
-    frames = []
+    frames: list[Img.Image] = []
     for frame in range(1, image.n_frames):
         image.seek(frame)
         new_frame = image.copy()
         new_frame.thumbnail(PREVIEW_SIZE, Img.ANTIALIAS)
         frames.append(new_frame)
-    
+
     frames[0].save(save_as,
         'WEBP',
         save_all=True,
@@ -41,17 +41,16 @@ def make_thumbnail(image: Img.Image, save_as: str) -> None:
     else:
         thumbnail_static(image, save_as)
 
+SEP = conf.SEP
 
-SEP = config.SEP
-
-PREVIEWS_DIR = config.PREVIEWS_DIR
-PREVIEW_SIZE = config.PREVIEW_SIZE
+PREVIEWS_DIR = conf.PREVIEWS_DIR
+PREVIEW_SIZE = conf.PREVIEW_SIZE
 
 if os.path.isdir(PREVIEWS_DIR):
     shutil.rmtree(PREVIEWS_DIR)
 
 with db.atomic():
-    pictures = Image.select()
+    pictures: list[Image] = Image.select()
 
     for picture in pictures:
         file_path = picture.file
