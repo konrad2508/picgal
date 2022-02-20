@@ -1,6 +1,4 @@
-from typing import Callable
-
-from peewee import SqliteDatabase, fn, Expression, DoesNotExist, IntegrityError
+from peewee import SqliteDatabase, fn, DoesNotExist, IntegrityError
 
 from config import Config
 from model.image.enum.tag_type import TagType
@@ -10,8 +8,9 @@ from model.image.data.count_data import CountData
 from model.image.data.image_data import ImageData
 from model.image.data.tag_data import TagData
 from model.image.entity.image import Image
-from model.image.entity.tag import Tag
 from model.image.entity.image_tag import ImageTag
+from model.image.entity.subtag_condition import SubtagCondition
+from model.image.entity.tag import Tag
 from model.image.request.image_modification_request import ImageModificationRequest
 from repository.image.i_image_database_repository import IImageDatabaseRepository
 from service.image.i_image_database_converter_service import IImageDatabaseConverterService
@@ -27,7 +26,7 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
             self,
             page: int,
             normal_tags: list[str] = None,
-            virtual_tags: list[Callable[[], Expression]] = None,
+            virtual_tags: list[SubtagCondition] = None,
             loc_original: str | None = None,
             loc_preview: str | None = None,
             loc_sample: str | None = None) -> list[ImageData]:
@@ -102,7 +101,7 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
         except IntegrityError:
             raise DatabaseIntegrityViolated
 
-    def get_images_count(self, normal_tags: list[str] = None, virtual_tags: list[Callable[[], Expression]] = None) -> CountData:
+    def get_images_count(self, normal_tags: list[str] = None, virtual_tags: list[SubtagCondition] = None) -> CountData:
         with self.db.atomic():
             count = Image.select(fn.Count().over())
 

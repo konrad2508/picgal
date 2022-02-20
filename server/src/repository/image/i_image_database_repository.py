@@ -1,11 +1,9 @@
 from abc import ABC, abstractmethod
-from typing import Callable
-
-from peewee import Expression
 
 from model.image.data.count_data import CountData
 from model.image.data.image_data import ImageData
 from model.image.data.tag_data import TagData
+from model.image.entity.subtag_condition import SubtagCondition
 from model.image.request.image_modification_request import ImageModificationRequest
 
 
@@ -15,7 +13,7 @@ class IImageDatabaseRepository(ABC):
             self,
             page: int,
             normal_tags: list[str],
-            virtual_tags: list[Callable[[], Expression]],
+            virtual_tags: list[SubtagCondition],
             loc_original: str | None = None,
             loc_preview: str | None = None,
             loc_sample: str | None = None) -> list[ImageData]:
@@ -32,7 +30,7 @@ class IImageDatabaseRepository(ABC):
         ...
 
     @abstractmethod
-    def get_images_count(self, normal_tags: list[str], virtual_tags: list[Callable[[], Expression]]) -> CountData: ...
+    def get_images_count(self, normal_tags: list[str], virtual_tags: list[SubtagCondition]) -> CountData: ...
 
     @abstractmethod
     def get_tags(self) -> list[TagData]: ...
