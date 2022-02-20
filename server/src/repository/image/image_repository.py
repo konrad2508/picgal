@@ -1,5 +1,0 @@
-from repository.image.image_database_repository import ImageDatabaseRepository
-from repository.image.virtual_tag_database_repository import VirtualTagDatabaseRepository
-
-
-class ImageRepository(ImageDatabaseRepository, VirtualTagDatabaseRepository): ...

@@ -5,13 +5,13 @@ from flask_cors import CORS
 import config
 import controller.image_controller as image
 import controller.query_controller as query
-from factory.concrete_controller_service_factory import ConcreteControllerServiceFactory
+from factory.controller_service_factory import ControllerServiceFactory
 
 
 app = flask.Flask(__name__)
 CORS(app)
 
-controller_service_factory = ConcreteControllerServiceFactory()
+controller_service_factory = ControllerServiceFactory()
 
 app.register_blueprint(image.construct_blueprint(
     factory=controller_service_factory,

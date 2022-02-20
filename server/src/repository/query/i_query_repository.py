@@ -4,7 +4,7 @@ from model.query.entity.query import Query
 from model.query.request.query_request import QueryRequest
 
 
-class QueryRepository(ABC):
+class IQueryRepository(ABC):
     @abstractmethod
     def get_queries(self) -> list[Query]: ...
 

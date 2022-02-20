@@ -9,7 +9,7 @@ from model.image.data.tag_data import TagData
 from model.image.request.image_modification_request import ImageModificationRequest
 
 
-class ImageDatabaseRepository(ABC):
+class IImageDatabaseRepository(ABC):
     @abstractmethod
     def get_image(
             self,

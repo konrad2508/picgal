@@ -2,10 +2,10 @@ from model.image.data.subtag_data import SubtagData
 from model.image.data.virtual_tag_data import VirtualTagData
 from model.image.entity.virtual_tag import VirtualTag
 from model.image.enum.tag_category import TagCategory
-from service.image.virtual_tag_database_converter_service import VirtualTagDatabaseConverterService
+from service.image.i_virtual_tag_database_converter_service import IVirtualTagDatabaseConverterService
 
 
-class ListVirtualTagDatabaseConverterService(VirtualTagDatabaseConverterService):
+class ListVirtualTagDatabaseConverterService(IVirtualTagDatabaseConverterService):
     def convert_virtual_tag(self, virtual_tag: VirtualTag) -> VirtualTagData:
         converted_virtual_tag = VirtualTagData(
             name=virtual_tag.name,
