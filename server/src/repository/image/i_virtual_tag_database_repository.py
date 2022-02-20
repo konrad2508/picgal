@@ -6,7 +6,7 @@ from peewee import Expression
 from model.image.data.virtual_tag_data import VirtualTagData
 
 
-class VirtualTagDatabaseRepository(ABC):
+class IVirtualTagDatabaseRepository(ABC):
     @abstractmethod
     def get_virtual_tags(self) -> list[VirtualTagData]: ...
 

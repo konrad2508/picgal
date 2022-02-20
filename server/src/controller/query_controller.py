@@ -1,11 +1,11 @@
 import flask
 from peewee import IntegrityError, DoesNotExist
 
-from factory.controller_service_factory import ControllerServiceFactory
+from factory.i_controller_service_factory import IControllerServiceFactory
 from model.query.request.query_request import QueryRequest
 
 
-def construct_blueprint(factory: ControllerServiceFactory, route_prefix: str) -> flask.Blueprint:
+def construct_blueprint(factory: IControllerServiceFactory, route_prefix: str) -> flask.Blueprint:
     query_route = f'{route_prefix}/query'
 
     query_service = factory.get_query_service()

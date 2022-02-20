@@ -11,10 +11,10 @@ from model.image.enum.tag_type import TagType
 from model.image.enum.tag_category import TagCategory
 from model.image.entity.image import Image
 from model.image.object.tag_with_count import TagWithCount
-from service.image.image_database_converter_service import ImageDatabaseConverterService
+from service.image.i_image_database_converter_service import IImageDatabaseConverterService
 
 
-class SqliteImageDatabaseConverterService(ImageDatabaseConverterService):
+class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
     def convert_image(self, image: Image, loc_original: str | None = None, loc_preview: str | None = None, loc_sample: str | None = None) -> ImageData:
         dict_image = playhouse.shortcuts.model_to_dict(image, backrefs=True)
 

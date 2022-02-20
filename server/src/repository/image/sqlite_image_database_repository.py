@@ -12,12 +12,12 @@ from model.image.entity.image import Image
 from model.image.entity.tag import Tag
 from model.image.entity.image_tag import ImageTag
 from model.image.request.image_modification_request import ImageModificationRequest
-from repository.image.image_database_repository import ImageDatabaseRepository
-from service.image.image_database_converter_service import ImageDatabaseConverterService
+from repository.image.i_image_database_repository import IImageDatabaseRepository
+from service.image.i_image_database_converter_service import IImageDatabaseConverterService
 
 
-class SqliteImageDatabaseRepository(ImageDatabaseRepository):
-    def __init__(self, converter: ImageDatabaseConverterService) -> None:
+class SqliteImageDatabaseRepository(IImageDatabaseRepository):
+    def __init__(self, converter: IImageDatabaseConverterService) -> None:
         self.db = db
         self.image_database_converter = converter
 

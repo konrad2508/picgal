@@ -1,11 +1,11 @@
 import flask
 from peewee import IntegrityError, DoesNotExist
 
-from factory.controller_service_factory import ControllerServiceFactory
+from factory.i_controller_service_factory import IControllerServiceFactory
 from model.image.request.image_modification_request import ImageModificationRequest
 
 
-def construct_blueprint(factory: ControllerServiceFactory, route_prefix: str) -> flask.Blueprint:
+def construct_blueprint(factory: IControllerServiceFactory, route_prefix: str) -> flask.Blueprint:
     info_route = f'{route_prefix}/info'
     tag_route = f'{route_prefix}/tag'
     image_route = f'{route_prefix}/image'

@@ -7,7 +7,7 @@ from model.image.entity.image import Image
 from model.image.object.tag_with_count import TagWithCount
 
 
-class ImageDatabaseConverterService(ABC):
+class IImageDatabaseConverterService(ABC):
     @abstractmethod
     def convert_image(
             self,

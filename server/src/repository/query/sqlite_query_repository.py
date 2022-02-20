@@ -3,10 +3,10 @@ from peewee import DoesNotExist
 from model.base_model import db
 from model.query.entity.query import Query
 from model.query.request.query_request import QueryRequest
-from repository.query.query_repository import QueryRepository
+from repository.query.i_query_repository import IQueryRepository
 
 
-class SqliteQueryRepository(QueryRepository):
+class SqliteQueryRepository(IQueryRepository):
     def __init__(self) -> None:
         self.db = db
 
