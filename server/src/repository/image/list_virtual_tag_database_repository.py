@@ -3,16 +3,20 @@ from typing import Callable
 from peewee import Expression
 
 from datasource.virtual_tags import generate_virtual_tags
-from model.image.entity.virtual_tag import VirtualTag
 from repository.image.virtual_tag_database_repository import VirtualTagDatabaseRepository
+from model.image.data.virtual_tag_data import VirtualTagData
+from service.image.virtual_tag_database_converter_service import VirtualTagDatabaseConverterService
 
 
 class ListVirtualTagDatabaseRepository(VirtualTagDatabaseRepository):
-    def __init__(self) -> None:
+    def __init__(self, converter: VirtualTagDatabaseConverterService) -> None:
         self.tags = generate_virtual_tags()
+        self.virtual_tag_database_converter = converter
 
-    def get_virtual_tags(self) -> list[VirtualTag]:
-        return self.tags
+    def get_virtual_tags(self) -> list[VirtualTagData]:
+        virtual_tags = [ self.virtual_tag_database_converter.convert_virtual_tag(tag) for tag in self.tags ]
+
+        return virtual_tags
 
     def get_conditions(self, virtual_tags: list[str]) -> list[Callable[[], Expression]]:
         conditions = []

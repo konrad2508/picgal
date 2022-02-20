@@ -1,25 +1,20 @@
 import math
 import time
-from typing import Callable
 
 import playhouse.shortcuts
-from peewee import Expression
 
 import config
+from model.image.data.image_data import ImageData
+from model.image.data.count_data import CountData
+from model.image.data.tag_data import TagData
 from model.image.enum.tag_type import TagType
 from model.image.enum.tag_category import TagCategory
 from model.image.entity.image import Image
 from model.image.object.tag_with_count import TagWithCount
-from model.image.entity.virtual_tag import VirtualTag
-from model.image.data.image_data import ImageData
-from model.image.data.count_data import CountData
-from model.image.data.tag_data import TagData
-from model.image.data.virtual_tag_data import VirtualTagData
-from model.image.data.subtag_data import SubtagData
-from service.image.image_converter_service import ImageConverterService
+from service.image.image_database_converter_service import ImageDatabaseConverterService
 
 
-class ConcreteImageConverterService(ImageConverterService):
+class SqliteImageDatabaseConverterService(ImageDatabaseConverterService):
     def convert_image(self, image: Image, loc_original: str | None = None, loc_preview: str | None = None, loc_sample: str | None = None) -> ImageData:
         dict_image = playhouse.shortcuts.model_to_dict(image, backrefs=True)
 
@@ -52,7 +47,7 @@ class ConcreteImageConverterService(ImageConverterService):
 
         return converted_count
 
-    def convert_tags(self, tag: TagWithCount) -> TagData:
+    def convert_tag(self, tag: TagWithCount) -> TagData:
         converted_tag = TagData(
             id=tag.tag_id,
             name=tag.name.lower(),
@@ -62,32 +57,3 @@ class ConcreteImageConverterService(ImageConverterService):
         )
 
         return converted_tag
-
-    def convert_virtual_tag(self, virtual_tag: VirtualTag) -> VirtualTagData:
-        converted_virtual_tag = VirtualTagData(
-            name=virtual_tag.name,
-            subtags=[ SubtagData(name=f'{virtual_tag.name}:{subtag.name}', tag_type=TagCategory.NORMAL) for subtag in virtual_tag.subtags ],
-            tag_type=TagCategory.VIRTUAL
-        )
-
-        return converted_virtual_tag
-
-    def convert_tagstring(
-            self,
-            get_conditions: Callable[[list[str]], list[Callable[[], Expression]]],
-            tagstring: str | None = None) -> tuple[list[str] | None, list[Callable[[], Expression]] | None]:
-        if not tagstring:
-            return None, None
-
-        tag_array = [ tag.lower().replace('_', ' ') for tag in tagstring.split(' ') ]
-
-        normal_tag_array = [ tag for tag in tag_array if ':' not in tag ]
-        virtual_tag_array = get_conditions([ tag for tag in tag_array if ':' in tag ])
-
-        if len(normal_tag_array) == 0:
-            normal_tag_array = None
-
-        if len(virtual_tag_array) == 0:
-            virtual_tag_array = None
-
-        return normal_tag_array, virtual_tag_array
