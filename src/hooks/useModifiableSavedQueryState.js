@@ -1,5 +1,6 @@
 import React from 'react';
 import ModifiableSavedQueryCommand from '../enums/ModifiableSavedQueryCommand';
+import modifiableSavedQueryStateService from '../services/modifiableSavedQueryStateService';
 
 const useModifiableSavedQueryState = (savedQuery) => {
     const [ modifiable, setModifiable ] = React.useState(false);
@@ -7,12 +8,14 @@ const useModifiableSavedQueryState = (savedQuery) => {
     const [ inputName, setInputName ] = React.useState(savedQuery.name);
     const [ inputQuery, setInputQuery ] = React.useState(savedQuery.query);
 
+    const hookService = modifiableSavedQueryStateService({ setModifiable, setDeletable, setInputName, setInputQuery });
+
     const setModifiableSavedQueryState = (command, args) => {
         switch (command) {
             case ModifiableSavedQueryCommand.HANDLE_INPUT_NAME_CHANGE: {
                 const { event } = args;
 
-                setInputName(event.target.value);
+                hookService.handleInputNameChangeCommand(event);
 
                 break;
             }
@@ -20,7 +23,7 @@ const useModifiableSavedQueryState = (savedQuery) => {
             case ModifiableSavedQueryCommand.HANDLE_INPUT_QUERY_CHANGE: {
                 const { event } = args;
 
-                setInputQuery(event.target.value);
+                hookService.handleInputQueryChangeCommand(event);
 
                 break;
             }
@@ -28,38 +31,31 @@ const useModifiableSavedQueryState = (savedQuery) => {
             case ModifiableSavedQueryCommand.MODIFY_QUERY: {
                 const { canUseSavedQueryName, onModifySavedQuery } = args;
 
-                if (!canUseSavedQueryName(savedQuery.id, inputName)) {
-                    return;
-                }
-        
-                setModifiable(false);
-                onModifySavedQuery(savedQuery.id, { name: inputName, query: inputQuery.trim() });
+                hookService.modifyQueryCommand(canUseSavedQueryName, savedQuery.id, inputName, onModifySavedQuery, inputQuery);
 
                 break;
             }
 
             case ModifiableSavedQueryCommand.CANCEL_MODIFY: {
-                setModifiable(false);
-                setInputName(savedQuery.name);
-                setInputQuery(savedQuery.query);
+                hookService.cancelModifyCommand(savedQuery);
 
                 break;
             }
 
             case ModifiableSavedQueryCommand.ENABLE_DELETABLE: {
-                setDeletable(true);
+                hookService.enableDeletableCommand();
 
                 break;
             }
 
             case ModifiableSavedQueryCommand.DISABLE_DELETABLE: {
-                setDeletable(false);
+                hookService.disableDeletableCommand();
 
                 break;
             }
 
             case ModifiableSavedQueryCommand.ENABLE_MODIFIABLE: {
-                setModifiable(true);
+                hookService.enableModifiableCommand();
 
                 break;
             }

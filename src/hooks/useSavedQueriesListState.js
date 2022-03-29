@@ -1,17 +1,19 @@
 import React from 'react';
 import SavedQueriesListCommand from '../enums/SavedQueriesListCommand';
+import savedQueriesListStateService from '../services/savedQueriesListStateService';
 
 const useSavedQueriesListState = () => {
     const [ displaySavedQueries, setDisplaySavedQueries ] = React.useState(false);
     const [ modificationMode, setModificatonMode ] = React.useState(false);
+
+    const hookService = savedQueriesListStateService({ setDisplaySavedQueries, setModificatonMode })
 
     const setSavedQueriesListState = (command, args) => {
         switch (command) {
             case SavedQueriesListCommand.EXECUTE_SAVED_QUERY: {
                 const { savedQuery, onClickSavedQuery } = args;
 
-                setDisplaySavedQueries(false);
-                onClickSavedQuery(savedQuery);
+                hookService.executeSavedQueryCommand(savedQuery, onClickSavedQuery);
 
                 break;
             }
@@ -19,26 +21,25 @@ const useSavedQueriesListState = () => {
             case SavedQueriesListCommand.EXECUTE_SEARCH_FAVOURITES: {
                 const { onSearchFavouritesClick } = args;
 
-                setDisplaySavedQueries(false);
-                onSearchFavouritesClick();
+                hookService.executeSearchFavouritesCommand(onSearchFavouritesClick);
 
                 break;
             }
 
             case SavedQueriesListCommand.TOGGLE_DISPLAY_SAVED_QUERIES: {
-                setDisplaySavedQueries(!displaySavedQueries);
+                hookService.toggleDisplaySavedQueriesCommand(displaySavedQueries);
 
                 break;
             }
             
             case SavedQueriesListCommand.ENTER_MODIFICATION_MODE: {
-                setModificatonMode(true);
+                hookService.enterModificationModeCommand();
 
                 break;
             }
 
             case SavedQueriesListCommand.EXIT_MODIFICATION_MODE: {
-                setModificatonMode(false);
+                hookService.exitModificationModeCommand();
 
                 break;
             }

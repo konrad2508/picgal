@@ -1,5 +1,6 @@
 import React from 'react';
 import AutocompleteCommand from '../enums/AutocompleteCommand';
+import autocompleteStateService from '../services/autocompleteStateService';
 
 const useAutocompleteState = () => {
     const [ display, setDisplay ] = React.useState(false);
@@ -7,32 +8,20 @@ const useAutocompleteState = () => {
     const [ subtagList, setSubtagList ] = React.useState([]);
     const wrapperRef = React.useRef(null);
 
-    const handleClickOutside = (event) => {
-        const { current } = wrapperRef;
+    const hookService = autocompleteStateService({ setDisplay, setVirtualTagMode, setSubtagList }, wrapperRef);
 
-        if (current && !current.contains(event.target)) {
-            setDisplay(false);
-        }
-    };
-
-    React.useEffect(() => {
-        window.addEventListener("mousedown", handleClickOutside);
-        
-        return () => {
-            window.removeEventListener("mousedown", handleClickOutside);
-        };
-    });
+    React.useEffect(hookService.bindMouseClick, []);
 
     const switchAutocompleteState = (command, args) => {
         switch (command) {
             case AutocompleteCommand.ENABLE_DISPLAY: {
-                setDisplay(true);
+                hookService.enableDisplayCommand();
 
                 break;
             }
 
             case AutocompleteCommand.DISABLE_DISPLAY: {
-                setDisplay(false);
+                hookService.disableDisplayCommand();
 
                 break;
             }
@@ -40,20 +29,18 @@ const useAutocompleteState = () => {
             case AutocompleteCommand.ENABLE_VIRTUAL_TAG_MODE: {
                 const { subtags } = args;
 
-                setSubtagList(subtags);
-                setVirtualTagMode(true);
+                hookService.enableVirtualTagMode(subtags);
 
                 break;
             }
 
             case AutocompleteCommand.DISABLE_VIRTUAL_TAG_MODE: {
-                setSubtagList([]);
-                setVirtualTagMode(false);
+                hookService.disableVirtualTagMode();
 
                 break;
             }
 
-            default: {}
+            default: { }
         }
     };
 
