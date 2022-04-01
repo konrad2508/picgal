@@ -7,13 +7,13 @@ const modifiableSavedQueryStateService = ({ setModifiable, setDeletable, setInpu
         setInputQuery(e.target.value);
     };
 
-    const modifyQueryCommand = (canUseSavedQueryName, savedQuery, inputName, onModifySavedQuery, inputQuery) => {
-        if (!canUseSavedQueryName(savedQuery.id, inputName)) {
+    const modifyQueryCommand = (canUseSavedQueryName, savedQueryId, inputName, onModifySavedQuery, inputQuery) => {
+        if (!canUseSavedQueryName(savedQueryId, inputName)) {
             return;
         }
 
         setModifiable(false);
-        onModifySavedQuery(savedQuery.id, { name: inputName, query: inputQuery.trim() });
+        onModifySavedQuery(savedQueryId, { name: inputName, query: inputQuery.trim() });
     };
 
     const cancelModifyCommand = (savedQuery) => {

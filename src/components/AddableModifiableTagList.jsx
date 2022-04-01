@@ -3,16 +3,11 @@ import React from 'react';
 import { FaPlus, FaRegTrashAlt, FaSave, FaTimes } from 'react-icons/fa';
 import ModifiableTag from './ModifiableTag';
 import AutocompleteNewTag from './AutocompleteNewTag';
+import ModifiableTagListContext from './context/ModifiableTagListContext';
 
+const AddableModifiableTagList = ({ tagType, existingTags }) => {
+    const { tagList, switchStateNormal, onAddTag } = React.useContext(ModifiableTagListContext);
 
-const AddableModifiableTagList = ({ tagType,
-                                    tagList,
-                                    tagListState,
-                                    newTagName,
-                                    onAddTag,
-                                    onInputChange,
-                                    switchStateNormal,
-                                    existingTags }) => {
     const filterUsedTags = () => {
         const tagListNames = tagList.map(e => e.name);
         const tagsNames = existingTags.map(e => e.name);
@@ -36,16 +31,12 @@ const AddableModifiableTagList = ({ tagType,
                 </div>
             </div>
             <ul>
-                {tagList.map((e, i) => <ModifiableTag key={i} tag={e} tagListState={tagListState}/>)}
+                {tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
             </ul>
             <form onSubmit={onAddTag}>
                 <div className={styles.container}>
                     <div className={styles.inputContainer}>
-                        <AutocompleteNewTag
-                            query={newTagName}
-                            handleQueryChange={onInputChange}
-                            existingTags={filterUsedTags()}
-                        />
+                        <AutocompleteNewTag existingTags={filterUsedTags()}/>
                     </div>
                     <button type='submit'>
                         <FaSave className='fontAwesome'/>

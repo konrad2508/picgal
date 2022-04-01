@@ -1,32 +1,38 @@
 import styles from '../styles/AddNewSavedQuery.module.css';
 import React from 'react';
-import AutocompleteQuery from './AutocompleteQuery';
 import { FaPlus, FaTimes } from 'react-icons/fa';
+import AutocompleteQuery from './AutocompleteQuery';
+import ModifiableSavedQueriesListContext from './context/ModifiableSavedQueriesListContext';
+import AppContext from './context/AppContext';
 
-const AddNewSavedQuery = ({ inputNewName,
-                            onInputNewName,
-                            inputNewQuery,
-                            onInputNewQuery,
-                            existingTags,
-                            onClickAddNewSavedQuery,
-                            onClickCancelAddingSavedQuery }) => {
+const AddNewSavedQuery = () => {
+    const { existingTags } = React.useContext(AppContext);
+    const {
+        inputNewName,
+        handleInputNewName,
+        inputNewQuery,
+        handleInputNewQuery,
+        addNewSavedQuery,
+        cancelAddingSavedQuery
+    } = React.useContext(ModifiableSavedQueriesListContext);
+
     return (
         <div className={styles.container}>
             <div className={styles.formContainer}>
-                <input className={styles.nameInput} value={inputNewName} onInput={onInputNewName}/>
+                <input className={styles.nameInput} value={inputNewName} onInput={handleInputNewName}/>
                 <div className={styles.queryInput}>
                     <AutocompleteQuery
                         query={inputNewQuery}
-                        handleQueryChange={onInputNewQuery}
+                        handleQueryChange={handleInputNewQuery}
                         existingTags={existingTags}
                     />
                 </div>
             </div>
             <div className={styles.buttonContainer}>
-                <button className={styles.button} onClick={onClickAddNewSavedQuery}>
+                <button className={styles.button} onClick={addNewSavedQuery}>
                     <FaPlus className='fontAwesome'/>
                 </button>
-                <button className={styles.button} onClick={onClickCancelAddingSavedQuery}>
+                <button className={styles.button} onClick={cancelAddingSavedQuery}>
                     <FaTimes className='fontAwesome'/>
                 </button>
             </div>

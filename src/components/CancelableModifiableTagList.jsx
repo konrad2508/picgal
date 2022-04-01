@@ -1,10 +1,13 @@
 import styles from '../styles/CancelableModifiableTagList.module.css';
 import React from 'react';
 import { FaPlus, FaRegTrashAlt } from 'react-icons/fa';
-import TagState from '../enums/TagState';
 import ModifiableTag from './ModifiableTag';
+import TagState from '../enums/TagState';
+import ModifiableTagListContext from './context/ModifiableTagListContext';
 
-const CancelableModifiableTagList = ({ tagType, tagList, tagListState, onCancelModification, switchStateAdd, switchStateRemove }) => {
+const CancelableModifiableTagList = ({ tagType }) => {
+    const { tagList, switchStateAdd, switchStateRemove } = React.useContext(ModifiableTagListContext);
+    
     const normalTags = tagList.filter(e => e.type === TagState.NORMAL).length    
 
     return (
@@ -28,7 +31,7 @@ const CancelableModifiableTagList = ({ tagType, tagList, tagListState, onCancelM
                 </div>
             </div>
             <ul>
-                {tagList.map((e, i) => <ModifiableTag key={i} tag={e} tagListState={tagListState} onCancelModification={onCancelModification}/>)}
+                {tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
             </ul>
         </>  
     );

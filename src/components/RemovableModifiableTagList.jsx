@@ -2,8 +2,11 @@ import styles from '../styles/RemovableModifiableTagList.module.css';
 import React from 'react';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import ModifiableTag from './ModifiableTag';
+import ModifiableTagListContext from './context/ModifiableTagListContext';
 
-const RemovableModifiableTagList = ({ tagType, switchStateNormal, tagList, tagListState, onRemoveTag }) => {
+const RemovableModifiableTagList = ({ tagType }) => {
+    const { tagList, switchStateNormal } = React.useContext(ModifiableTagListContext);
+
     return (
         <>
             <div className={styles.container}>
@@ -24,7 +27,7 @@ const RemovableModifiableTagList = ({ tagType, switchStateNormal, tagList, tagLi
                 </div>
             </div>
             <ul>
-                {tagList.map((e, i) => <ModifiableTag key={i} tag={e} tagListState={tagListState} onRemoveTag={onRemoveTag}/>)}
+                {tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
             </ul>
         </>
     );

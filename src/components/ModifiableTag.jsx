@@ -4,8 +4,11 @@ import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
 import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
 import queryService from '../services/queryService';
+import ModifiableTagListContext from './context/ModifiableTagListContext';
 
-const ModifiableTag = ({ tag, tagListState, onRemoveTag, onCancelModification }) => {
+const ModifiableTag = ({ tag }) => {
+    const { tagListState, onRemoveTag, onCancelModification } = React.useContext(ModifiableTagListContext);
+
     const getColour = (type) => {
         if (type === TagState.ADDED) {
             return 'green';

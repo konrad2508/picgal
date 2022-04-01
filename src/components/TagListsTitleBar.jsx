@@ -1,9 +1,12 @@
-import styles from '../styles/TagListsTitleBar.module.css'
+import styles from '../styles/TagListsTitleBar.module.css';
 import React from 'react';
 import { FaPen, FaSave, FaTimes } from 'react-icons/fa';
 import ModificationMode from '../enums/ModificationMode';
+import TagListsContext from './context/TagListsContext';
 
-const TagListsTitleBar = ({ modificationMode, changeModificationMode }) => {
+const TagListsTitleBar = () => {
+    const { modificationMode, changeModificationMode } = React.useContext(TagListsContext);
+
     if (modificationMode) {
         return (
             <div className={styles.container}>

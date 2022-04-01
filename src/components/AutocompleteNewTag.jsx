@@ -1,23 +1,26 @@
 import styles from '../styles/Autocomplete.module.css';
 import React from 'react';
-import useAutocompleteState from '../hooks/useAutocompleteState';
 import AutocompleteCommand from '../enums/AutocompleteCommand';
+import useAutocompleteState from '../hooks/useAutocompleteState';
+import ModifiableTagListContext from './context/ModifiableTagListContext';
 
-const AutocompleteNewTag = ({ query, handleQueryChange, existingTags }) => {
+const AutocompleteNewTag = ({ existingTags }) => {
+    const { newTagName, onInputChange } = React.useContext(ModifiableTagListContext);
+
     const { autocompleteState, switchAutocompleteState } = useAutocompleteState();
 
-    const enableDisplay =  () => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY,  {  });
+    const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY,  {  });
     const disableDisplay = () => switchAutocompleteState(AutocompleteCommand.DISABLE_DISPLAY, {  });
 
     const addSuggestion = (e) => {
-        handleQueryChange({ target: { value: e.name.trim() } });
+        onInputChange({ target: { value: e.name.trim() } });
         disableDisplay();
     }
 
     const renderSuggestions = () => {
         return (
             <div className={styles.fixedContainer}>
-                { existingTags.filter(e => e.name.toLowerCase().startsWith(query) && query).map((e, i) => (
+                { existingTags.filter(e => e.name.toLowerCase().startsWith(newTagName) && newTagName).map((e, i) => (
                     <div key={i} onClick={() => addSuggestion(e)} className={styles.suggestionBox}>
                         <p className={styles.suggestion}>{e.name}</p>
                     </div>
@@ -29,8 +32,8 @@ const AutocompleteNewTag = ({ query, handleQueryChange, existingTags }) => {
     return (
         <div className={styles.container} ref={autocompleteState.wrapperRef}>
             <input
-                value={query}
-                onChange={handleQueryChange}
+                value={newTagName}
+                onChange={onInputChange}
                 className={styles.input}
                 onClick={enableDisplay}
             />
