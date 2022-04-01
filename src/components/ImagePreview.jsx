@@ -1,8 +1,11 @@
 import styles from '../styles/ImagePreview.module.css';
 import React from 'react';
 import networkService from '../services/networkService';
+import AppContext from './context/AppContext';
 
-const ImagePreview = ({ img, onClick }) => {
+const ImagePreview = ({ img }) => {
+    const { onImagePreviewClick } = React.useContext(AppContext);
+
     const MAX_DIM = 150;
 
     const { width, height } = img;
@@ -30,7 +33,7 @@ const ImagePreview = ({ img, onClick }) => {
                 alt={img.preview}
                 width={newWidth}
                 height={newHeight}
-                onClick={() => onClick(img)}
+                onClick={() => onImagePreviewClick(img)}
             />
         </div>
     );

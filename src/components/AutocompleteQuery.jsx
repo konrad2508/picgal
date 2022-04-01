@@ -1,17 +1,17 @@
 import styles from '../styles/Autocomplete.module.css';
 import React from 'react';
-import useAutocompleteState from '../hooks/useAutocompleteState';
 import AutocompleteCommand from '../enums/AutocompleteCommand';
 import TagMetatype from '../enums/TagMetatype';
+import useAutocompleteState from '../hooks/useAutocompleteState';
 import queryService from '../services/queryService';
 
 const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     const { autocompleteState, switchAutocompleteState } = useAutocompleteState(existingTags);
 
-    const enableDisplay         = ()        => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY,           {  });
-    const disableDisplay        = ()        => switchAutocompleteState(AutocompleteCommand.DISABLE_DISPLAY,          {  });
-    const enableVirtualTagMode  = (subtags) => switchAutocompleteState(AutocompleteCommand.ENABLE_VIRTUAL_TAG_MODE,  { subtags });
-    const disableVirtualTagMode = ()        => switchAutocompleteState(AutocompleteCommand.DISABLE_VIRTUAL_TAG_MODE, {  });
+    const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY, {  });
+    const disableDisplay = () => switchAutocompleteState(AutocompleteCommand.DISABLE_DISPLAY, {  });
+    const enableVirtualTagMode = (subtags) => switchAutocompleteState(AutocompleteCommand.ENABLE_VIRTUAL_TAG_MODE, { subtags });
+    const disableVirtualTagMode = () => switchAutocompleteState(AutocompleteCommand.DISABLE_VIRTUAL_TAG_MODE, {  });
 
     let rightQuery, leftQuery;
     if (query) {

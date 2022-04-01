@@ -1,10 +1,13 @@
 import styles from '../styles/SearchBar.module.css';
 import React from 'react';
 import { FaArrowLeft, FaSearch } from 'react-icons/fa';
-import AppState from '../enums/AppState';
 import AutocompleteQuery from './AutocompleteQuery';
+import AppState from '../enums/AppState';
+import AppContext from './context/AppContext';
 
-const SearchBar = ({ sendQuery, onBackClick, appState, query, handleQueryChange, existingTags }) => {
+const SearchBar = () => {
+    const { sendQuery, onBackClick, appState, query, handleQueryChange, existingTags } = React.useContext(AppContext);
+    
     return (
         <form onSubmit={sendQuery}>
             <div className={styles.form}>
