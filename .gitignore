@@ -36,3 +36,6 @@ samples/
 
 # python cache
 __pycache__
+
+# pyenv
+.python-version
