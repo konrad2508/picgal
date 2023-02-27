@@ -12,6 +12,10 @@ const useAppState = () => {
     const [maxPage, setMaxPage] = React.useState(1);
     const [existingTags, setExistingTags] = React.useState([]);
     const [savedQueries, setSavedQueries] = React.useState([]);
+    const [deletedCounter, setDeletedCounter] = React.useState(-1);
+    const [restoredPreviewsCounter, setRestoredPreviewsCounter] = React.useState(-1);
+    const [restoredSamplesCounter, setRestoredSamplesCounter] = React.useState(-1);
+    const [addCounter, setAddCounter] = React.useState(-1);
 
     const clearState = () => {
         setQuery('');
@@ -32,7 +36,11 @@ const useAppState = () => {
         setMaxPage,
         setExistingTags,
         setSavedQueries,
-        setHistory
+        setHistory,
+        setDeletedCounter,
+        setRestoredPreviewsCounter,
+        setRestoredSamplesCounter,
+        setAddCounter
     };
     const hookService = appStateService(setters, history);
 
@@ -133,12 +141,32 @@ const useAppState = () => {
                 break;
             }
 
+            case Command.SYNC_DATABASE: {
+                hookService.syncDatabase();
+
+                break;
+            }
+
             default: { }
         }        
     };
 
     return {
-        appState: { query, imagesToShow, appState, usedQuery, currentPage, maxPage, history, existingTags, savedQueries },
+        appState: {
+            query,
+            imagesToShow,
+            appState,
+            usedQuery,
+            currentPage,
+            maxPage,
+            history,
+            existingTags,
+            savedQueries,
+            deletedCounter,
+            restoredPreviewsCounter,
+            restoredSamplesCounter,
+            addCounter
+        },
         switchState
     };
 };

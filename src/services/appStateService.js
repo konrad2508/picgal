@@ -10,7 +10,11 @@ const appStateService = ({  setQuery,
                             setMaxPage,
                             setExistingTags,
                             setSavedQueries,
-                            setHistory },
+                            setHistory,
+                            setDeletedCounter,
+                            setRestoredPreviewsCounter,
+                            setRestoredSamplesCounter,
+                            setAddCounter },
                             history) => {
     
     const fetchSavedDataEffect = () => {
@@ -210,6 +214,30 @@ const appStateService = ({  setQuery,
             .then((createdSavedQuery) => setSavedQueries([...savedQueries, createdSavedQuery]));
     };
 
+    const syncDatabase = () => {
+        requestService
+            .syncDatabase()
+            .then((syncDatabaseResult) => {
+                const { deletedCounter, restoredPreviewsCounter, restoredSamplesCounter, addCounter } = syncDatabaseResult;
+
+                setDeletedCounter(deletedCounter);
+                setRestoredPreviewsCounter(restoredPreviewsCounter);
+                setRestoredSamplesCounter(restoredSamplesCounter);
+                setAddCounter(addCounter);
+
+                setTimeout(() => {
+                    setDeletedCounter(0);
+                    setRestoredPreviewsCounter(0);
+                    setRestoredSamplesCounter(0);
+                    setAddCounter(0);
+                }, 3000);
+
+                requestService
+                    .getTags()
+                    .then(tags => setExistingTags(tags));
+            });
+    };
+
     return {
         fetchSavedDataEffect,
         searchCommand,
@@ -223,7 +251,8 @@ const appStateService = ({  setQuery,
         clickSavedQueryCommand,
         modifySavedQueryCommand,
         deleteSavedQueryCommand,
-        addSavedQueryCommand
+        addSavedQueryCommand,
+        syncDatabase
     };
 };
 

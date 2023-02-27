@@ -23,6 +23,7 @@ const App = () => {
     const onModifySavedQuery = (id, modifications) => switchState(Command.MODIFY_SAVED_QUERY, { id, modifications });
     const onDeleteSavedQuery = (id) => switchState(Command.DELETE_SAVED_QUERY, { id });
     const onAddSavedQuery = (newSavedQuery) => switchState(Command.ADD_SAVED_QUERY, { newSavedQuery });
+    const onSyncDatabase = () => switchState(Command.SYNC_DATABASE, {  });
 
     const appContextValue = {
         appState: appState.appState,
@@ -33,6 +34,10 @@ const App = () => {
         existingTags: appState.existingTags,
         pageNumber: appState.currentPage,
         maxPage: appState.maxPage,
+        deletedCounter: appState.deletedCounter,
+        restoredPreviewsCounter: appState.restoredPreviewsCounter,
+        restoredSamplesCounter: appState.restoredSamplesCounter,
+        addCounter: appState.addCounter,
         sendQuery,
         handleQueryChange,
         onImagePreviewClick,
@@ -44,7 +49,8 @@ const App = () => {
         onClickSavedQuery,
         onModifySavedQuery,
         onDeleteSavedQuery,
-        onAddSavedQuery
+        onAddSavedQuery,
+        onSyncDatabase
     };
 
     return (
