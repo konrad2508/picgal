@@ -12,6 +12,7 @@ const Notifications = () => {
     const restoredPreviewsCounterNotifText = `Restored ${restoredPreviewsCounter} preview` + pluralizer(restoredPreviewsCounter);
     const restoredSamplesCounterNotifText = `Restored ${restoredSamplesCounter} sample` + pluralizer(restoredSamplesCounter);
     const addCounterNotifText = `Added ${addCounter} image` + pluralizer(addCounter);
+    const noChangesToDatabaseNotifText = 'Database is already up to date';
 
     return (
         <div className={styles.container}>
@@ -19,6 +20,11 @@ const Notifications = () => {
             { restoredPreviewsCounter > 0 && <Notification text={restoredPreviewsCounterNotifText}/> }
             { restoredSamplesCounter > 0 && <Notification text={restoredSamplesCounterNotifText}/> }
             { addCounter > 0 && <Notification text={addCounterNotifText}/> }
+
+            {
+                [ deletedCounter, restoredPreviewsCounter, restoredSamplesCounter, addCounter ].every((v) => v === 0) && 
+                <Notification text={noChangesToDatabaseNotifText}/>
+            }
         </div>
     );
 };

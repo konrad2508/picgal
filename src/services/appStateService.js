@@ -226,10 +226,10 @@ const appStateService = ({  setQuery,
                 setAddCounter(addCounter);
 
                 setTimeout(() => {
-                    setDeletedCounter(0);
-                    setRestoredPreviewsCounter(0);
-                    setRestoredSamplesCounter(0);
-                    setAddCounter(0);
+                    setDeletedCounter(-1);
+                    setRestoredPreviewsCounter(-1);
+                    setRestoredSamplesCounter(-1);
+                    setAddCounter(-1);
                 }, 3000);
 
                 requestService
