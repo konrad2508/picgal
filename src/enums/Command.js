@@ -10,7 +10,8 @@ const Command = {
     CLICK_SAVED_QUERY: 'Click_Saved_Query',
     MODIFY_SAVED_QUERY: 'Modify_Saved_Query',
     DELETE_SAVED_QUERY: 'Delete_Saved_Query',
-    ADD_SAVED_QUERY: 'Add_Saved_Query'
+    ADD_SAVED_QUERY: 'Add_Saved_Query',
+    SYNC_DATABASE: 'Sync_Database'
 };
 
 export default Command;

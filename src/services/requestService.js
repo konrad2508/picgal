@@ -65,6 +65,12 @@ const createSavedQuery = async (newSavedQuery) => {
     return camelize(data);
 };
 
+const syncDatabase = async () => {
+    const { data } = await axios.post(`${BASE_URL}/rpc/syncdatabase`);
+
+    return camelize(data);
+};
+
 const requestService = {
     getAllImages,
     getAllImagesStats,
@@ -75,6 +81,7 @@ const requestService = {
     getSavedQueries,
     modifySavedQuery,
     deleteSavedQuery,
-    createSavedQuery
+    createSavedQuery,
+    syncDatabase
 };
 export default requestService;

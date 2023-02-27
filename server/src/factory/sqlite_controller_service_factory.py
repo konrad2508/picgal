@@ -13,6 +13,8 @@ from service.image.sqlite_image_database_converter_service import SqliteImageDat
 from service.query.i_query_controller_service import IQueryControllerService
 from service.query.query_controller_service import QueryControllerService
 from service.query.query_converter_service import QueryConverterService
+from service.rpc.i_rpc_controller_service import IRPCControllerService
+from service.rpc.rpc_controller_service import RPCControllerService
 
 
 class SqliteControllerServiceFactory(IControllerServiceFactory):
@@ -38,3 +40,8 @@ class SqliteControllerServiceFactory(IControllerServiceFactory):
         query_service = QueryControllerService(query_repository, query_converter)
 
         return query_service
+    
+    def get_rpc_service(self) -> IRPCControllerService:
+        rpc_service = RPCControllerService(self.db, self.cfg)
+
+        return rpc_service
