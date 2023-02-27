@@ -1,4 +1,13 @@
 .container {
-    justify-content: center;
-    display: flex;
+
+}
+
+.buttonContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px);
+}
+
+.button {
+    max-width: 80px;
+    margin-bottom: 20px;
 }
