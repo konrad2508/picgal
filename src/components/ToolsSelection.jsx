@@ -7,11 +7,9 @@ const ToolsSelection = () => {
 
     return (
         <div className={styles.container}>
-            <div className={styles.outside}>
-                <h1>Tools</h1>
-                <button onClick={onSyncDatabase}>Sync Database</button>
-                <button>tool2</button>
-                <button>tool3</button>
+            <h1>Tools</h1>
+            <div className={styles.buttonContainer}>
+                <button onClick={onSyncDatabase} className={styles.button}>Sync Database</button>
             </div>
         </div>
     );
