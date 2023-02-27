@@ -68,7 +68,7 @@ class ImageController(IController):
 
                 return flask.send_file(image_path, mimetype='image/jpeg')
             
-            except EntityNotFound:
+            except (EntityNotFound,  FileNotFoundError):
                 flask.abort(404)
 
         @image_controller.route(f'{preview_route}/<id>', methods=['GET'])
@@ -78,7 +78,7 @@ class ImageController(IController):
 
                 return flask.send_file(preview_path, mimetype='image/jpeg')
             
-            except EntityNotFound:
+            except (EntityNotFound, FileNotFoundError):
                 flask.abort(404)
 
         @image_controller.route(f'{sample_route}/<id>', methods=['GET'])
@@ -88,7 +88,7 @@ class ImageController(IController):
 
                 return flask.send_file(sample_path, mimetype='image/jpeg')
             
-            except EntityNotFound:
+            except (EntityNotFound, FileNotFoundError):
                 flask.abort(404)
 
         return image_controller
