@@ -114,7 +114,7 @@ const appStateService = ({  setQuery,
                 setAppState(AppState.BROWSING);
                 setUsedQuery(query);
                 setQuery('');
-                setCurrentPage(newPageNum)
+                setCurrentPage(newPageNum);
             }
         )(usedQuery, page, step);
 
@@ -354,6 +354,19 @@ const appStateService = ({  setQuery,
         setBatchEditorImages([]);
     };
 
+    const pageNavInBatchEditorCommand = (usedQuery, page, step) => {
+        const newPageNum = page + step;
+        const urlFormattedQuery = queryService.inputQueryToUrlQuery(usedQuery);
+
+        requestService
+            .getImages(urlFormattedQuery, newPageNum)
+            .then(images => setImagesToShow(images));
+
+        setUsedQuery(usedQuery);
+        setQuery('');
+        setCurrentPage(newPageNum);
+    };
+
     return {
         fetchSavedDataEffect,
         searchCommand,
@@ -376,7 +389,8 @@ const appStateService = ({  setQuery,
         clickTitleCommand,
         clickFavouritesInBatchEditorCommand,
         clickSavedQueryInBatchEditorCommand,
-        modifyImageInBatchEditorCommand
+        modifyImageInBatchEditorCommand,
+        pageNavInBatchEditorCommand
     };
 };
 

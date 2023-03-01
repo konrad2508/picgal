@@ -19,7 +19,8 @@ const Command = {
     CLICK_TITLE: 'Click_Title',
     CLICK_FAVOURITES_IN_BATCH_EDITOR: 'Click_Favourites_In_Batch_Editor',
     CLICK_SAVED_QUERY_IN_BATCH_EDITOR: 'Click_Saved_Query_In_Batch_Editor',
-    MODIFY_IMG_IN_BATCH_EDITOR: 'Modify_Img_In_Batch_Editor'
+    MODIFY_IMG_IN_BATCH_EDITOR: 'Modify_Img_In_Batch_Editor',
+    PAGE_NAV_IN_BATCH_EDITOR: 'Page_Nav_In_Batch_Editor'
 };
 
 export default Command;
