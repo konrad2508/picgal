@@ -206,6 +206,14 @@ const useAppState = () => {
                 break;
             }
 
+            case Command.PAGE_NAV_IN_BATCH_EDITOR: {
+                const { pageStep } = args;
+                
+                hookService.pageNavInBatchEditorCommand(usedQuery, currentPage, pageStep);
+
+                break;
+            }
+
             default: { }
         }        
     };

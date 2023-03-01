@@ -32,6 +32,7 @@ const App = () => {
     const onSearchFavouritesClickInBatchEditor = () => switchState(Command.CLICK_FAVOURITES_IN_BATCH_EDITOR, {  });
     const onClickSavedQueryInBatchEditor = (savedQuery) => switchState(Command.CLICK_SAVED_QUERY_IN_BATCH_EDITOR, { savedQuery });
     const onSaveModifiedTagsClickInBatchEditor = (_, modifications) => switchState(Command.MODIFY_IMG_IN_BATCH_EDITOR, { modifications });
+    const onPageNavClickInBatchEditor = (pageStep) => switchState(Command.PAGE_NAV_IN_BATCH_EDITOR, { pageStep });
 
     const appContextValue = {
         appState: appState.appState,
@@ -68,7 +69,8 @@ const App = () => {
         onClickTitle,
         onSearchFavouritesClickInBatchEditor,
         onClickSavedQueryInBatchEditor,
-        onSaveModifiedTagsClickInBatchEditor
+        onSaveModifiedTagsClickInBatchEditor,
+        onPageNavClickInBatchEditor
     };
 
     return (
