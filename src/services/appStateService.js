@@ -14,8 +14,10 @@ const appStateService = ({  setQuery,
                             setDeletedCounter,
                             setRestoredPreviewsCounter,
                             setRestoredSamplesCounter,
-                            setAddCounter },
-                            history) => {
+                            setAddCounter,
+                            setBatchEditorImages },
+                            history,
+                            batchEditorImages) => {
     
     const fetchSavedDataEffect = () => {
         requestService
@@ -238,6 +240,120 @@ const appStateService = ({  setQuery,
             });
     };
 
+    const startBatchEditorCommand = () => {
+        const urlFormattedQuery = queryService.inputQueryToUrlQuery('');
+
+        requestService
+            .getImagesStats(urlFormattedQuery)
+            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+
+        requestService
+            .getImages(urlFormattedQuery, 1)
+            .then(images => setImagesToShow(images));
+
+        setAppState(AppState.BATCH_EDITING);
+        setUsedQuery('');
+        setQuery('');
+        setCurrentPage(1);
+    };
+
+    const clickPreviewInBatchEditorCommand = (img) => {
+        const alreadyAdded = batchEditorImages.some((i) => i.id === img.id);
+
+        if (alreadyAdded) {
+            setBatchEditorImages(batchEditorImages.filter((v, _) => v.id !== img.id))
+        }
+        else {
+            setBatchEditorImages([...batchEditorImages, img])
+        }
+    };
+
+    const searchInBatchEditorCommand = (q) => {
+        const urlFormattedQuery = queryService.inputQueryToUrlQuery(q);
+
+        requestService
+            .getImagesStats(urlFormattedQuery)
+            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+
+        requestService
+            .getImages(urlFormattedQuery, 1)
+            .then(images => setImagesToShow(images));
+
+        setUsedQuery(q);
+        setQuery('');
+        setCurrentPage(1);
+    };
+
+    const cancelBatchEditorCommand = () => {
+        setAppState(AppState.START);
+        setBatchEditorImages([]);
+    };
+
+    const clickTitleCommand = () => {
+        const cmd = () => (
+            () => {
+                setAppState(AppState.START);
+                setUsedQuery('');
+                setQuery('');
+                setCurrentPage(1);
+                setMaxPage(1);
+                setImagesToShow([]);
+            }
+        )();
+
+        cmd();
+        setHistory([...history, cmd]);
+    };
+
+    const clickFavouritesInBatchEditorCommand = () => {
+        const favouriteQuery = 'favourite:yes';
+
+        const urlFormattedQuery = queryService.inputQueryToUrlQuery(favouriteQuery);
+
+        requestService
+            .getImagesStats(urlFormattedQuery)
+            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+
+        requestService
+            .getImages(urlFormattedQuery, 1)
+            .then(images => setImagesToShow(images));
+
+        setUsedQuery(favouriteQuery);
+        setQuery('');
+        setCurrentPage(1);
+    };
+
+    const clickSavedQueryInBatchEditorCommand = (q) => {
+        const urlFormattedQuery = queryService.inputQueryToUrlQuery(q);
+
+        requestService
+            .getImagesStats(urlFormattedQuery)
+            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+
+        requestService
+            .getImages(urlFormattedQuery, 1)
+            .then(images => setImagesToShow(images));
+
+        setUsedQuery(q);
+        setQuery('');
+        setCurrentPage(1);
+    };
+
+    const modifyImageInBatchEditorCommand = (modifications) => {
+        const batchModifications = {...modifications, ids: batchEditorImages.map((v) => v.id)};
+
+        requestService
+            .modifyImageBatch(batchModifications)
+            .then((_) => {
+                requestService
+                    .getTags()
+                    .then(tags => setExistingTags(tags));
+            });
+
+        setAppState(AppState.START);
+        setBatchEditorImages([]);
+    };
+
     return {
         fetchSavedDataEffect,
         searchCommand,
@@ -252,7 +368,15 @@ const appStateService = ({  setQuery,
         modifySavedQueryCommand,
         deleteSavedQueryCommand,
         addSavedQueryCommand,
-        syncDatabase
+        syncDatabase,
+        startBatchEditorCommand,
+        clickPreviewInBatchEditorCommand,
+        searchInBatchEditorCommand,
+        cancelBatchEditorCommand,
+        clickTitleCommand,
+        clickFavouritesInBatchEditorCommand,
+        clickSavedQueryInBatchEditorCommand,
+        modifyImageInBatchEditorCommand
     };
 };
 

@@ -11,7 +11,15 @@ const Command = {
     MODIFY_SAVED_QUERY: 'Modify_Saved_Query',
     DELETE_SAVED_QUERY: 'Delete_Saved_Query',
     ADD_SAVED_QUERY: 'Add_Saved_Query',
-    SYNC_DATABASE: 'Sync_Database'
+    SYNC_DATABASE: 'Sync_Database',
+    START_BATCH_EDITOR: 'Start_Batch_Editor',
+    CLICK_PREVIEW_IN_BATCH_EDITOR: 'Click_Preview_In_Batch_Editor',
+    SEARCH_IN_BATCH_EDITOR: 'Search_In_Batch_Editor',
+    CANCEL_BATCH_EDITOR: 'Cancel_Batch_Editor',
+    CLICK_TITLE: 'Click_Title',
+    CLICK_FAVOURITES_IN_BATCH_EDITOR: 'Click_Favourites_In_Batch_Editor',
+    CLICK_SAVED_QUERY_IN_BATCH_EDITOR: 'Click_Saved_Query_In_Batch_Editor',
+    MODIFY_IMG_IN_BATCH_EDITOR: 'Modify_Img_In_Batch_Editor'
 };
 
 export default Command;

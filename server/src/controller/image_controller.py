@@ -32,6 +32,21 @@ class ImageController(IController):
 
             return flask.jsonify(info)
 
+        @image_controller.route(f'{info_route}', methods=['PUT'])
+        def put_info_batch() -> flask.Response:
+            batch_modifications = ImageModificationRequest.from_json(flask.request.get_json(force=True))
+
+            try:
+                modified_images = image_service.modify_info_batch(image_route, preview_route, sample_route, batch_modifications)
+
+                return flask.jsonify(modified_images)
+
+            except EntityNotFound:
+                flask.abort(404)
+
+            except DatabaseIntegrityViolated:
+                flask.abort(409)
+
         @image_controller.route(f'{info_route}/<id>', methods=['PUT'])
         def put_info(id: int) -> flask.Response:
             modifications = ImageModificationRequest.from_json(flask.request.get_json(force=True))

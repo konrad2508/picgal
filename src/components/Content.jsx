@@ -10,7 +10,7 @@ import AppState from '../enums/AppState';
 import AppContext from './context/AppContext';
 
 const Content = () => {
-    const { imagesToShow, appState } = React.useContext(AppContext);
+    const { imagesToShow, appState, batchEditorSelected } = React.useContext(AppContext);
 
     let content = null;
 
@@ -23,6 +23,27 @@ const Content = () => {
                 </div>
                 <div>
                     <Pager/>
+                </div>
+            </>
+        );
+    }
+    else if (appState === AppState.BATCH_EDITING) {
+        content = (
+            <>
+                <UsedQuery/>
+                <div className={styles.previews}>
+                    {
+                        imagesToShow.map(img => 
+                            <ImagePreview key={img.id} img={img} batchEditor={true} selected={batchEditorSelected.some((i) => i.id === img.id)}/>
+                        )
+                    }
+                </div>
+                <div>
+                    <Pager/>
+                </div>
+                <h3>Selected images</h3>
+                <div className={styles.previews}>
+                    {batchEditorSelected.map(img => <ImagePreview key={img.id} img={img} active={false}/>)}
                 </div>
             </>
         );

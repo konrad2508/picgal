@@ -24,6 +24,14 @@ const App = () => {
     const onDeleteSavedQuery = (id) => switchState(Command.DELETE_SAVED_QUERY, { id });
     const onAddSavedQuery = (newSavedQuery) => switchState(Command.ADD_SAVED_QUERY, { newSavedQuery });
     const onSyncDatabase = () => switchState(Command.SYNC_DATABASE, {  });
+    const onStartBatchEditor = () => switchState(Command.START_BATCH_EDITOR, {  });
+    const onClickPreviewInBatchEditor = (img) => switchState(Command.CLICK_PREVIEW_IN_BATCH_EDITOR, { img });
+    const sendQueryInBatchEditor = (event) => switchState(Command.SEARCH_IN_BATCH_EDITOR, { event });
+    const onCancelBatchEditor = () => switchState(Command.CANCEL_BATCH_EDITOR, {  });
+    const onClickTitle = () => switchState(Command.CLICK_TITLE, {  });
+    const onSearchFavouritesClickInBatchEditor = () => switchState(Command.CLICK_FAVOURITES_IN_BATCH_EDITOR, {  });
+    const onClickSavedQueryInBatchEditor = (savedQuery) => switchState(Command.CLICK_SAVED_QUERY_IN_BATCH_EDITOR, { savedQuery });
+    const onSaveModifiedTagsClickInBatchEditor = (_, modifications) => switchState(Command.MODIFY_IMG_IN_BATCH_EDITOR, { modifications });
 
     const appContextValue = {
         appState: appState.appState,
@@ -38,6 +46,8 @@ const App = () => {
         restoredPreviewsCounter: appState.restoredPreviewsCounter,
         restoredSamplesCounter: appState.restoredSamplesCounter,
         addCounter: appState.addCounter,
+        historyLength: appState.history.length - 1,
+        batchEditorSelected: appState.batchEditorImages,
         sendQuery,
         handleQueryChange,
         onImagePreviewClick,
@@ -50,18 +60,26 @@ const App = () => {
         onModifySavedQuery,
         onDeleteSavedQuery,
         onAddSavedQuery,
-        onSyncDatabase
+        onSyncDatabase,
+        onStartBatchEditor,
+        onClickPreviewInBatchEditor,
+        sendQueryInBatchEditor,
+        onCancelBatchEditor,
+        onClickTitle,
+        onSearchFavouritesClickInBatchEditor,
+        onClickSavedQueryInBatchEditor,
+        onSaveModifiedTagsClickInBatchEditor
     };
 
     return (
         <div className={styles.main}>
-            <Title/>
-            <div className={styles.app}>
-                <AppContext.Provider value={appContextValue}>
+            <AppContext.Provider value={appContextValue}>
+                <Title/>
+                <div className={styles.app}>
                     <Menu/>
                     <Content/>
-                </AppContext.Provider>
-            </div>
+                </div>
+            </AppContext.Provider>
         </div>
     );
 };

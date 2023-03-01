@@ -33,6 +33,16 @@ class ImageControllerService(IImageControllerService):
 
         return images
 
+    def modify_info_batch(self, image_url: str, preview_url: str, sample_url: str, batch_modifications: ImageModificationRequest) -> list[ImageData]:
+        images = self.repository.modify_image_batch(
+            batch_modifications,
+            image_url,
+            preview_url,
+            sample_url
+        )
+
+        return images
+
     def modify_info(self, image_url: str, preview_url: str, sample_url: str, id: int, modifications: ImageModificationRequest) -> ImageData:
         image = self.repository.modify_image(
             id,

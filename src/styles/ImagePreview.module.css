@@ -6,3 +6,11 @@
     justify-content: center;
     align-items: center;
 }
+
+.selected {
+    filter: grayscale(100%);
+}
+
+.notSelected {
+    
+}

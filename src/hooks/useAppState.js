@@ -16,6 +16,7 @@ const useAppState = () => {
     const [restoredPreviewsCounter, setRestoredPreviewsCounter] = React.useState(-1);
     const [restoredSamplesCounter, setRestoredSamplesCounter] = React.useState(-1);
     const [addCounter, setAddCounter] = React.useState(-1);
+    const [batchEditorImages, setBatchEditorImages] = React.useState([]);
 
     const clearState = () => {
         setQuery('');
@@ -40,9 +41,10 @@ const useAppState = () => {
         setDeletedCounter,
         setRestoredPreviewsCounter,
         setRestoredSamplesCounter,
-        setAddCounter
+        setAddCounter,
+        setBatchEditorImages
     };
-    const hookService = appStateService(setters, history);
+    const hookService = appStateService(setters, history, batchEditorImages);
 
     React.useEffect(hookService.fetchSavedDataEffect, []);
 
@@ -147,6 +149,63 @@ const useAppState = () => {
                 break;
             }
 
+            case Command.START_BATCH_EDITOR: {
+                hookService.startBatchEditorCommand();
+                
+                break;
+            }
+            
+            case Command.CLICK_PREVIEW_IN_BATCH_EDITOR: {
+                const { img } = args;
+
+                hookService.clickPreviewInBatchEditorCommand(img);
+                
+                break;
+            }
+
+            case Command.SEARCH_IN_BATCH_EDITOR: {
+                const { event } = args;
+                event.preventDefault();
+
+                hookService.searchInBatchEditorCommand(query);
+
+                break;
+            }
+
+            case Command.CANCEL_BATCH_EDITOR: {
+                hookService.cancelBatchEditorCommand();
+
+                break;
+            }
+
+            case Command.CLICK_TITLE: {
+                hookService.clickTitleCommand();
+
+                break;
+            }
+
+            case Command.CLICK_FAVOURITES_IN_BATCH_EDITOR: {
+                hookService.clickFavouritesInBatchEditorCommand();
+
+                break;
+            }
+
+            case Command.CLICK_SAVED_QUERY_IN_BATCH_EDITOR: {
+                const { savedQuery } = args;
+                
+                hookService.clickSavedQueryInBatchEditorCommand(savedQuery.query);
+
+                break;
+            }
+
+            case Command.MODIFY_IMG_IN_BATCH_EDITOR: {
+                const { modifications } = args;
+
+                hookService.modifyImageInBatchEditorCommand(modifications);
+                
+                break;
+            }
+
             default: { }
         }        
     };
@@ -165,7 +224,8 @@ const useAppState = () => {
             deletedCounter,
             restoredPreviewsCounter,
             restoredSamplesCounter,
-            addCounter
+            addCounter,
+            batchEditorImages
         },
         switchState
     };

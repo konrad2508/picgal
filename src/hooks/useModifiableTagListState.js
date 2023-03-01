@@ -5,7 +5,7 @@ import ModifiableTagListCommand from '../enums/ModifiableTagListCommand';
 import modifiableTagListStateService from '../services/modifiableTagListStateService';
 
 const useModifiableTagListState = (tags) => {
-    const startingTags = tags.map((e) => ({ name: e, type: TagState.NORMAL }));
+    const startingTags = tags ? tags.map((e) => ({ name: e, type: TagState.NORMAL })) : [];
 
     const [tagList, setTagList] = React.useState(startingTags);
     const [tagListState, setTagListState] = React.useState(TagListState.NORMAL);

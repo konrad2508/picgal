@@ -12,6 +12,9 @@ class IImageControllerService(ABC):
     def get_infos(self, image_url: str, preview_url: str, sample_url: str, tags: str | None, page: int) -> list[ImageData]: ...
 
     @abstractmethod
+    def modify_info_batch(self, image_url: str, preview_url: str, sample_url: str, batch_modifications: ImageModificationRequest) -> list[ImageData]: ...
+
+    @abstractmethod
     def modify_info(self, image_url: str, preview_url: str, sample_url: str, id: int, modifications: ImageModificationRequest) -> ImageData: ...
 
     @abstractmethod

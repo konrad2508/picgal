@@ -71,6 +71,12 @@ const syncDatabase = async () => {
     return camelize(data);
 };
 
+const modifyImageBatch = async (batchModifications) => {
+    const { data } = await axios.put(`${BASE_URL}/info`, snakeize(batchModifications));
+
+    return camelize(data);
+};
+
 const requestService = {
     getAllImages,
     getAllImagesStats,
@@ -82,6 +88,7 @@ const requestService = {
     modifySavedQuery,
     deleteSavedQuery,
     createSavedQuery,
-    syncDatabase
+    syncDatabase,
+    modifyImageBatch
 };
 export default requestService;
