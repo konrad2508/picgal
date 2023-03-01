@@ -20,10 +20,30 @@ const Menu = () => {
         )
     };
 
+    const renderBatchEditorTagList = () => {
+        return (
+            <>
+                <TagLists/>
+            </>
+        );
+    };
+
+    const renderAdditionalComponents = () => {
+        if (appState === AppState.PREVIEW) {
+            return renderImageInfo();
+        }
+
+        if (appState === AppState.BATCH_EDITING) {
+            return renderBatchEditorTagList();
+        }
+
+        return null;
+    };
+
     return (
         <div className={styles.container}>
             <Navigation/>
-            { appState === AppState.PREVIEW && renderImageInfo() }
+            { renderAdditionalComponents() }
         </div>
     );
 };

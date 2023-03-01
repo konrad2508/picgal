@@ -3,8 +3,21 @@ import React from 'react';
 import networkService from '../services/networkService';
 import AppContext from './context/AppContext';
 
-const ImagePreview = ({ img }) => {
-    const { onImagePreviewClick } = React.useContext(AppContext);
+const ImagePreview = ({ img, selected=false, active=true, batchEditor=false }) => {
+    const { onImagePreviewClick, onClickPreviewInBatchEditor } = React.useContext(AppContext);
+
+    const onClickAction = () => {
+        if (!active) {
+            return;
+        }
+
+        if (batchEditor) {
+            onClickPreviewInBatchEditor(img);
+        }
+        else {
+            onImagePreviewClick(img);
+        }
+    };
 
     const MAX_DIM = 150;
 
@@ -33,7 +46,8 @@ const ImagePreview = ({ img }) => {
                 alt={img.preview}
                 width={newWidth}
                 height={newHeight}
-                onClick={() => onImagePreviewClick(img)}
+                onClick={onClickAction}
+                className={selected ? styles.selected : styles.notSelected}
             />
         </div>
     );

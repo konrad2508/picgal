@@ -20,6 +20,15 @@ class IImageDatabaseRepository(ABC):
         ...
     
     @abstractmethod
+    def modify_image_batch(
+            self,
+            batch_modifications: ImageModificationRequest,
+            loc_original: str | None = None,
+            loc_preview: str | None = None,
+            loc_sample: str | None = None) -> ImageData:
+        ...
+
+    @abstractmethod
     def modify_image(
             self,
             id: int,

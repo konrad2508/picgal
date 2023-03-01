@@ -3,11 +3,15 @@ import React from 'react';
 import Tag from './Tag';
 import ModifiableTagList from './ModifiableTagList';
 import TagListsContext from './context/TagListsContext';
+import AppContext from './context/AppContext';
+import AppState from '../enums/AppState';
 
 const TagList = ({ tagType, tags }) => {
+    const { appState } = React.useContext(AppContext);
+
     const { modificationMode } = React.useContext(TagListsContext);
     
-    if (modificationMode) {
+    if (modificationMode || appState === AppState.BATCH_EDITING) {
         return (
             <ModifiableTagList tagType={tagType} tags={tags}/>
         );

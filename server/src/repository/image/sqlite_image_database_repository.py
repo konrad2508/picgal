@@ -53,6 +53,60 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
 
         return images
 
+    def modify_image_batch(
+            self,
+            batch_modifications: ImageModificationRequest,
+            loc_original: str | None = None,
+            loc_preview: str | None = None,
+            loc_sample: str | None = None) -> ImageData:
+        try:
+            modified_images = []
+
+            with self.db.atomic():
+                for id in batch_modifications.ids:
+                    if not Image.select().where(Image.image_id == id).exists():
+                        raise EntityNotFound
+
+                    for tag in batch_modifications.characters_added:
+                        self._add_tag_to_image(id, tag, TagType.CHARACTER)
+
+                    for tag in batch_modifications.characters_removed:
+                        self._delete_tag_to_image(id, tag)
+
+                    for tag in batch_modifications.sources_added:
+                        self._add_tag_to_image(id, tag, TagType.SOURCE)
+
+                    for tag in batch_modifications.sources_removed:
+                        self._delete_tag_to_image(id, tag)
+
+                    for tag in batch_modifications.general_added:
+                        self._add_tag_to_image(id, tag, TagType.GENERAL)
+
+                    for tag in batch_modifications.general_removed:
+                        self._delete_tag_to_image(id, tag)
+
+                    for tag in batch_modifications.meta_added:
+                        self._add_tag_to_image(id, tag, TagType.META)
+
+                    for tag in batch_modifications.meta_removed:
+                        self._delete_tag_to_image(id, tag)
+
+                    if batch_modifications.toggle_favourite:
+                        Image.update(favourite=(~ Image.favourite)).where(Image.image_id == id).execute()
+
+                    modified_images.append(Image.get_by_id(id))
+
+            modified_images = [
+                self.image_database_converter.convert_image(modified_image, loc_original, loc_preview, loc_sample)
+                for modified_image
+                in modified_images
+            ]
+
+            return modified_images
+
+        except IntegrityError:
+            raise DatabaseIntegrityViolated
+
     def modify_image(
             self,
             id: int,
@@ -167,7 +221,7 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
 
     def _add_tag_to_image(self, image_id: int, tag_name: str, tag_type: int) -> None:
         tag, _ = Tag.get_or_create(name=tag_name.lower(), type=tag_type)
-        ImageTag.create(image_id=image_id, tag_id=tag.tag_id)
+        ImageTag.get_or_create(image_id=image_id, tag_id=tag.tag_id)
 
     def _delete_tag_to_image(self, image_id: int, tag_name: str) -> None:
         tag = Tag.get(Tag.name == tag_name.lower())
