@@ -48,7 +48,7 @@ const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagN
         const toAdd = queryService.inputTagToNormalTag(newTagName);
 
         if (canAddTag(existingTags, tagType, toAdd) && !tagList.map(e => e.name).includes(toAdd)) {
-            onModificationsChange(`${tagType.toLowerCase()}Added`, toAdd);
+            onModificationsChange(`${tagType.name.toLowerCase()}Added`, toAdd);
 
             setTagList([...tagList, { name: toAdd, type: TagState.ADDED }])
         }
@@ -62,7 +62,7 @@ const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagN
     };
 
     const removeTagCommand = (tag, tagType, onModificationsChange, tagList) => {
-        onModificationsChange(`${tagType.toLowerCase()}Removed`, tag);
+        onModificationsChange(`${tagType.name.toLowerCase()}Removed`, tag);
 
         const newTags = [...tagList];
         newTags.find((e, i) => {
@@ -87,7 +87,7 @@ const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagN
             action = 'Added';
         }
 
-        onModificationsChange(`${tagType.toLowerCase()}${action}`, tag);
+        onModificationsChange(`${tagType.name.toLowerCase()}${action}`, tag);
 
         let newTags = [...tagList];
         newTags.find((e, i) => {

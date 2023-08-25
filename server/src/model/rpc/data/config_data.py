@@ -9,4 +9,5 @@ class ConfigData:
     previews_dir: str
     samples_dir: str
     count_per_page: int
-
+    high_level_name: str
+    low_level_name: str

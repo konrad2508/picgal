@@ -4,8 +4,11 @@ import { FaPlus, FaRegTrashAlt, FaSave, FaTimes } from 'react-icons/fa';
 import ModifiableTag from './ModifiableTag';
 import AutocompleteNewTag from './AutocompleteNewTag';
 import ModifiableTagListContext from './context/ModifiableTagListContext';
+import AppContext from './context/AppContext';
 
 const AddableModifiableTagList = ({ tagType, existingTags }) => {
+    const { config } = React.useContext(AppContext);
+
     const { tagList, switchStateNormal, onAddTag } = React.useContext(ModifiableTagListContext);
 
     const filterUsedTags = () => {
@@ -20,7 +23,7 @@ const AddableModifiableTagList = ({ tagType, existingTags }) => {
     return (
         <>
             <div className={styles.container}>
-                <h3>{tagType}</h3>
+                <h3>{tagType.overridedBy ? config[tagType.overridedBy] : tagType.name}</h3>
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} disabled={true}>
                         <FaPlus className='fontAwesome'/>

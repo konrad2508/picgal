@@ -28,6 +28,10 @@ const appStateService = ({  setQuery,
         requestService
             .getSavedQueries()
             .then(queries => setSavedQueries(queries));
+        
+        requestService
+            .getConfig()
+            .then(config => setConfig(config));
     };
 
     const searchCommand = (q) => {
@@ -297,10 +301,6 @@ const appStateService = ({  setQuery,
     const startSettingsCommand = () => {
         const cmd = () => (
             () => {
-                requestService
-                    .getConfig()
-                    .then(config => setConfig(config));
-
                 setAppState(AppState.SETTINGS);
                 setUsedQuery('');
                 setQuery('');
@@ -316,10 +316,10 @@ const appStateService = ({  setQuery,
 
     const saveSettingsCommand = (modifications) => {
         requestService
-            .modifyConfig(modifications);
+            .modifyConfig(modifications)
+            .then(modifiedConfig => setConfig(modifiedConfig));
 
         setAppState(AppState.START);
-        setConfig({});
     };
 
     const clickTitleCommand = () => {
