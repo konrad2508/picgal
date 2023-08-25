@@ -3,7 +3,7 @@ import React from 'react';
 import AppContext from './context/AppContext';
 
 const ToolsSelection = () => {
-    const { onSyncDatabase, onStartBatchEditor } = React.useContext(AppContext);
+    const { onSyncDatabase, onStartBatchEditor, onStartSettings } = React.useContext(AppContext);
 
     return (
         <div className={styles.container}>
@@ -11,6 +11,7 @@ const ToolsSelection = () => {
             <div className={styles.buttonContainer}>
                 <button onClick={onSyncDatabase} className={styles.button}>Sync Database</button>
                 <button onClick={onStartBatchEditor} className={styles.button}>Batch Tag Editor</button>
+                <button onClick={onStartSettings} className={styles.button}>Settings</button>
             </div>
         </div>
     );

@@ -15,7 +15,8 @@ const appStateService = ({  setQuery,
                             setRestoredPreviewsCounter,
                             setRestoredSamplesCounter,
                             setAddCounter,
-                            setBatchEditorImages },
+                            setBatchEditorImages,
+                            setConfig },
                             history,
                             batchEditorImages) => {
     
@@ -110,6 +111,10 @@ const appStateService = ({  setQuery,
                 requestService
                     .getImages(urlFormattedQuery, newPageNum)
                     .then(images => setImagesToShow(images));
+                
+                requestService
+                    .getImagesStats(urlFormattedQuery)
+                    .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
                 
                 setAppState(AppState.BROWSING);
                 setUsedQuery(query);
@@ -289,6 +294,34 @@ const appStateService = ({  setQuery,
         setBatchEditorImages([]);
     };
 
+    const startSettingsCommand = () => {
+        const cmd = () => (
+            () => {
+                requestService
+                    .getConfig()
+                    .then(config => setConfig(config));
+
+                setAppState(AppState.SETTINGS);
+                setUsedQuery('');
+                setQuery('');
+                setCurrentPage(1);
+                setMaxPage(1);
+                setImagesToShow([]);
+            }
+        )();
+
+        cmd();
+        setHistory([...history, cmd]);
+    };
+
+    const saveSettingsCommand = (modifications) => {
+        requestService
+            .modifyConfig(modifications);
+
+        setAppState(AppState.START);
+        setConfig({});
+    };
+
     const clickTitleCommand = () => {
         const cmd = () => (
             () => {
@@ -386,6 +419,8 @@ const appStateService = ({  setQuery,
         clickPreviewInBatchEditorCommand,
         searchInBatchEditorCommand,
         cancelBatchEditorCommand,
+        startSettingsCommand,
+        saveSettingsCommand,
         clickTitleCommand,
         clickFavouritesInBatchEditorCommand,
         clickSavedQueryInBatchEditorCommand,

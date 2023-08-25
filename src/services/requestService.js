@@ -66,7 +66,19 @@ const createSavedQuery = async (newSavedQuery) => {
 };
 
 const syncDatabase = async () => {
-    const { data } = await axios.post(`${BASE_URL}/rpc/syncdatabase`);
+    const { data } = await axios.post(`${BASE_URL}/rpc/sync`);
+
+    return camelize(data);
+};
+
+const getConfig = async () => {
+    const { data } = await axios.get(`${BASE_URL}/rpc/config`);
+
+    return camelize(data);
+};
+
+const modifyConfig = async (modifications) => {
+    const { data } = await axios.put(`${BASE_URL}/rpc/config`, snakeize(modifications));
 
     return camelize(data);
 };
@@ -89,6 +101,8 @@ const requestService = {
     deleteSavedQuery,
     createSavedQuery,
     syncDatabase,
+    getConfig,
+    modifyConfig,
     modifyImageBatch
 };
 export default requestService;

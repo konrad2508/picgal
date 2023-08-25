@@ -1,0 +1,35 @@
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.options {
+    width: 350px;
+}
+
+.optionContainer {
+    margin-bottom: 5px;
+}
+
+.optionTitle {
+    display: inline-block;
+    margin-right: 25px;
+}
+
+.optionValue {
+    display: inline-block;
+    clear: both;
+    float: right;
+}
+
+.button {
+    width: 100px;
+}

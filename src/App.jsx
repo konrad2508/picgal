@@ -25,6 +25,8 @@ const App = () => {
     const onAddSavedQuery = (newSavedQuery) => switchState(Command.ADD_SAVED_QUERY, { newSavedQuery });
     const onSyncDatabase = () => switchState(Command.SYNC_DATABASE, {  });
     const onStartBatchEditor = () => switchState(Command.START_BATCH_EDITOR, {  });
+    const onStartSettings = () => switchState(Command.START_SETTINGS, {  });
+    const onSaveSettings = (modifications) => switchState(Command.SAVE_SETTINGS, { modifications });
     const onClickPreviewInBatchEditor = (img) => switchState(Command.CLICK_PREVIEW_IN_BATCH_EDITOR, { img });
     const sendQueryInBatchEditor = (event) => switchState(Command.SEARCH_IN_BATCH_EDITOR, { event });
     const onCancelBatchEditor = () => switchState(Command.CANCEL_BATCH_EDITOR, {  });
@@ -49,6 +51,7 @@ const App = () => {
         addCounter: appState.addCounter,
         historyLength: appState.history.length - 1,
         batchEditorSelected: appState.batchEditorImages,
+        config: appState.config,
         sendQuery,
         handleQueryChange,
         onImagePreviewClick,
@@ -63,6 +66,8 @@ const App = () => {
         onAddSavedQuery,
         onSyncDatabase,
         onStartBatchEditor,
+        onStartSettings,
+        onSaveSettings,
         onClickPreviewInBatchEditor,
         sendQueryInBatchEditor,
         onCancelBatchEditor,
