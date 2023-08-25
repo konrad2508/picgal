@@ -17,6 +17,7 @@ const useAppState = () => {
     const [restoredSamplesCounter, setRestoredSamplesCounter] = React.useState(-1);
     const [addCounter, setAddCounter] = React.useState(-1);
     const [batchEditorImages, setBatchEditorImages] = React.useState([]);
+    const [config, setConfig] = React.useState({});
 
     const clearState = () => {
         setQuery('');
@@ -42,7 +43,8 @@ const useAppState = () => {
         setRestoredPreviewsCounter,
         setRestoredSamplesCounter,
         setAddCounter,
-        setBatchEditorImages
+        setBatchEditorImages,
+        setConfig
     };
     const hookService = appStateService(setters, history, batchEditorImages);
 
@@ -178,6 +180,20 @@ const useAppState = () => {
                 break;
             }
 
+            case Command.START_SETTINGS: {
+                hookService.startSettingsCommand();
+
+                break;
+            }
+
+            case Command.SAVE_SETTINGS: {
+                const { modifications } = args;
+
+                hookService.saveSettingsCommand(modifications);
+
+                break;
+            }
+
             case Command.CLICK_TITLE: {
                 hookService.clickTitleCommand();
 
@@ -233,7 +249,8 @@ const useAppState = () => {
             restoredPreviewsCounter,
             restoredSamplesCounter,
             addCounter,
-            batchEditorImages
+            batchEditorImages,
+            config
         },
         switchState
     };

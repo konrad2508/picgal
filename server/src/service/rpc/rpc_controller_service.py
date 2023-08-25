@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 
 from PIL import Image as Img
@@ -12,6 +13,8 @@ from model.image.entity.tag import Tag
 from model.image.entity.image_tag import ImageTag
 from model.query.entity.query import Query
 from model.rpc.data.sync_database_result import SyncDatabaseResult
+from model.rpc.data.config_data import ConfigData
+from model.rpc.request.config_request import ConfigRequest
 
 
 class RPCControllerService(IRPCControllerService):
@@ -53,6 +56,26 @@ class RPCControllerService(IRPCControllerService):
 
             else:
                 thumbnail_static(image, save_as, size)
+
+
+        def restore_thumbnail(existing_picture: Image, type: str) -> None:
+            with Img.open(existing_picture.file) as opened:
+                if type == 'preview':
+                    new_thumbnail_location = SEP.join([self.cfg.PREVIEWS_DIR, *existing_picture.preview.split(SEP)[-3:]])
+                    existing_picture.preview = new_thumbnail_location
+                    thumbnail_size = PREVIEW_SIZE
+
+                else:
+                    new_thumbnail_location = SEP.join([self.cfg.SAMPLES_DIR, *existing_picture.sample.split(SEP)[-3:]])
+                    existing_picture.sample = new_thumbnail_location
+                    thumbnail_size = SAMPLE_SIZE
+
+                preview_parent_dir = SEP.join(new_thumbnail_location.split(SEP)[:-1])
+                os.makedirs(preview_parent_dir, exist_ok=True)
+
+                make_thumbnail(opened, new_thumbnail_location, thumbnail_size)
+
+                existing_picture.save()
 
 
         SEP = self.cfg.SEP
@@ -104,108 +127,101 @@ class RPCControllerService(IRPCControllerService):
                 existing_picture.delete_instance()
 
                 deleted_counter += 1
+        
+        with self.db.atomic():
+            # adding images and restoring previews
+            add_counter = 0
+            restored_previews_counter = 0
+            restored_samples_counter = 0
 
-        # adding images and restoring previews
-        add_counter = 0
-        restored_previews_counter = 0
-        restored_samples_counter = 0
+            pictures = glob.glob(f'{ROOT}/*/*/*')
 
-        pictures = glob.glob(f'{ROOT}/*/*/*')
+            for picture in pictures:
+                try:
+                    existing_picture: Image = Image.get(Image.file == picture)
 
-        for picture in pictures:
-            try:
-                existing_picture: Image = Image.get(Image.file == picture)
+                    if not os.path.isfile(existing_picture.preview) or not self.cfg.PREVIEWS_DIR == SEP.join(existing_picture.preview.split(SEP)[:-3]):
+                        restore_thumbnail(existing_picture, 'preview')
 
-                if not os.path.isfile(existing_picture.preview):
-                    with Img.open(existing_picture.file) as opened:
-                        preview_parent_dir = SEP.join(existing_picture.preview.split(SEP)[:-1])
-                        os.makedirs(preview_parent_dir, exist_ok=True)
+                        restored_previews_counter += 1
 
-                        make_thumbnail(opened, existing_picture.preview, PREVIEW_SIZE)
+                    if not os.path.isfile(existing_picture.sample) or not self.cfg.SAMPLES_DIR == SEP.join(existing_picture.sample.split(SEP)[:-3]):
+                        restore_thumbnail(existing_picture, 'sample')
 
-                    restored_previews_counter += 1
+                        restored_samples_counter += 1
 
-                if not os.path.isfile(existing_picture.sample):
-                    with Img.open(existing_picture.file) as opened:
-                        sample_parent_dir = SEP.join(existing_picture.sample.split(SEP)[:-1])
-                        os.makedirs(sample_parent_dir, exist_ok=True)
+                except DoesNotExist:
+                    source = picture.split(SEP)[-3]
+                    character = picture.split(SEP)[-2]
+                    image = ''.join(picture.split(SEP)[-1].split('.')[:-1])
 
-                        make_thumbnail(opened, existing_picture.sample, SAMPLE_SIZE)
+                    preview_loc = f'{PREVIEWS_DIR}{SEP}{source}{SEP}{character}'
+                    sample_loc = f'{SAMPLES_DIR}{SEP}{source}{SEP}{character}'
 
-                    restored_samples_counter += 1
+                    if source.lower() == character.lower() == 'none':
+                        continue
 
-            except DoesNotExist:
-                source = picture.split(SEP)[-3]
-                character = picture.split(SEP)[-2]
-                image = ''.join(picture.split(SEP)[-1].split('.')[:-1])
+                    with Img.open(picture) as opened:
+                        width, height = opened.size
+                        preview_file = f'{preview_loc}{SEP}{image}.webp'
+                        sample_file = f'{sample_loc}{SEP}{image}.webp'
 
-                preview_loc = f'{PREVIEWS_DIR}{SEP}{source}{SEP}{character}'
-                sample_loc = f'{SAMPLES_DIR}{SEP}{source}{SEP}{character}'
+                        os.makedirs(preview_loc, exist_ok=True)
+                        os.makedirs(sample_loc, exist_ok=True)
 
-                if source.lower() == character.lower() == 'none':
-                    continue
+                        make_thumbnail(opened.copy(), preview_file, PREVIEW_SIZE)
+                        make_thumbnail(opened.copy(), sample_file, SAMPLE_SIZE)
 
-                with Img.open(picture) as opened:
-                    width, height = opened.size
-                    preview_file = f'{preview_loc}{SEP}{image}.webp'
-                    sample_file = f'{sample_loc}{SEP}{image}.webp'
-
-                    os.makedirs(preview_loc, exist_ok=True)
-                    os.makedirs(sample_loc, exist_ok=True)
-
-                    make_thumbnail(opened.copy(), preview_file, PREVIEW_SIZE)
-                    make_thumbnail(opened.copy(), sample_file, SAMPLE_SIZE)
-
-                pic = {
-                    'file': picture,
-                    'preview': preview_file,
-                    'sample': sample_file,
-                    'width': width,
-                    'height': height,
-                    'favourite': False,
-                    'created_time': os.path.getmtime(picture)
-                }
-
-                img_ref = Image.create(**pic)
-
-                if source.lower() != 'none':
-                    source_tag = {
-                        'name': source.lower(),
-                        'type': TagType.SOURCE
+                    pic = {
+                        'file': picture,
+                        'preview': preview_file,
+                        'sample': sample_file,
+                        'width': width,
+                        'height': height,
+                        'favourite': False,
+                        'created_time': os.path.getmtime(picture)
                     }
 
-                    src_tag_ref, _ = Tag.get_or_create(**source_tag)
-                    ImageTag.create(image_id=img_ref, tag_id=src_tag_ref)
+                    img_ref = Image.create(**pic)
 
-                if character.lower() != 'none':
-                    character_tag = {
-                        'name': character.lower(),
-                        'type': TagType.CHARACTER
-                    }
+                    if source.lower() != 'none':
+                        source_tag = {
+                            'name': source.lower(),
+                            'type': TagType.SOURCE
+                        }
 
-                    char_tag_ref, _ = Tag.get_or_create(**character_tag)
-                    ImageTag.create(image_id=img_ref, tag_id=char_tag_ref)
+                        src_tag_ref, _ = Tag.get_or_create(**source_tag)
+                        ImageTag.create(image_id=img_ref, tag_id=src_tag_ref)
 
-                im_quality = width * height
-                if ABSURDRES > 0 and im_quality >= ABSURDRES:
-                    meta_tag = {
-                        'name': 'absurdres',
-                        'type': TagType.META
-                    }
+                    if character.lower() != 'none':
+                        character_tag = {
+                            'name': character.lower(),
+                            'type': TagType.CHARACTER
+                        }
 
-                    meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
-                    ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
+                        char_tag_ref, _ = Tag.get_or_create(**character_tag)
+                        ImageTag.create(image_id=img_ref, tag_id=char_tag_ref)
 
-                elif HIGHRES > 0 and im_quality >= HIGHRES:
-                    meta_tag = {
-                        'name': 'highres',
-                        'type': TagType.META
-                    }
+                    im_quality = width * height
+                    if ABSURDRES > 0 and im_quality >= ABSURDRES:
+                        meta_tag = {
+                            'name': 'absurdres',
+                            'type': TagType.META
+                        }
 
-                    meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
-                    ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
+                        meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
+                        ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
 
-                add_counter += 1
+                    elif HIGHRES > 0 and im_quality >= HIGHRES:
+                        meta_tag = {
+                            'name': 'highres',
+                            'type': TagType.META
+                        }
+
+                        meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
+                        ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
+
+                    add_counter += 1
 
         return SyncDatabaseResult(
             deleted_counter,
@@ -213,3 +229,49 @@ class RPCControllerService(IRPCControllerService):
             restored_samples_counter,
             add_counter
         )
+
+    def get_config(self) -> ConfigData:
+        config = ConfigData(
+            self.cfg.HIGHRES,
+            self.cfg.ABSURDRES,
+            self.cfg.PICTURES_ROOT,
+            self.cfg.PREVIEWS_DIR,
+            self.cfg.SAMPLES_DIR,
+            self.cfg.COUNT_PER_PAGE
+        )
+
+        return config
+
+    def modify_config(self, modifications: ConfigRequest) -> ConfigData:
+        with open(self.cfg._path, 'r+') as cfg_file:
+            cfg_content = cfg_file.read()
+            cfg = json.loads(cfg_content)
+
+            cfg['highres'] = modifications.highres
+            cfg['absurdres'] = modifications.absurdres
+            cfg['picturesRoot'] = modifications.pictures_root
+            cfg['previewsDir'] = modifications.previews_dir
+            cfg['samplesDir'] = modifications.samples_dir
+            cfg['countPerPage'] = modifications.count_per_page
+
+            cfg_file.seek(0)
+            json.dump(cfg, cfg_file, indent=4)
+            cfg_file.truncate()
+        
+        self.cfg.HIGHRES = modifications.highres
+        self.cfg.ABSURDRES = modifications.absurdres
+        self.cfg.PICTURES_ROOT = modifications.pictures_root
+        self.cfg.PREVIEWS_DIR = modifications.previews_dir
+        self.cfg.SAMPLES_DIR = modifications.samples_dir
+        self.cfg.COUNT_PER_PAGE = modifications.count_per_page
+
+        new_config = ConfigData(
+            modifications.highres,
+            modifications.absurdres,
+            modifications.pictures_root,
+            modifications.previews_dir,
+            modifications.samples_dir,
+            modifications.count_per_page
+        )
+
+        return new_config

@@ -3,7 +3,9 @@ import json
 
 class Config:
     def __init__(self, config_path: str) -> None:
-        with open(config_path) as cfg_file:
+        self._path = config_path
+
+        with open(self._path) as cfg_file:
             cfg_content = cfg_file.read()
             cfg = json.loads(cfg_content)
         

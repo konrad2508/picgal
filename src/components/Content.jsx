@@ -4,6 +4,7 @@ import ImagePreview from './ImagePreview';
 import Image from './Image';
 import UsedQuery from './UsedQuery';
 import Pager from './Pager';
+import Settings from './Settings';
 import ToolsSelection from './ToolsSelection';
 import Notifications from './Notifications';
 import AppState from '../enums/AppState';
@@ -59,6 +60,13 @@ const Content = () => {
         content = (
             <>
                 <ToolsSelection/>
+            </>
+        );
+    }
+    else if (appState === AppState.SETTINGS) {
+        content = (
+            <>
+                <Settings/>
             </>
         );
     }

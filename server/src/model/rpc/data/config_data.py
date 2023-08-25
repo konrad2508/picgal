@@ -1,0 +1,12 @@
+from dataclasses import dataclass
+
+
+@dataclass
+class ConfigData:
+    highres: int
+    absurdres: int
+    pictures_root: str
+    previews_dir: str
+    samples_dir: str
+    count_per_page: int
+

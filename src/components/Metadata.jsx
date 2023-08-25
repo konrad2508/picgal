@@ -28,7 +28,7 @@ const Metadata = ({ img }) => {
             <p>ID: {img.id}</p>
             <p>Resolution: {img.width}x{img.height}</p>
             <p>Created at: {img.createdTime}</p>
-            <p>Source: {img.file}</p>
+            <p>Location: {img.file}</p>
         </div>
     );
 };
