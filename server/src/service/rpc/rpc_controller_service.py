@@ -237,7 +237,9 @@ class RPCControllerService(IRPCControllerService):
             self.cfg.PICTURES_ROOT,
             self.cfg.PREVIEWS_DIR,
             self.cfg.SAMPLES_DIR,
-            self.cfg.COUNT_PER_PAGE
+            self.cfg.COUNT_PER_PAGE,
+            self.cfg.HIGH_LEVEL_NAME,
+            self.cfg.LOW_LEVEL_NAME
         )
 
         return config
@@ -253,6 +255,8 @@ class RPCControllerService(IRPCControllerService):
             cfg['previewsDir'] = modifications.previews_dir
             cfg['samplesDir'] = modifications.samples_dir
             cfg['countPerPage'] = modifications.count_per_page
+            cfg['highLevelName'] = modifications.high_level_name
+            cfg['lowLevelName'] = modifications.low_level_name
 
             cfg_file.seek(0)
             json.dump(cfg, cfg_file, indent=4)
@@ -264,6 +268,8 @@ class RPCControllerService(IRPCControllerService):
         self.cfg.PREVIEWS_DIR = modifications.previews_dir
         self.cfg.SAMPLES_DIR = modifications.samples_dir
         self.cfg.COUNT_PER_PAGE = modifications.count_per_page
+        self.cfg.HIGH_LEVEL_NAME = modifications.high_level_name
+        self.cfg.LOW_LEVEL_NAME = modifications.low_level_name
 
         new_config = ConfigData(
             modifications.highres,
@@ -271,7 +277,9 @@ class RPCControllerService(IRPCControllerService):
             modifications.pictures_root,
             modifications.previews_dir,
             modifications.samples_dir,
-            modifications.count_per_page
+            modifications.count_per_page,
+            modifications.high_level_name,
+            modifications.low_level_name
         )
 
         return new_config

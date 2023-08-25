@@ -29,5 +29,8 @@ class Config:
 
         self.COUNT_PER_PAGE: int = cfg['countPerPage']
 
+        self.HIGH_LEVEL_NAME: str = cfg['highLevelName']
+        self.LOW_LEVEL_NAME: str = cfg['lowLevelName']
+
 
 conf = Config('../../config.json')

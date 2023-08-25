@@ -7,10 +7,10 @@ import AppContext from './context/AppContext';
 import AppState from '../enums/AppState';
 
 const TagList = ({ tagType, tags }) => {
-    const { appState } = React.useContext(AppContext);
+    const { appState, config } = React.useContext(AppContext);
 
     const { modificationMode } = React.useContext(TagListsContext);
-    
+
     if (modificationMode || appState === AppState.BATCH_EDITING) {
         return (
             <ModifiableTagList tagType={tagType} tags={tags}/>
@@ -20,7 +20,7 @@ const TagList = ({ tagType, tags }) => {
         if (tags.length > 0) {
             return (
                 <div className={styles.container}>
-                    <h3>{tagType}</h3>
+                    <h3>{tagType.overridedBy ? config[tagType.overridedBy] : tagType.name}</h3>
                     <ul>
                         {tags.map((e, i) => <Tag key={i} tag={e}/>)}
                     </ul>
