@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  create_release:
+    name: Create release
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.release.outputs.upload_url }}
+    steps:
+      - uses: softprops/action-gh-release@v1
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+  build:
+    name: Build binaries
+    needs: create_release
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            name: Picgal-win32-x64.zip
+                    
+          - os: ubuntu-latest
+            name: Picgal-linux-x64.zip
+            
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Install node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.4'
+      
+      - name: Install Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+          architecture: 'x64'
+      
+      - name: Install node requirements
+        run: npm i
+      
+      - name: Install Python requirements
+        run: pip install -r server/requirements.txt
+      
+      - name: Install Pyinstaller
+        run: pip install pyinstaller
+      
+      - name: Build node project
+        env:
+          CI: ''
+        run: npm run build
+      
+      - name: Build Python exe
+        run: |
+          cd server
+          pyinstaller --onefile -i NONE --name picgal-server src/app.py
+          rm -rf build picgal-server.spec
+      
+      - name: Generate electron app for Windows
+        if: matrix.os == 'windows-latest'
+        run: npx electron-packager . Picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --icon=./build/icon.ico --ignore="(^/server/src*|^/server/requirements.txt|^/node_modules/@.*|^/node_modules/.cache|^/node_modules/.package-lock.json|^/.gitignore|^/.github|^/.vscode|^/build-linux-x64|^/build-win32-x64.bat|^/public*|^/previews*|^/samples*|^/database.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App.jsx|^/src/index.jsx)"
+      
+      - name: Generate electron app for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: npx electron-packager . Picgal --out=out/ --platform=linux --arch=x64 --icon=./build/icon.ico --ignore="(^/server/src*|^/server/requirements\.txt|^/node_modules/@.*|^/node_modules/\.cache|^/node_modules/\.package-lock\.json|^/\.gitignore|^/\.github|^/\.vscode|^/build-linux-x64|^/build-win32-x64\.bat|^/public*|^/previews*|^/samples*|^/database\.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App\.jsx|^/src/index\.jsx)"
+      
+      - name: Compress to zip for Windows
+        if: matrix.os == 'windows-latest'
+        run: 7z a out/${{ matrix.name }} out/* 
+
+      - name: Compress to zip for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: zip -r out/${{ matrix.name }} out/*
+      
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_path: out/${{ matrix.name }}
+          asset_name: ${{ matrix.name }}
+          asset_content_type: application/zip
