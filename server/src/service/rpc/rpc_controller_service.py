@@ -35,7 +35,7 @@ class RPCControllerService(IRPCControllerService):
             for frame in range(1, image.n_frames):
                 image.seek(frame)
                 new_frame = image.copy()
-                new_frame.thumbnail(size, Img.ANTIALIAS)
+                new_frame.thumbnail(size, Img.LANCZOS)
                 frames.append(new_frame)
             
             frames[0].save(save_as,
@@ -46,7 +46,7 @@ class RPCControllerService(IRPCControllerService):
 
 
         def thumbnail_static(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
-            image.thumbnail(size, Img.ANTIALIAS)
+            image.thumbnail(size, Img.LANCZOS)
             image.save(save_as, 'WEBP')
 
 
