@@ -25,10 +25,10 @@ const Metadata = ({ img }) => {
                     </button>
                 </div>
             </div>
-            <p>ID: {img.id}</p>
-            <p>Resolution: {img.width}x{img.height}</p>
-            <p>Created at: {img.createdTime}</p>
-            <p>Location: {img.file}</p>
+            <p><b>ID:</b> {img.id}</p>
+            <p><b>Resolution:</b> {img.width}x{img.height}</p>
+            <p><b>Created at:</b> {img.createdTime}</p>
+            <p><b>Location:</b> {img.file}</p>
         </div>
     );
 };
