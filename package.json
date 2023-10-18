@@ -10,7 +10,8 @@
     "backend": "cd server/src && python app.py",
     "serve": "npx serve build",
     "electron": "electron .",
-    "app": "concurrently -k -n \"BE,APP\" \"npm run backend\" \"npm run electron\"",
+    "app": "npm run build && concurrently -k -n \"BE,APP\" \"npm run backend\" \"npm run electron\"",
+    "app-nobuild": "concurrently -k -n \"BE,APP\" \"npm run backend\" \"npm run electron\"",
     "app-browser": "concurrently \"npm run backend\" \"npm run serve\""
   },
   "main": "src/electron.js",
