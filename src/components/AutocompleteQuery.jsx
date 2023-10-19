@@ -1,17 +1,11 @@
 import styles from '../styles/Autocomplete.module.css';
 import React from 'react';
-import AutocompleteCommand from '../enums/AutocompleteCommand';
 import TagMetatype from '../enums/TagMetatype';
 import useAutocompleteState from '../hooks/useAutocompleteState';
 import queryService from '../services/queryService';
 
 const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
-    const { autocompleteState, switchAutocompleteState } = useAutocompleteState(existingTags);
-
-    const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY, {  });
-    const disableDisplay = () => switchAutocompleteState(AutocompleteCommand.DISABLE_DISPLAY, {  });
-    const enableVirtualTagMode = (subtags) => switchAutocompleteState(AutocompleteCommand.ENABLE_VIRTUAL_TAG_MODE, { subtags });
-    const disableVirtualTagMode = () => switchAutocompleteState(AutocompleteCommand.DISABLE_VIRTUAL_TAG_MODE, {  });
+    const contextValue = useAutocompleteState(existingTags);
 
     let rightQuery, leftQuery;
     if (query) {
@@ -22,12 +16,12 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         if (rightQuery.includes(':')) {
             const potentialVirtualTag = queryService.findPotentialVirtualTag(rightQuery, existingTags);
 
-            if (potentialVirtualTag !== undefined && !autocompleteState.virtualTagMode) {
-                enableVirtualTagMode(potentialVirtualTag.subtags);
+            if (potentialVirtualTag !== undefined && !contextValue.virtualTagMode) {
+                contextValue.enableVirtualTagMode(potentialVirtualTag.subtags);
             }
         }
-        else if (autocompleteState.virtualTagMode) {
-            disableVirtualTagMode();
+        else if (contextValue.virtualTagMode) {
+            contextValue.disableVirtualTagMode();
         }
     }
 
@@ -44,15 +38,15 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         const newInput = `${leftQuery} ${queryService.normalVirtualTagToInputVirtualTag(suggestion.name)}`.trimStart()
         
         handleQueryChange({ target: { value: newInput } });
-        enableVirtualTagMode(suggestion.subtags);
+        contextValue.enableVirtualTagMode(suggestion.subtags);
     };
 
     const addSuggestion = (suggestion) => {
         const newInput = `${leftQuery} ${queryService.normalTagToInputTag(suggestion.name)} `.trimStart()
 
         handleQueryChange({ target: { value: newInput } });
-        disableDisplay();
-        disableVirtualTagMode();
+        contextValue.disableDisplay();
+        contextValue.disableVirtualTagMode();
     }
 
     const getSuggestions = () => {
@@ -77,8 +71,8 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             return bScore - aScore;
         };
 
-        const suggestions = autocompleteState.virtualTagMode
-            ? autocompleteState.subtagList
+        const suggestions = contextValue.virtualTagMode
+            ? contextValue.subtagList
             : existingTags;
 
         return suggestions
@@ -100,14 +94,14 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     };
 
     return (
-        <div className={styles.container} ref={autocompleteState.wrapperRef}>
+        <div className={styles.container} ref={contextValue.wrapperRef}>
             <input
                 value={query}
                 onChange={handleQueryChange}
                 className={styles.input}
-                onClick={enableDisplay}
+                onClick={contextValue.enableDisplay}
             />
-            { autocompleteState.display && (
+            { contextValue.display && (
                 <div className={styles.suggestionsOuterContainer}>
                     <div className={styles.suggestionsInnerContainer}>
                         { renderSuggestions() }
