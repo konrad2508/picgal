@@ -1,68 +1,61 @@
 import React from 'react';
+import TagListsContext from '../components/context/TagListsContext';
+import AppContext from '../components/context/AppContext';
 import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
-import ModifiableTagListCommand from '../enums/ModifiableTagListCommand';
 import modifiableTagListStateService from '../services/modifiableTagListStateService';
 
-const useModifiableTagListState = (tags) => {
+const useModifiableTagListState = (tagType, tags) => {
+    const { existingTags } = React.useContext(AppContext);
+    const { onModificationsChange } = React.useContext(TagListsContext);
+
     const startingTags = tags ? tags.map((e) => ({ name: e, type: TagState.NORMAL })) : [];
 
-    const [tagList, setTagList] = React.useState(startingTags);
-    const [tagListState, setTagListState] = React.useState(TagListState.NORMAL);
-    const [newTagName, setNewTagName] = React.useState('');
+    const [ tagList, setTagList ] = React.useState(startingTags);
+    const [ tagListState, setTagListState ] = React.useState(TagListState.NORMAL);
+    const [ newTagName, setNewTagName ] = React.useState('');
 
     const hookService = modifiableTagListStateService({ setTagList, setTagListState, setNewTagName });
 
-    const setModifiableTagListState = (command, args) => {
-        switch (command) {
-            case ModifiableTagListCommand.ADD_TAG: {
-                const { event, tagType, onModificationsChange, existingTags } = args;
-                event.preventDefault();
+    const switchStateNormal = () => hookService.switchStateCommand(TagListState.NORMAL);
 
-                hookService.addTagCommand(newTagName, existingTags, tagType, tagList, onModificationsChange);
+    const switchStateAdd = () => hookService.switchStateCommand(TagListState.ADD);
 
-                break;
-            }
+    const switchStateRemove = () => hookService.switchStateCommand(TagListState.REMOVE);
 
-            case ModifiableTagListCommand.INPUT_CHANGE: {
-                const { event } = args;
+    const onAddTag = (event) => {
+        event.preventDefault();
 
-                hookService.inputChangeCommand(event);
+        hookService.addTagCommand(newTagName, existingTags, tagType, tagList, onModificationsChange);
+    };
 
-                break;
-            }
+    const onInputChange = (event) => hookService.inputChangeCommand(event);
 
-            case ModifiableTagListCommand.REMOVE_TAG: {
-                const { tag, tagType, onModificationsChange } = args;
+    const onRemoveTag = (tag) => hookService.removeTagCommand(tag, tagType, onModificationsChange, tagList);
 
-                hookService.removeTagCommand(tag, tagType, onModificationsChange, tagList);
+    const onCancelModification = (tag, type) => hookService.cancelCommand(type, tag, tagType, onModificationsChange, tagList);
 
-                break;
-            }
+    const usedContextValue = {
+        existingTags,
+        onModificationsChange
+    };
 
-            case ModifiableTagListCommand.CANCEL: {
-                const { tag, type, tagType, onModificationsChange } = args;
-
-                hookService.cancelCommand(type, tag, tagType, onModificationsChange, tagList);
-
-                break;
-            }
-
-            case ModifiableTagListCommand.SWITCH_STATE: {
-                const { state } = args;
-
-                hookService.switchStateCommand(state);
-
-                break;
-            }
-
-            default: { }
-        }
+    const contextValue = {
+        tagList,
+        tagListState,
+        newTagName,
+        switchStateNormal,
+        switchStateAdd,
+        switchStateRemove,
+        onAddTag,
+        onInputChange,
+        onRemoveTag,
+        onCancelModification
     };
 
     return {
-        modifiableTagListState: { tagList, tagListState, newTagName },
-        setModifiableTagListState
+        usedContextValue,
+        contextValue
     };
 };
 
