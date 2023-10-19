@@ -1,26 +1,19 @@
 import styles from '../styles/Autocomplete.module.css';
 import React from 'react';
-import AutocompleteCommand from '../enums/AutocompleteCommand';
-import useAutocompleteState from '../hooks/useAutocompleteState';
-import ModifiableTagListContext from './context/ModifiableTagListContext';
+import useAutocompleteNewTagState from '../hooks/useAutocompleteNewTagState';
 
 const AutocompleteNewTag = ({ existingTags }) => {
-    const { newTagName, onInputChange } = React.useContext(ModifiableTagListContext);
-
-    const { autocompleteState, switchAutocompleteState } = useAutocompleteState();
-
-    const enableDisplay = () => switchAutocompleteState(AutocompleteCommand.ENABLE_DISPLAY,  {  });
-    const disableDisplay = () => switchAutocompleteState(AutocompleteCommand.DISABLE_DISPLAY, {  });
+    const { usedContextValue, contextValue } = useAutocompleteNewTagState();
 
     const addSuggestion = (e) => {
-        onInputChange({ target: { value: e.name.trim() } });
-        disableDisplay();
+        usedContextValue.onInputChange({ target: { value: e.name.trim() } });
+        contextValue.disableDisplay();
     }
 
     const renderSuggestions = () => {
         return (
             <div className={styles.fixedContainer}>
-                { existingTags.filter(e => e.name.toLowerCase().startsWith(newTagName) && newTagName).map((e, i) => (
+                { existingTags.filter(e => e.name.toLowerCase().startsWith(usedContextValue.newTagName) && usedContextValue.newTagName).map((e, i) => (
                     <div key={i} onClick={() => addSuggestion(e)} className={styles.suggestionBox}>
                         <p className={styles.suggestion}>{e.name}</p>
                     </div>
@@ -30,14 +23,14 @@ const AutocompleteNewTag = ({ existingTags }) => {
     };
 
     return (
-        <div className={styles.container} ref={autocompleteState.wrapperRef}>
+        <div className={styles.container} ref={contextValue.wrapperRef}>
             <input
-                value={newTagName}
-                onChange={onInputChange}
+                value={usedContextValue.newTagName}
+                onChange={usedContextValue.onInputChange}
                 className={styles.input}
-                onClick={enableDisplay}
+                onClick={contextValue.enableDisplay}
             />
-            { autocompleteState.display && (
+            { contextValue.display && (
                 <div className={styles.suggestionsOuterContainer}>
                     <div className={styles.suggestionsInnerContainer}>
                     { renderSuggestions() }

@@ -1,5 +1,4 @@
 import React from 'react';
-import AutocompleteCommand from '../enums/AutocompleteCommand';
 import autocompleteStateService from '../services/autocompleteStateService';
 
 const useAutocompleteState = () => {
@@ -12,42 +11,27 @@ const useAutocompleteState = () => {
 
     React.useEffect(hookService.bindMouseClick, []);
 
-    const switchAutocompleteState = (command, args) => {
-        switch (command) {
-            case AutocompleteCommand.ENABLE_DISPLAY: {
-                hookService.enableDisplayCommand();
+    const enableDisplay = () => hookService.enableDisplayCommand();
 
-                break;
-            }
+    const disableDisplay = () => hookService.disableDisplayCommand();
 
-            case AutocompleteCommand.DISABLE_DISPLAY: {
-                hookService.disableDisplayCommand();
+    const enableVirtualTagMode = (subtags) => hookService.enableVirtualTagMode(subtags);
 
-                break;
-            }
+    const disableVirtualTagMode = () => hookService.disableVirtualTagMode();
 
-            case AutocompleteCommand.ENABLE_VIRTUAL_TAG_MODE: {
-                const { subtags } = args;
 
-                hookService.enableVirtualTagMode(subtags);
-
-                break;
-            }
-
-            case AutocompleteCommand.DISABLE_VIRTUAL_TAG_MODE: {
-                hookService.disableVirtualTagMode();
-
-                break;
-            }
-
-            default: { }
-        }
+    const contextValue = {
+        display,
+        virtualTagMode,
+        subtagList,
+        wrapperRef,
+        enableDisplay,
+        disableDisplay,
+        enableVirtualTagMode,
+        disableVirtualTagMode
     };
 
-    return {
-        autocompleteState: { display, wrapperRef, virtualTagMode, subtagList },
-        switchAutocompleteState
-    };
+    return contextValue;
 };
 
 export default useAutocompleteState;
