@@ -1,59 +1,62 @@
 import React from 'react';
-import ModifiableSavedQueriesListCommand from '../enums/ModifiableSavedQueriesListCommand';
+import AppContext from '../components/context/AppContext';
+import SavedQueriesListContext from '../components/context/SavedQueriesListContext';
 import modifiableSavedQueriesListStateService from '../services/modifiableSavedQueriesListStateService';
 
 const useModifiableSavedQueriesListState = () => {
+    const { exitModificationMode } = React.useContext(SavedQueriesListContext);
+    const { savedQueries, onAddSavedQuery } = React.useContext(AppContext);
+
     const [ addingSavedQuery, setAddingSavedQuery ] = React.useState(false);
     const [ inputNewName, setInputNewName ] = React.useState('');
     const [ inputNewQuery, setInputNewQuery ] = React.useState('');
 
     const hookService = modifiableSavedQueriesListStateService({ setAddingSavedQuery, setInputNewName, setInputNewQuery });
 
-    const setModifiableSavedQueriesListState = (command, args) => {
-        switch (command) {
-            case ModifiableSavedQueriesListCommand.START_ADDING_SAVED_QUERY: {
-                hookService.startAddingSavedQueryCommand();
-
-                break;
-            }
-
-            case ModifiableSavedQueriesListCommand.HANDLE_INPUT_NEW_NAME: {
-                const { event } = args;
-
-                hookService.handleInputNewNameCommand(event);
-
-                break;
-            }
-
-            case ModifiableSavedQueriesListCommand.HANDLE_INPUT_NEW_QUERY: {
-                const { event } = args;
-
-                hookService.handleInputNewQueryCommand(event);
-
-                break;
-            }
-
-            case ModifiableSavedQueriesListCommand.ADD_SAVED_QUERY: {
-                const { canUseSavedQueryName, onAddSavedQuery } = args;
-
-                hookService.addSavedQueryCommand(canUseSavedQueryName, inputNewName, inputNewQuery, onAddSavedQuery);
-
-                break;
-            }
-
-            case ModifiableSavedQueriesListCommand.CANCEL_ADDING_SAVED_QUERY: {
-                hookService.cancelAddingSavedQueryCommand();
-
-                break;
-            }
-
-            default: { }
+    const canUseSavedQueryName = (id, name) => {
+        if (name === '') {
+            return false;
         }
+
+        const potentialDuplicate = savedQueries.find((e) => e.name === name && e.id !== id);
+        if (potentialDuplicate) {
+            return false;
+        }
+
+        return true;
+    };
+
+    const startAddingSavedQuery = () => hookService.startAddingSavedQueryCommand();
+
+    const handleInputNewName = (event) => hookService.handleInputNewNameCommand(event);
+
+    const handleInputNewQuery = (event) => hookService.handleInputNewQueryCommand(event);
+
+    const addNewSavedQuery = () => hookService.addSavedQueryCommand(canUseSavedQueryName, inputNewName, inputNewQuery, onAddSavedQuery);
+
+    const cancelAddingSavedQuery = () => hookService.cancelAddingSavedQueryCommand();
+
+    const usedContextValue = {
+        exitModificationMode,
+        savedQueries,
+        onAddSavedQuery
+    };
+
+    const contextValue = {
+        addingSavedQuery,
+        inputNewName,
+        inputNewQuery,
+        canUseSavedQueryName,
+        startAddingSavedQuery,
+        handleInputNewName,
+        handleInputNewQuery,
+        addNewSavedQuery,
+        cancelAddingSavedQuery
     };
 
     return {
-        modifiableSavedQueriesListState: { addingSavedQuery, inputNewName, inputNewQuery },
-        setModifiableSavedQueriesListState
+        usedContextValue,
+        contextValue
     };
 };
 
