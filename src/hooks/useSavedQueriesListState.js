@@ -1,56 +1,60 @@
 import React from 'react';
-import SavedQueriesListCommand from '../enums/SavedQueriesListCommand';
 import savedQueriesListStateService from '../services/savedQueriesListStateService';
+import AppContext from '../components/context/AppContext';
 
 const useSavedQueriesListState = () => {
+    const {
+        onSearchFavouritesClick,
+        onSearchFavouritesClickInBatchEditor,
+        savedQueries,
+        onClickSavedQuery,
+        onClickSavedQueryInBatchEditor,
+        appState
+    } = React.useContext(AppContext);
+
     const [ displaySavedQueries, setDisplaySavedQueries ] = React.useState(false);
     const [ modificationMode, setModificatonMode ] = React.useState(false);
 
     const hookService = savedQueriesListStateService({ setDisplaySavedQueries, setModificatonMode })
 
-    const setSavedQueriesListState = (command, args) => {
-        switch (command) {
-            case SavedQueriesListCommand.EXECUTE_SAVED_QUERY: {
-                const { savedQuery, onClickSavedQuery } = args;
+    const executeSavedQuery = (savedQuery) => hookService.executeSavedQueryCommand(savedQuery, onClickSavedQuery);
 
-                hookService.executeSavedQueryCommand(savedQuery, onClickSavedQuery);
+    const executeSearchFavourites = () => hookService.executeSearchFavouritesCommand(onSearchFavouritesClick);
 
-                break;
-            }
+    const toggleDisplaySavedQueries = () => hookService.toggleDisplaySavedQueriesCommand(displaySavedQueries);
 
-            case SavedQueriesListCommand.EXECUTE_SEARCH_FAVOURITES: {
-                const { onSearchFavouritesClick } = args;
+    const enterModificationMode = () => hookService.enterModificationModeCommand();
 
-                hookService.executeSearchFavouritesCommand(onSearchFavouritesClick);
+    const exitModificationMode = () => hookService.exitModificationModeCommand();
 
-                break;
-            }
+    const executeSearchFavouritesInBatchEditor = () => hookService.executeSearchFavouritesCommand(onSearchFavouritesClickInBatchEditor);
 
-            case SavedQueriesListCommand.TOGGLE_DISPLAY_SAVED_QUERIES: {
-                hookService.toggleDisplaySavedQueriesCommand(displaySavedQueries);
+    const executeSavedQueryInBatchEditor = (savedQuery) => hookService.executeSavedQueryCommand(savedQuery, onClickSavedQueryInBatchEditor);
 
-                break;
-            }
-            
-            case SavedQueriesListCommand.ENTER_MODIFICATION_MODE: {
-                hookService.enterModificationModeCommand();
+    const usedContextValue = {
+        onSearchFavouritesClick,
+        onSearchFavouritesClickInBatchEditor,
+        savedQueries,
+        onClickSavedQuery,
+        onClickSavedQueryInBatchEditor,
+        appState
+    };
 
-                break;
-            }
-
-            case SavedQueriesListCommand.EXIT_MODIFICATION_MODE: {
-                hookService.exitModificationModeCommand();
-
-                break;
-            }
-
-            default: { }
-        }
+    const contextValue = {
+        displaySavedQueries,
+        modificationMode,
+        executeSavedQuery,
+        executeSearchFavourites,
+        toggleDisplaySavedQueries,
+        enterModificationMode,
+        exitModificationMode,
+        executeSearchFavouritesInBatchEditor,
+        executeSavedQueryInBatchEditor
     };
 
     return {
-        savedQueriesListState: { displaySavedQueries, modificationMode },
-        setSavedQueriesListState
+        usedContextValue,
+        contextValue
     };
 };
 
