@@ -1,21 +1,19 @@
 import styles from '../styles/DeleteModifiableSavedQuery.module.css';
 import React from 'react';
 import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
-import ModifiableSavedQueryContext from './context/ModifiableSavedQueryContext';
-import AppContext from './context/AppContext';
+import useDeleteModifiableSavedQueryState from '../hooks/useDeleteModifiableSavedQueryState';
 
 const DeleteModifiableSavedQuery = ({ savedQuery }) => {
-    const { onDeleteSavedQuery } = React.useContext(AppContext);
-    const { disableDeletable } = React.useContext(ModifiableSavedQueryContext);
+    const { usedContextValue } = useDeleteModifiableSavedQueryState();
 
     return (
         <div className={styles.savedQueryContainer}>
             <h4>{savedQuery.name}</h4>
             <div className={styles.savedQueryButtonContainer}>
-                <button onClick={() => onDeleteSavedQuery(savedQuery.id)}>
+                <button onClick={() => usedContextValue.onDeleteSavedQuery(savedQuery.id)}>
                     <FaRegTrashAlt className='fontAwesome'/>
                 </button>
-                <button onClick={disableDeletable}>
+                <button onClick={usedContextValue.disableDeletable}>
                     <FaTimes className='fontAwesome'/>
                 </button>
             </div>

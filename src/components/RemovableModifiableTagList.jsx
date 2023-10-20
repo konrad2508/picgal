@@ -2,18 +2,15 @@ import styles from '../styles/RemovableModifiableTagList.module.css';
 import React from 'react';
 import { FaSave, FaTimes } from 'react-icons/fa';
 import ModifiableTag from './ModifiableTag';
-import ModifiableTagListContext from './context/ModifiableTagListContext';
-import AppContext from './context/AppContext';
+import useRemovableModifiableTagListState from '../hooks/useRemovableModifiableTagListState';
 
 const RemovableModifiableTagList = ({ tagType }) => {
-    const { config } = React.useContext(AppContext);
-
-    const { tagList, switchStateNormal } = React.useContext(ModifiableTagListContext);
+    const { usedContextValue } = useRemovableModifiableTagListState();
 
     return (
         <>
             <div className={styles.container}>
-                <h3>{tagType.overridedBy ? config[tagType.overridedBy] : tagType.name}</h3>
+                <h3>{tagType.overridedBy ? usedContextValue.config[tagType.overridedBy] : tagType.name}</h3>
                 <div className={styles.buttonContainer}>
                     <button 
                         className={styles.button}
@@ -23,14 +20,14 @@ const RemovableModifiableTagList = ({ tagType }) => {
                     </button>
                     <button
                         className={styles.button}
-                        onClick={switchStateNormal}
+                        onClick={usedContextValue.switchStateNormal}
                     >
                         <FaTimes className='fontAwesome'/>
                     </button>
                 </div>
             </div>
             <ul>
-                {tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
+                {usedContextValue.tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
             </ul>
         </>
     );

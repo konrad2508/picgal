@@ -1,13 +1,13 @@
 import styles from '../styles/UsedQuery.module.css';
 import React from "react";
-import AppContext from './context/AppContext';
+import useUsedQueryState from '../hooks/useUsedQueryState';
 
 const UsedQuery = () => {
-    const { usedQuery } = React.useContext(AppContext);
+    const { usedContextValue } = useUsedQueryState();
 
     return (
         <div className={styles.container}>
-            <h3>Query: {usedQuery}</h3>
+            <h3>Query: {usedContextValue.usedQuery}</h3>
         </div>
     );
 };

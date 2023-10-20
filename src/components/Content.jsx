@@ -8,19 +8,19 @@ import Settings from './Settings';
 import ToolsSelection from './ToolsSelection';
 import Notifications from './Notifications';
 import AppState from '../enums/AppState';
-import AppContext from './context/AppContext';
+import useContentState from '../hooks/useContentState';
 
 const Content = () => {
-    const { imagesToShow, appState, batchEditorSelected } = React.useContext(AppContext);
+    const { usedContextValue } = useContentState();
 
     let content = null;
 
-    if (appState === AppState.BROWSING) {
+    if (usedContextValue.appState === AppState.BROWSING) {
         content = (
             <>
                 <UsedQuery/>
                 <div className={styles.previews}>
-                    {imagesToShow.map(img => <ImagePreview key={img.id} img={img}/>)}
+                    {usedContextValue.imagesToShow.map(img => <ImagePreview key={img.id} img={img}/>)}
                 </div>
                 <div>
                     <Pager/>
@@ -28,14 +28,14 @@ const Content = () => {
             </>
         );
     }
-    else if (appState === AppState.BATCH_EDITING) {
+    else if (usedContextValue.appState === AppState.BATCH_EDITING) {
         content = (
             <>
                 <UsedQuery/>
                 <div className={styles.previews}>
                     {
-                        imagesToShow.map(img => 
-                            <ImagePreview key={img.id} img={img} batchEditor={true} selected={batchEditorSelected.some((i) => i.id === img.id)}/>
+                        usedContextValue.imagesToShow.map(img => 
+                            <ImagePreview key={img.id} img={img} batchEditor={true} selected={usedContextValue.batchEditorSelected.some((i) => i.id === img.id)}/>
                         )
                     }
                 </div>
@@ -44,26 +44,26 @@ const Content = () => {
                 </div>
                 <h3>Selected images</h3>
                 <div className={styles.previews}>
-                    {batchEditorSelected.map(img => <ImagePreview key={img.id} img={img} active={false}/>)}
+                    {usedContextValue.batchEditorSelected.map(img => <ImagePreview key={img.id} img={img} active={false}/>)}
                 </div>
             </>
         );
     }
-    else if (appState === AppState.PREVIEW) {
+    else if (usedContextValue.appState === AppState.PREVIEW) {
         content = (
             <>
-                <Image img={imagesToShow[0]}/>
+                <Image img={usedContextValue.imagesToShow[0]}/>
             </>
         );
     }
-    else if (appState === AppState.START) {
+    else if (usedContextValue.appState === AppState.START) {
         content = (
             <>
                 <ToolsSelection/>
             </>
         );
     }
-    else if (appState === AppState.SETTINGS) {
+    else if (usedContextValue.appState === AppState.SETTINGS) {
         content = (
             <>
                 <Settings/>

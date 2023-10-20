@@ -1,10 +1,10 @@
 import styles from '../styles/ImagePreview.module.css';
 import React from 'react';
 import networkService from '../services/networkService';
-import AppContext from './context/AppContext';
+import useImagePreviewState from '../hooks/useImagePreviewState';
 
 const ImagePreview = ({ img, selected=false, active=true, batchEditor=false }) => {
-    const { onImagePreviewClick, onClickPreviewInBatchEditor } = React.useContext(AppContext);
+    const { usedContextValue } = useImagePreviewState();
 
     const onClickAction = () => {
         if (!active) {
@@ -12,10 +12,10 @@ const ImagePreview = ({ img, selected=false, active=true, batchEditor=false }) =
         }
 
         if (batchEditor) {
-            onClickPreviewInBatchEditor(img);
+            usedContextValue.onClickPreviewInBatchEditor(img);
         }
         else {
-            onImagePreviewClick(img);
+            usedContextValue.onImagePreviewClick(img);
         }
     };
 

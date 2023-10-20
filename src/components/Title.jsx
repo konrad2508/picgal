@@ -1,13 +1,13 @@
 import React from 'react';
 import AppState from '../enums/AppState';
-import AppContext from './context/AppContext';
+import useTitleState from '../hooks/useTitleState';
 
 const Title = () => {
-    const { onClickTitle, appState } = React.useContext(AppContext);
+    const { usedContextValue } = useTitleState();
 
     const onClick = () => {
-        if (appState !== AppState.BATCH_EDITING && appState !== AppState.START) {
-            onClickTitle();
+        if (usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.START) {
+            usedContextValue.onClickTitle();
         }
     };
 

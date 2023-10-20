@@ -3,16 +3,13 @@ import React from 'react';
 import { FaPlus, FaRegTrashAlt, FaSave, FaTimes } from 'react-icons/fa';
 import ModifiableTag from './ModifiableTag';
 import AutocompleteNewTag from './AutocompleteNewTag';
-import ModifiableTagListContext from './context/ModifiableTagListContext';
-import AppContext from './context/AppContext';
+import useAddableModifiableTagListState from '../hooks/useAddableModifiableTagListState';
 
 const AddableModifiableTagList = ({ tagType, existingTags }) => {
-    const { config } = React.useContext(AppContext);
-
-    const { tagList, switchStateNormal, onAddTag } = React.useContext(ModifiableTagListContext);
+    const { usedContextValue } = useAddableModifiableTagListState();
 
     const filterUsedTags = () => {
-        const tagListNames = tagList.map(e => e.name);
+        const tagListNames = usedContextValue.tagList.map(e => e.name);
         const tagsNames = existingTags.map(e => e.name);
 
         const filteredTagsNames = tagsNames.filter(e => !tagListNames.includes(e));
@@ -23,7 +20,7 @@ const AddableModifiableTagList = ({ tagType, existingTags }) => {
     return (
         <>
             <div className={styles.container}>
-                <h3>{tagType.overridedBy ? config[tagType.overridedBy] : tagType.name}</h3>
+                <h3>{tagType.overridedBy ? usedContextValue.config[tagType.overridedBy] : tagType.name}</h3>
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} disabled={true}>
                         <FaPlus className='fontAwesome'/>
@@ -34,9 +31,9 @@ const AddableModifiableTagList = ({ tagType, existingTags }) => {
                 </div>
             </div>
             <ul>
-                {tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
+                {usedContextValue.tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
             </ul>
-            <form onSubmit={onAddTag}>
+            <form onSubmit={usedContextValue.onAddTag}>
                 <div className={styles.container}>
                     <div className={styles.inputContainer}>
                         <AutocompleteNewTag existingTags={filterUsedTags()}/>
@@ -44,7 +41,7 @@ const AddableModifiableTagList = ({ tagType, existingTags }) => {
                     <button type='submit'>
                         <FaSave className='fontAwesome'/>
                     </button>
-                    <button type='button' onClick={switchStateNormal}>
+                    <button type='button' onClick={usedContextValue.switchStateNormal}>
                         <FaTimes className='fontAwesome'/>
                     </button>
                 </div>

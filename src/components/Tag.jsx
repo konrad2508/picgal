@@ -1,14 +1,14 @@
 import React from 'react';
 import queryService from '../services/queryService';
-import AppContext from './context/AppContext';
+import useTagState from '../hooks/useTagState';
 
 const Tag = ({ tag }) => {
-    const { onClickTag } = React.useContext(AppContext);
+    const { usedContextValue } = useTagState();
 
     const displayName = queryService.inputTagToNormalTag(tag);
 
     return (
-        <li onClick={() => onClickTag(tag)}>{displayName}</li>
+        <li onClick={() => usedContextValue.onClickTag(tag)}>{displayName}</li>
     );
 };
 

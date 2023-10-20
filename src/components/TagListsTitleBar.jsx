@@ -2,25 +2,22 @@ import styles from '../styles/TagListsTitleBar.module.css';
 import React from 'react';
 import { FaPen, FaSave, FaTimes } from 'react-icons/fa';
 import ModificationMode from '../enums/ModificationMode';
-import TagListsContext from './context/TagListsContext';
-import AppContext from './context/AppContext';
 import AppState from '../enums/AppState';
+import useTagListsTitleBarState from '../hooks/useTagListsTitleBarState';
 
 const TagListsTitleBar = () => {
-    const { appState } = React.useContext(AppContext);
-
-    const { modificationMode, changeModificationMode, changeModificationModeInBatchEditor } = React.useContext(TagListsContext);
+    const { usedContextValue } = useTagListsTitleBarState();
 
     const onClickHandler = (mode) => {
-        if (appState === AppState.BATCH_EDITING) {
-            changeModificationModeInBatchEditor(mode);
+        if (usedContextValue.appState === AppState.BATCH_EDITING) {
+            usedContextValue.changeModificationModeInBatchEditor(mode);
         }
         else {
-            changeModificationMode(mode);
+            usedContextValue.changeModificationMode(mode);
         }
     };
 
-    if (modificationMode || appState === AppState.BATCH_EDITING) {
+    if (usedContextValue.modificationMode || usedContextValue.appState === AppState.BATCH_EDITING) {
         return (
             <div className={styles.container}>
                 <h2>Tags</h2>
@@ -31,7 +28,7 @@ const TagListsTitleBar = () => {
                     >
                         <FaSave className='fontAwesome'/>
                     </button>
-                    { appState !== AppState.BATCH_EDITING && <button
+                    { usedContextValue.appState !== AppState.BATCH_EDITING && <button
                         className={styles.button}
                         onClick={() => onClickHandler(ModificationMode.CANCEL)}
                     >
