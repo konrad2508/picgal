@@ -12,13 +12,9 @@ const useAutocompleteState = () => {
     React.useEffect(hookService.bindMouseClick, []);
 
     const enableDisplay = () => hookService.enableDisplayCommand();
-
     const disableDisplay = () => hookService.disableDisplayCommand();
-
     const enableVirtualTagMode = (subtags) => hookService.enableVirtualTagMode(subtags);
-
     const disableVirtualTagMode = () => hookService.disableVirtualTagMode();
-
 
     const contextValue = {
         display,
@@ -31,7 +27,9 @@ const useAutocompleteState = () => {
         disableVirtualTagMode
     };
 
-    return contextValue;
+    return {
+        contextValue
+    };
 };
 
 export default useAutocompleteState;

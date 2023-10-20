@@ -18,17 +18,11 @@ const useSavedQueriesListState = () => {
     const hookService = savedQueriesListStateService({ setDisplaySavedQueries, setModificatonMode })
 
     const executeSavedQuery = (savedQuery) => hookService.executeSavedQueryCommand(savedQuery, onClickSavedQuery);
-
     const executeSearchFavourites = () => hookService.executeSearchFavouritesCommand(onSearchFavouritesClick);
-
     const toggleDisplaySavedQueries = () => hookService.toggleDisplaySavedQueriesCommand(displaySavedQueries);
-
     const enterModificationMode = () => hookService.enterModificationModeCommand();
-
     const exitModificationMode = () => hookService.exitModificationModeCommand();
-
     const executeSearchFavouritesInBatchEditor = () => hookService.executeSearchFavouritesCommand(onSearchFavouritesClickInBatchEditor);
-
     const executeSavedQueryInBatchEditor = (savedQuery) => hookService.executeSavedQueryCommand(savedQuery, onClickSavedQueryInBatchEditor);
 
     const usedContextValue = {

@@ -14,12 +14,9 @@ const useTagListsState = (img) => {
     const hookService = tagListsStateService({ setModifications, setModificationMode });
 
     const onModificationsChange  = (op, element) => hookService.addModificationCommand(modifications, op, element, formComplements);
-
     const changeModificationMode = (mode) => hookService.switchModeCommand(mode, img?.id, modifications, onSaveModifiedTagsClick, modificationsForm);
-
     const changeModificationModeInBatchEditor = (mode) =>
         hookService.switchModeCommand(mode, null, modifications, onSaveModifiedTagsClickInBatchEditor, modificationsForm);
-
 
     const usedContextValue = {
         onSaveModifiedTagsClick,
