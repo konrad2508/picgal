@@ -10,7 +10,7 @@ const useAutocompleteNewTagState = () => {
         onInputChange
     };
 
-    const contextValue = useAutocompleteState();
+    const { contextValue } = useAutocompleteState();
 
     return {
         usedContextValue,
