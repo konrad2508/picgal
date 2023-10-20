@@ -1,9 +1,11 @@
 import React from 'react';
 import modificationForm from '../forms/modificationForm';
-import TagListsCommand from '../enums/TagListsCommand';
 import tagListsStateService from '../services/tagListsStateService';
+import AppContext from '../components/context/AppContext';
 
-const useTagListsState = () => {
+const useTagListsState = (img) => {
+    const { onSaveModifiedTagsClick, onSaveModifiedTagsClickInBatchEditor } = React.useContext(AppContext);
+
     const { form: modificationsForm, formComplements } = modificationForm();
 
     const [ modifications, setModifications ] = React.useState(modificationsForm);
@@ -11,31 +13,30 @@ const useTagListsState = () => {
 
     const hookService = tagListsStateService({ setModifications, setModificationMode });
 
-    const setTagListsState = (command, args) => {
-        switch (command) {
-            case TagListsCommand.ADD_MODIFICATION: {
-                const { op, element } = args;
+    const onModificationsChange  = (op, element) => hookService.addModificationCommand(modifications, op, element, formComplements);
 
-                hookService.addModificationCommand(modifications, op, element, formComplements);
+    const changeModificationMode = (mode) => hookService.switchModeCommand(mode, img?.id, modifications, onSaveModifiedTagsClick, modificationsForm);
 
-                break;
-            }
+    const changeModificationModeInBatchEditor = (mode) =>
+        hookService.switchModeCommand(mode, null, modifications, onSaveModifiedTagsClickInBatchEditor, modificationsForm);
 
-            case TagListsCommand.SWITCH_MODE: {
-                const { id, onSaveModifiedTagsClick, mode } = args;
 
-                hookService.switchModeCommand(mode, id, modifications, onSaveModifiedTagsClick, modificationsForm)
+    const usedContextValue = {
+        onSaveModifiedTagsClick,
+        onSaveModifiedTagsClickInBatchEditor
+    };
 
-                break;
-            }
-
-            default: { }
-        }
+    const contextValue = {
+        modifications,
+        modificationMode,
+        onModificationsChange,
+        changeModificationMode,
+        changeModificationModeInBatchEditor
     };
 
     return {
-        tagListsState: { modifications, modificationMode },
-        setTagListsState
+        usedContextValue,
+        contextValue
     };
 };
 
