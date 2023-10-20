@@ -4,10 +4,10 @@ import { FaRegTrashAlt, FaTimes } from 'react-icons/fa';
 import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
 import queryService from '../services/queryService';
-import ModifiableTagListContext from './context/ModifiableTagListContext';
+import useModifiableTagState from '../hooks/useModifiableTagState';
 
 const ModifiableTag = ({ tag }) => {
-    const { tagListState, onRemoveTag, onCancelModification } = React.useContext(ModifiableTagListContext);
+    const { usedContextValue } = useModifiableTagState();
 
     const getColour = (type) => {
         if (type === TagState.ADDED) {
@@ -27,19 +27,19 @@ const ModifiableTag = ({ tag }) => {
 
     const displayName = queryService.inputTagToNormalTag(tag.name);
 
-    if (tagListState === TagListState.REMOVE && tag.type === TagState.NORMAL) {
+    if (usedContextValue.tagListState === TagListState.REMOVE && tag.type === TagState.NORMAL) {
         return (
             <div className={styles.container}>
                 <li style={tagStyle}>{displayName}</li>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={() => onRemoveTag(tag.name)}>
+                    <button className={styles.button} onClick={() => usedContextValue.onRemoveTag(tag.name)}>
                         <FaRegTrashAlt className='fontAwesome'/>
                     </button>
                 </div>
             </div>
         );
     }
-    else if (tagListState === TagListState.REMOVE || tag.type === TagState.NORMAL) {
+    else if (usedContextValue.tagListState === TagListState.REMOVE || tag.type === TagState.NORMAL) {
         return (
             <li style={tagStyle}>{displayName}</li>
         );
@@ -49,7 +49,7 @@ const ModifiableTag = ({ tag }) => {
             <div className={styles.container}>
                 <li style={tagStyle}>{displayName}</li>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={() => onCancelModification(tag.name, tag.type)}>
+                    <button className={styles.button} onClick={() => usedContextValue.onCancelModification(tag.name, tag.type)}>
                         <FaTimes className='fontAwesome'/>
                     </button>
                 </div>

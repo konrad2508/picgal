@@ -4,13 +4,13 @@ import Navigation from './Navigation';
 import TagLists from './TagLists';
 import Metadata from './Metadata';
 import AppState from '../enums/AppState';
-import AppContext from './context/AppContext';
+import useMenuState from '../hooks/useMenuState';
 
 const Menu = () => {
-    const { appState, imagesToShow } = React.useContext(AppContext);
+    const { usedContextValue } = useMenuState();
 
     const renderImageInfo = () => {
-        const img = imagesToShow[0];
+        const img = usedContextValue.imagesToShow[0];
 
         return (
             <>
@@ -29,11 +29,11 @@ const Menu = () => {
     };
 
     const renderAdditionalComponents = () => {
-        if (appState === AppState.PREVIEW) {
+        if (usedContextValue.appState === AppState.PREVIEW) {
             return renderImageInfo();
         }
 
-        if (appState === AppState.BATCH_EDITING) {
+        if (usedContextValue.appState === AppState.BATCH_EDITING) {
             return renderBatchEditorTagList();
         }
 

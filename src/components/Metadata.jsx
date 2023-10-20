@@ -2,15 +2,15 @@ import styles from '../styles/Metadata.module.css';
 import React from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import modificationForm from '../forms/modificationForm';
-import AppContext from './context/AppContext';
+import useMetadataState from '../hooks/useMetadataState';
 
 const Metadata = ({ img }) => {
-    const { onSaveModifiedTagsClick } = React.useContext(AppContext);
+    const { usedContextValue } = useMetadataState();
 
     const { form: modificationsForm } = modificationForm();
     modificationsForm.toggleFavourite = true;
 
-    const flipFavourite = () => onSaveModifiedTagsClick(img.id, modificationsForm);
+    const flipFavourite = () => usedContextValue.onSaveModifiedTagsClick(img.id, modificationsForm);
 
     return (
         <div className={styles.container}>

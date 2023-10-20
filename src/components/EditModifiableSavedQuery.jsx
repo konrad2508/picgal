@@ -2,37 +2,28 @@ import styles from '../styles/EditModifiableSavedQuery.module.css';
 import React from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import AutocompleteQuery from './AutocompleteQuery';
-import ModifiableSavedQueryContext from './context/ModifiableSavedQueryContext';
-import AppContext from './context/AppContext';
+import useEditModifiableSavedQueryState from '../hooks/useEditModifiableSavedQueryState';
 
 const EditModifiableSavedQuery = () => {
-    const { existingTags } = React.useContext(AppContext);
-    const {
-        inputName,
-        handleInputNameChange,
-        inputQuery,
-        handleInputQueryChange,
-        modifyQuery,
-        cancelModify
-    } = React.useContext(ModifiableSavedQueryContext);
+    const { usedContextValue } = useEditModifiableSavedQueryState();
 
     return (
         <div className={styles.savedQueryContainer}>
             <div className={styles.formContainer}>
-                <input className={styles.nameInput} value={inputName} onInput={handleInputNameChange}/>
+                <input className={styles.nameInput} value={usedContextValue.inputName} onInput={usedContextValue.handleInputNameChange}/>
                 <div className={styles.queryInput}>
                     <AutocompleteQuery
-                        query={inputQuery}
-                        handleQueryChange={handleInputQueryChange}
-                        existingTags={existingTags}
+                        query={usedContextValue.inputQuery}
+                        handleQueryChange={usedContextValue.handleInputQueryChange}
+                        existingTags={usedContextValue.existingTags}
                     />
                 </div>
             </div>
             <div className={styles.buttonContainer}>
-                <button className={styles.button} onClick={modifyQuery}>
+                <button className={styles.button} onClick={usedContextValue.modifyQuery}>
                     <FaPlus className='fontAwesome'/>
                 </button>
-                <button className={styles.button} onClick={cancelModify}>
+                <button className={styles.button} onClick={usedContextValue.cancelModify}>
                     <FaTimes className='fontAwesome'/>
                 </button>
             </div>

@@ -1,13 +1,13 @@
 import styles from '../styles/Settings.module.css';
 import React from 'react';
-import AppContext from './context/AppContext';
+import useSettingsState from '../hooks/useSettingsState';
 
 const Settings = () => {
-    const { config, onSaveSettings } = React.useContext(AppContext)
+    const { usedContextValue } = useSettingsState();
 
     const renderOption = (k, i) => {
         const inputField = () => {
-            if (/^[0-9]*$/.test(config[k])) {
+            if (/^[0-9]*$/.test(usedContextValue.config[k])) {
                 const validator = (e) => {
                     if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
@@ -19,12 +19,12 @@ const Settings = () => {
                         id={k}
                         type="number"
                         onKeyPress={validator}
-                        defaultValue={config[k]} className={styles.optionValue}/>
+                        defaultValue={usedContextValue.config[k]} className={styles.optionValue}/>
                 );
             }
             else {
                 return (
-                    <input id={k} type="text" defaultValue={config[k]} className={styles.optionValue}/>
+                    <input id={k} type="text" defaultValue={usedContextValue.config[k]} className={styles.optionValue}/>
                 );
             }
         };
@@ -39,17 +39,17 @@ const Settings = () => {
 
     const onPressSave = () => {
         const modifications = Object.fromEntries(
-            Object.keys(config).map((k, _) => [k, document.getElementById(k).value])
+            Object.keys(usedContextValue.config).map((k, _) => [k, document.getElementById(k).value])
         );
 
-        onSaveSettings(modifications);
+        usedContextValue.onSaveSettings(modifications);
     };
 
     return (
         <div className={styles.container}>
             <h3>Settings</h3>
             <div className={styles.options}>
-                {Object.keys(config).map((k, i) => renderOption(k, i))}
+                {Object.keys(usedContextValue.config).map((k, i) => renderOption(k, i))}
             </div>
             <button onClick={onPressSave} className={styles.button}>Save</button>
         </div>
