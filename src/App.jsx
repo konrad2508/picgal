@@ -8,7 +8,7 @@ import useAppState from './hooks/useAppState';
 import AppContext from './components/context/AppContext';
 
 const App = () => {
-    const contextValue = useAppState();
+    const { contextValue } = useAppState();
 
     return (
         <div className={styles.main}>

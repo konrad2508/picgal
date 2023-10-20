@@ -55,54 +55,33 @@ const useAppState = () => {
         hookService.searchCommand(query);
     };
 
-    const onImagePreviewClick = (img) => hookService.previewCommand(img);
-
-    const handleQueryChange = (event) => hookService.queryChangeCommand(event);
-
-    const onClickTag = (tag) => hookService.clickTagCommand(tag);
-
-    const onBackClick = () => hookService.clickBackCommand();
-
-    const onPageNavClick = (pageStep) => hookService.pageNavCommand(usedQuery, currentPage, pageStep);
-
-    const onSaveModifiedTagsClick = (id, modifications) => hookService.modifyImageCommand(id, modifications);
-
-    const onSearchFavouritesClick = () => hookService.clickFavouritesCommand();
-
-    const onClickSavedQuery = (savedQuery) => hookService.clickSavedQueryCommand(savedQuery.query);
-
-    const onModifySavedQuery = (id, modifications) => hookService.modifySavedQueryCommand(id, modifications, savedQueries);
-
-    const onDeleteSavedQuery = (id) => hookService.deleteSavedQueryCommand(id, savedQueries);
-
-    const onAddSavedQuery = (newSavedQuery) => hookService.addSavedQueryCommand(newSavedQuery, savedQueries);
-
-    const onSyncDatabase = () => hookService.syncDatabase();
-
-    const onStartBatchEditor = () => hookService.startBatchEditorCommand();
-
-    const onStartSettings = () => hookService.startSettingsCommand();
-
-    const onSaveSettings = (modifications) => hookService.saveSettingsCommand(modifications);
-
-    const onClickPreviewInBatchEditor = (img) => hookService.clickPreviewInBatchEditorCommand(img);
-
     const sendQueryInBatchEditor = (event) => {
         event.preventDefault();
 
         hookService.searchInBatchEditorCommand(query);
-    }
+    };
 
+    const onImagePreviewClick = (img) => hookService.previewCommand(img);
+    const handleQueryChange = (event) => hookService.queryChangeCommand(event);
+    const onClickTag = (tag) => hookService.clickTagCommand(tag);
+    const onBackClick = () => hookService.clickBackCommand();
+    const onPageNavClick = (pageStep) => hookService.pageNavCommand(usedQuery, currentPage, pageStep);
+    const onSaveModifiedTagsClick = (id, modifications) => hookService.modifyImageCommand(id, modifications);
+    const onSearchFavouritesClick = () => hookService.clickFavouritesCommand();
+    const onClickSavedQuery = (savedQuery) => hookService.clickSavedQueryCommand(savedQuery.query);
+    const onModifySavedQuery = (id, modifications) => hookService.modifySavedQueryCommand(id, modifications, savedQueries);
+    const onDeleteSavedQuery = (id) => hookService.deleteSavedQueryCommand(id, savedQueries);
+    const onAddSavedQuery = (newSavedQuery) => hookService.addSavedQueryCommand(newSavedQuery, savedQueries);
+    const onSyncDatabase = () => hookService.syncDatabase();
+    const onStartBatchEditor = () => hookService.startBatchEditorCommand();
+    const onStartSettings = () => hookService.startSettingsCommand();
+    const onSaveSettings = (modifications) => hookService.saveSettingsCommand(modifications);
+    const onClickPreviewInBatchEditor = (img) => hookService.clickPreviewInBatchEditorCommand(img);
     const onCancelBatchEditor = () => hookService.cancelBatchEditorCommand();
-
     const onClickTitle = () => hookService.clickTitleCommand();
-
     const onSearchFavouritesClickInBatchEditor = () => hookService.clickFavouritesInBatchEditorCommand();
-
     const onClickSavedQueryInBatchEditor = (savedQuery) => hookService.clickSavedQueryInBatchEditorCommand(savedQuery.query);
-
     const onSaveModifiedTagsClickInBatchEditor = (_, modifications) => hookService.modifyImageInBatchEditorCommand(modifications);
-
     const onPageNavClickInBatchEditor = (pageStep) => hookService.pageNavInBatchEditorCommand(usedQuery, currentPage, pageStep);
 
     const contextValue = {
@@ -147,7 +126,9 @@ const useAppState = () => {
         onPageNavClickInBatchEditor
     };
 
-    return contextValue;
+    return {
+        contextValue
+    };
 };
 
 export default useAppState;

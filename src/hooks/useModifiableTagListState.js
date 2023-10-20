@@ -17,22 +17,17 @@ const useModifiableTagListState = (tagType, tags) => {
 
     const hookService = modifiableTagListStateService({ setTagList, setTagListState, setNewTagName });
 
-    const switchStateNormal = () => hookService.switchStateCommand(TagListState.NORMAL);
-
-    const switchStateAdd = () => hookService.switchStateCommand(TagListState.ADD);
-
-    const switchStateRemove = () => hookService.switchStateCommand(TagListState.REMOVE);
-
     const onAddTag = (event) => {
         event.preventDefault();
 
         hookService.addTagCommand(newTagName, existingTags, tagType, tagList, onModificationsChange);
     };
 
+    const switchStateNormal = () => hookService.switchStateCommand(TagListState.NORMAL);
+    const switchStateAdd = () => hookService.switchStateCommand(TagListState.ADD);
+    const switchStateRemove = () => hookService.switchStateCommand(TagListState.REMOVE);
     const onInputChange = (event) => hookService.inputChangeCommand(event);
-
     const onRemoveTag = (tag) => hookService.removeTagCommand(tag, tagType, onModificationsChange, tagList);
-
     const onCancelModification = (tag, type) => hookService.cancelCommand(type, tag, tagType, onModificationsChange, tagList);
 
     const usedContextValue = {

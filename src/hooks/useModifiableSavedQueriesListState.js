@@ -27,13 +27,9 @@ const useModifiableSavedQueriesListState = () => {
     };
 
     const startAddingSavedQuery = () => hookService.startAddingSavedQueryCommand();
-
     const handleInputNewName = (event) => hookService.handleInputNewNameCommand(event);
-
     const handleInputNewQuery = (event) => hookService.handleInputNewQueryCommand(event);
-
     const addNewSavedQuery = () => hookService.addSavedQueryCommand(canUseSavedQueryName, inputNewName, inputNewQuery, onAddSavedQuery);
-
     const cancelAddingSavedQuery = () => hookService.cancelAddingSavedQueryCommand();
 
     const usedContextValue = {

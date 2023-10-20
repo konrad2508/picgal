@@ -5,7 +5,7 @@ import useAutocompleteState from '../hooks/useAutocompleteState';
 import queryService from '../services/queryService';
 
 const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
-    const contextValue = useAutocompleteState(existingTags);
+    const { contextValue } = useAutocompleteState(existingTags);
 
     let rightQuery, leftQuery;
     if (query) {

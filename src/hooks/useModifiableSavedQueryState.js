@@ -15,17 +15,11 @@ const useModifiableSavedQueryState = (savedQuery) => {
     const hookService = modifiableSavedQueryStateService({ setModifiable, setDeletable, setInputName, setInputQuery });
 
     const modifyQuery = () => hookService.modifyQueryCommand(canUseSavedQueryName, savedQuery.id, inputName, onModifySavedQuery, inputQuery);
-
     const cancelModify = () => hookService.cancelModifyCommand(savedQuery);
-
     const handleInputNameChange = (event) => hookService.handleInputNameChangeCommand(event);
-
     const handleInputQueryChange = (event) => hookService.handleInputQueryChangeCommand(event);
-
     const enableDeletable = () => hookService.enableDeletableCommand();
-
     const disableDeletable = () => hookService.disableDeletableCommand();
-
     const enableModifiable = () => hookService.enableModifiableCommand();
 
     const usedContextValue = {
