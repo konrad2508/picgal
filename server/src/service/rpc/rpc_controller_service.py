@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import playhouse.migrate as migrate
 
 from PIL import Image as Img
 from peewee import SqliteDatabase, DoesNotExist
@@ -93,7 +94,25 @@ class RPCControllerService(IRPCControllerService):
 
         ROOT = self.cfg.PICTURES_ROOT
 
+        # verify database integrity
         self.db.create_tables([Image, Tag, ImageTag, Query], safe=True)
+
+        # check for missing columns
+        to_add = []
+
+        # check if encrypted column exists
+        image_columns = self.db.get_columns('image')
+        if not any(column.name == 'encrypted' for column in image_columns):
+            to_add.append(('image', 'encrypted', Image.encrypted))
+        
+        # perform migration
+        if len(to_add) > 0:
+            migrator = migrate.SqliteMigrator(self.db)
+
+            with self.db.atomic():
+                migrate.migrate(
+                    *[ migrator.add_column(*args) for args in to_add ]
+                )
 
         with self.db.atomic():
             # syncing root
