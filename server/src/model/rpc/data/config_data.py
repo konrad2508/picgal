@@ -11,3 +11,5 @@ class ConfigData:
     count_per_page: int
     high_level_name: str
     low_level_name: str
+    gpg_bin: str
+    recipient: str

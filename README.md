@@ -9,7 +9,9 @@ A small picture gallery application. It's purpose is to allow the user to view t
 5. Create the database. Use Sync Database tool to create one in the location specified in the config file. Whenever your gallery changes (or you accidentaly deleted previews or samples), make sure to run that tool again.
 6. You can use Batch Tag Editor tool to add tags to your images in batches.
 7. To query your images, use the searchbar in the navigation menu. In addition to tags generated from the image's location and added by the user, application provides virtual tags. Virtual tags may have several subtags related to them; to use them, type ```<virtual_tag>:<subtag>``` (or use the suggestions menu). Refer to the section dedicated to this type of tags for more information.
+8. If you want to encrypt your images, add the path to GnuPG binary and the recipient for assymetric encryption in Settings. Do remember that if you forget your passphrase, you won't be able to decrypt your images.
 
 ## Virtual tag list
 - ```orientation``` - query the orientation of the image, possible values are ```portrait``` and ```landscape```.
 - ```favourite``` - query images favourited by the user, possible values are ```yes``` and ```no```.
+- ```encrypted``` - query encrypted images, possible values are ```yes``` and ```no```.
