@@ -259,7 +259,9 @@ class RPCControllerService(IRPCControllerService):
             self.cfg.SAMPLES_DIR,
             self.cfg.COUNT_PER_PAGE,
             self.cfg.HIGH_LEVEL_NAME,
-            self.cfg.LOW_LEVEL_NAME
+            self.cfg.LOW_LEVEL_NAME,
+            self.cfg.GPG_BIN,
+            self.cfg.RECIPIENT
         )
 
         return config
@@ -277,6 +279,8 @@ class RPCControllerService(IRPCControllerService):
             cfg['countPerPage'] = modifications.count_per_page
             cfg['highLevelName'] = modifications.high_level_name
             cfg['lowLevelName'] = modifications.low_level_name
+            cfg['gpgBin'] = modifications.gpg_bin
+            cfg['recipient'] = modifications.recipient
 
             cfg_file.seek(0)
             json.dump(cfg, cfg_file, indent=4)
@@ -290,6 +294,8 @@ class RPCControllerService(IRPCControllerService):
         self.cfg.COUNT_PER_PAGE = modifications.count_per_page
         self.cfg.HIGH_LEVEL_NAME = modifications.high_level_name
         self.cfg.LOW_LEVEL_NAME = modifications.low_level_name
+        self.cfg.GPG_BIN = modifications.gpg_bin
+        self.cfg.RECIPIENT = modifications.recipient
 
         new_config = ConfigData(
             modifications.highres,
@@ -299,7 +305,9 @@ class RPCControllerService(IRPCControllerService):
             modifications.samples_dir,
             modifications.count_per_page,
             modifications.high_level_name,
-            modifications.low_level_name
+            modifications.low_level_name,
+            modifications.gpg_bin,
+            modifications.recipient
         )
 
         return new_config

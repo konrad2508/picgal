@@ -19,5 +19,7 @@
     ],
     "countPerPage": 40,
     "highLevelName": "Sources",
-    "lowLevelName": "Characters"
+    "lowLevelName": "Characters",
+    "gpgBin": "",
+    "recipient": ""
 }

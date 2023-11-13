@@ -12,6 +12,8 @@ class ConfigRequest:
     count_per_page: int
     high_level_name: str
     low_level_name: str
+    gpg_bin: str
+    recipient: str
 
     @classmethod
     def from_json(cls, json: dict[str, str]) -> ConfigRequest:
@@ -23,5 +25,7 @@ class ConfigRequest:
             samples_dir=json['samples_dir'],
             count_per_page=int(json['count_per_page']),
             high_level_name=json['high_level_name'],
-            low_level_name=json['low_level_name']
+            low_level_name=json['low_level_name'],
+            gpg_bin=json['gpg_bin'],
+            recipient=json['recipient']
         )
