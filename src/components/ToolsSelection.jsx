@@ -1,5 +1,6 @@
 import styles from '../styles/ToolsSelection.module.css'
 import React from 'react';
+import ViewEncryptedTool from './ViewEncryptedTool';
 import useToolsSelectionState from '../hooks/useToolsSelectionState';
 
 const ToolsSelection = () => {
@@ -12,6 +13,8 @@ const ToolsSelection = () => {
                 <button onClick={usedContextValue.onSyncDatabase} className={styles.button}>Sync Database</button>
                 <button onClick={usedContextValue.onStartBatchEditor} className={styles.button}>Batch Tag Editor</button>
                 <button onClick={usedContextValue.onStartSettings} className={styles.button}>Settings</button>
+                <button onClick={usedContextValue.onStartEncryptor} className={styles.button}>Encryptor</button>
+                <ViewEncryptedTool style={styles.button}/>
             </div>
         </div>
     );

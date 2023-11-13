@@ -179,6 +179,7 @@ class RPCControllerService(IRPCControllerService):
                         'width': width,
                         'height': height,
                         'favourite': False,
+                        'encrypted': False,
                         'created_time': os.path.getmtime(picture)
                     }
 

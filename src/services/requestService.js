@@ -17,14 +17,14 @@ const getAllImagesStats = async () => {
     return camelize(data);
 };
 
-const getImages = async (query, page) => {
-    const { data } = await axios.get(`${BASE_URL}/info?page=${page}&tags=${query}`);
+const getImages = async (query, page, viewEncrypted) => {
+    const { data } = await axios.get(`${BASE_URL}/info?page=${page}&tags=${query}&viewEncrypted=${viewEncrypted}`);
 
     return camelize(data);
 };
 
-const getImagesStats = async (query) => {
-    const { data } = await axios.get(`${BASE_URL}/info/count?tags=${query}`);
+const getImagesStats = async (query, viewEncrypted) => {
+    const { data } = await axios.get(`${BASE_URL}/info/count?tags=${query}&viewEncrypted=${viewEncrypted}`);
 
     return camelize(data);
 };
@@ -35,8 +35,8 @@ const modifyImage = async (id, modifications) => {
     return camelize(data);
 };
 
-const getTags = async () => {
-    const { data } = await axios.get(`${BASE_URL}/tag`);
+const getTags = async (viewEncrypted) => {
+    const { data } = await axios.get(`${BASE_URL}/tag?viewEncrypted=${viewEncrypted}`);
 
     return camelize(data);
 };
@@ -89,6 +89,12 @@ const modifyImageBatch = async (batchModifications) => {
     return camelize(data);
 };
 
+const toggleEncryptImages = async (imagesToEncrypt) => {
+    const { data } = await axios.post(`${BASE_URL}/image/toggle-encrypt`, snakeize(imagesToEncrypt));
+
+    return camelize(data);
+};
+
 const requestService = {
     getAllImages,
     getAllImagesStats,
@@ -103,6 +109,7 @@ const requestService = {
     syncDatabase,
     getConfig,
     modifyConfig,
-    modifyImageBatch
+    modifyImageBatch,
+    toggleEncryptImages
 };
 export default requestService;

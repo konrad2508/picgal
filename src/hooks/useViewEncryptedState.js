@@ -1,12 +1,11 @@
 import React from 'react';
 import AppContext from '../components/context/AppContext';
 
-const useMenuState = () => {
-    const { appState, imagesToShow, onClickViewEncrypted } = React.useContext(AppContext);
+const useViewEncryptedState = () => {
+    const { viewEncrypted, onClickViewEncrypted } = React.useContext(AppContext);
 
     const usedContextValue = {
-        appState,
-        imagesToShow,
+        viewEncrypted,
         onClickViewEncrypted
     };
 
@@ -15,4 +14,4 @@ const useMenuState = () => {
     };
 };
 
-export default useMenuState;
+export default useViewEncryptedState;

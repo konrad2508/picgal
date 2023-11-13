@@ -10,7 +10,7 @@ const SearchBar = () => {
 
     return (
         <form onSubmit={
-            usedContextValue.appState !== AppState.BATCH_EDITING
+            usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.ENCRYPTOR
                 ? usedContextValue.sendQuery
                 : usedContextValue.sendQueryInBatchEditor}>
             <div className={styles.form}>
@@ -19,13 +19,16 @@ const SearchBar = () => {
                         type='button'
                         className={styles.back}
                         onClick={
-                            usedContextValue.appState !== AppState.BATCH_EDITING
+                            usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.ENCRYPTOR
                                 ? usedContextValue.onBackClick
                                 : usedContextValue.onCancelBatchEditor
                         }
-                        disabled={usedContextValue.historyLength === 0 && usedContextValue.appState !== AppState.BATCH_EDITING}
+                        disabled={usedContextValue.historyLength === 0
+                            && usedContextValue.appState !== AppState.BATCH_EDITING
+                            && usedContextValue.appState !== AppState.ENCRYPTOR
+                        }
                     >
-                        { usedContextValue.appState !== AppState.BATCH_EDITING
+                        { usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.ENCRYPTOR
                             ? <FaArrowLeft className='fontAwesome'/>
                             : <FaTimes className='fontAwesome'/> }
                     </button>

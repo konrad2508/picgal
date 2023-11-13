@@ -1,14 +1,13 @@
 import styles from '../styles/Content.module.css';
 import React from 'react';
-import ImagePreview from './ImagePreview';
 import Image from './Image';
-import UsedQuery from './UsedQuery';
-import Pager from './Pager';
 import Settings from './Settings';
 import ToolsSelection from './ToolsSelection';
+import BatchSelect from './BatchSelect';
 import Notifications from './Notifications';
 import AppState from '../enums/AppState';
 import useContentState from '../hooks/useContentState';
+import Browser from './Browser';
 
 const Content = () => {
     const { usedContextValue } = useContentState();
@@ -18,34 +17,14 @@ const Content = () => {
     if (usedContextValue.appState === AppState.BROWSING) {
         content = (
             <>
-                <UsedQuery/>
-                <div className={styles.previews}>
-                    {usedContextValue.imagesToShow.map(img => <ImagePreview key={img.id} img={img}/>)}
-                </div>
-                <div>
-                    <Pager/>
-                </div>
+                <Browser/>
             </>
         );
     }
     else if (usedContextValue.appState === AppState.BATCH_EDITING) {
         content = (
             <>
-                <UsedQuery/>
-                <div className={styles.previews}>
-                    {
-                        usedContextValue.imagesToShow.map(img => 
-                            <ImagePreview key={img.id} img={img} batchEditor={true} selected={usedContextValue.batchEditorSelected.some((i) => i.id === img.id)}/>
-                        )
-                    }
-                </div>
-                <div>
-                    <Pager/>
-                </div>
-                <h3>Selected images</h3>
-                <div className={styles.previews}>
-                    {usedContextValue.batchEditorSelected.map(img => <ImagePreview key={img.id} img={img} active={false}/>)}
-                </div>
+                <BatchSelect title='Batch Tag Editor'/>
             </>
         );
     }
@@ -67,6 +46,13 @@ const Content = () => {
         content = (
             <>
                 <Settings/>
+            </>
+        );
+    }
+    else if (usedContextValue.appState === AppState.ENCRYPTOR) {
+        content = (
+            <>
+                <BatchSelect title='Encryptor'/>
             </>
         );
     }

@@ -11,7 +11,11 @@ def generate_virtual_tags() -> list[VirtualTag]:
 
         (VirtualTag('favourite')
             .add_subtag('yes', SubtagCondition(lambda: Image.favourite == True))
-            .add_subtag('no', SubtagCondition(lambda: Image.favourite == False)))
+            .add_subtag('no', SubtagCondition(lambda: Image.favourite == False))),
+        
+        (VirtualTag('encrypted')
+            .add_subtag('yes', SubtagCondition(lambda: Image.encrypted == True))
+            .add_subtag('no', SubtagCondition(lambda: Image.encrypted == False)))
     ]
 
     return tags

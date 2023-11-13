@@ -4,6 +4,7 @@ from model.image.data.count_data import CountData
 from model.image.data.image_data import ImageData
 from model.image.data.tag_data import TagData
 from model.image.entity.subtag_condition import SubtagCondition
+from model.image.enum.view_encrypted import ViewEncrypted
 from model.image.request.image_modification_request import ImageModificationRequest
 
 
@@ -12,6 +13,7 @@ class IImageDatabaseRepository(ABC):
     def get_images(
             self,
             page: int,
+            view_encrypted: ViewEncrypted,
             normal_tags: list[str],
             virtual_tags: list[SubtagCondition],
             loc_original: str | None = None,
@@ -39,16 +41,22 @@ class IImageDatabaseRepository(ABC):
         ...
 
     @abstractmethod
-    def get_images_count(self, normal_tags: list[str], virtual_tags: list[SubtagCondition]) -> CountData: ...
+    def get_images_count(self, view_encrypted: ViewEncrypted, normal_tags: list[str], virtual_tags: list[SubtagCondition]) -> CountData: ...
 
     @abstractmethod
-    def get_tags(self) -> list[TagData]: ...
+    def get_tags(self, view_encrypted: ViewEncrypted) -> list[TagData]: ...
 
     @abstractmethod
-    def get_image_original_file_location(self, id: int) -> str: ...
+    def get_image_original_file_location(self, id: int) -> tuple[str, bool]: ...
 
     @abstractmethod
-    def get_image_preview_file_location(self, id: int) -> str: ...
+    def get_image_preview_file_location(self, id: int) -> tuple[str, bool]: ...
 
     @abstractmethod
-    def get_image_sample_file_location(self, id: int) -> str: ...
+    def get_image_sample_file_location(self, id: int) -> tuple[str, bool]: ...
+
+    @abstractmethod
+    def get_image_file_location(self, id: int) -> tuple[str, str, str, bool]: ...
+
+    @abstractmethod
+    def toggle_encrypt_image(self, id: int) -> ImageData: ...

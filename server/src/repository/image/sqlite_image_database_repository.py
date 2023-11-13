@@ -11,6 +11,7 @@ from model.image.entity.image import Image
 from model.image.entity.image_tag import ImageTag
 from model.image.entity.subtag_condition import SubtagCondition
 from model.image.entity.tag import Tag
+from model.image.enum.view_encrypted import ViewEncrypted
 from model.image.request.image_modification_request import ImageModificationRequest
 from repository.image.i_image_database_repository import IImageDatabaseRepository
 from service.image.i_image_database_converter_service import IImageDatabaseConverterService
@@ -25,6 +26,7 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
     def get_images(
             self,
             page: int,
+            view_encrypted: ViewEncrypted,
             normal_tags: list[str] = None,
             virtual_tags: list[SubtagCondition] = None,
             loc_original: str | None = None,
@@ -32,7 +34,10 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
             loc_sample: str | None = None) -> list[ImageData]:
         with self.db.atomic():
             images = Image.select()
-
+            
+            if view_encrypted != ViewEncrypted.YES:
+                images = images.where(Image.encrypted == False)
+            
             if virtual_tags is not None:
                 for virtual_tag in virtual_tags:
                     images = images.where(virtual_tag())
@@ -155,9 +160,12 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
         except IntegrityError:
             raise DatabaseIntegrityViolated
 
-    def get_images_count(self, normal_tags: list[str] = None, virtual_tags: list[SubtagCondition] = None) -> CountData:
+    def get_images_count(self, view_encrypted: ViewEncrypted, normal_tags: list[str] = None, virtual_tags: list[SubtagCondition] = None) -> CountData:
         with self.db.atomic():
             count = Image.select(fn.Count().over())
+
+            if view_encrypted != ViewEncrypted.YES:
+                count = count.where(Image.encrypted == False)
 
             if virtual_tags is not None:
                 for virtual_tag in virtual_tags:
@@ -180,12 +188,18 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
 
         return count
 
-    def get_tags(self) -> list[TagData]:
+    def get_tags(self, view_encrypted: ViewEncrypted) -> list[TagData]:
         with self.db.atomic():
             it = ImageTag.alias()
             tag_count = (it
                             .select(fn.Count())
                             .where(Tag.tag_id == it.tag_id))
+            
+            if view_encrypted == ViewEncrypted.NO:
+                tag_count = (tag_count
+                                .join(Image, on=Image.image_id == it.image_id)
+                                .where(Image.encrypted == False))
+
             tags = (Tag
                         .select(Tag.tag_id, Tag.name, Tag.type, tag_count.alias('count'))
                         .where(tag_count > 0))
@@ -194,20 +208,34 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
 
         return tags
 
-    def get_image_original_file_location(self, id: int) -> str:
+    def get_image_original_file_location(self, id: int) -> tuple[str, bool]:
         image = self._get_image_by_id(id)
 
-        return image.file
+        return image.file, image.encrypted
 
-    def get_image_preview_file_location(self, id: int) -> str:
+    def get_image_preview_file_location(self, id: int) -> tuple[str, bool]:
         image = self._get_image_by_id(id)
 
-        return image.preview
+        return image.preview, image.encrypted
 
-    def get_image_sample_file_location(self, id: int) -> str:
+    def get_image_sample_file_location(self, id: int) -> tuple[str, bool]:
         image = self._get_image_by_id(id)
 
-        return image.sample
+        return image.sample, image.encrypted
+
+    def get_image_file_location(self, id: int) -> tuple[str, str, str, bool]:
+        image = self._get_image_by_id(id)
+
+        return image.file, image.preview, image.sample, image.encrypted
+
+    def toggle_encrypt_image(self, id: int) -> ImageData:
+        with self.db.atomic():
+            Image.update(encrypted=(~ Image.encrypted)).where(Image.image_id == id).execute()
+
+        image = Image.get_by_id(id)
+        modified_image = self.image_database_converter.convert_image(image)
+
+        return modified_image
 
     def _get_image_by_id(self, id: int) -> Image:
         try:

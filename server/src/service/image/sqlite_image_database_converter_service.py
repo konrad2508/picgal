@@ -38,6 +38,7 @@ class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
             width=dict_image['width'],
             height=dict_image['height'],
             favourite=dict_image['favourite'],
+            encrypted=dict_image['encrypted'],
             created_time=time.strftime('%Y-%m-%d', time.localtime(dict_image['created_time'])),
             path=f'{loc_original}/{dict_image["image_id"]}' if loc_original else None,
             preview=f'{loc_preview}/{dict_image["image_id"]}' if loc_preview else None,

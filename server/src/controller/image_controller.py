@@ -4,7 +4,9 @@ from controller.i_controller import IController
 from factory.i_controller_service_factory import IControllerServiceFactory
 from model.exception.database_integrity_violated import DatabaseIntegrityViolated
 from model.exception.entity_not_found import EntityNotFound
+from model.image.enum.view_encrypted import ViewEncrypted
 from model.image.request.image_modification_request import ImageModificationRequest
+from model.image.request.encrypt_request import EncryptRequest
 
 
 class ImageController(IController):
@@ -27,8 +29,16 @@ class ImageController(IController):
         def get_infos() -> flask.Response:
             tags = flask.request.args.get('tags')
             page = flask.request.args.get('page', type=int, default=1)
+            view_encrypted = flask.request.args.get('viewEncrypted', type=ViewEncrypted, default=ViewEncrypted.NO)
 
-            info = image_service.get_infos(image_url=image_route, preview_url=preview_route, sample_url=sample_route, tags=tags, page=page)
+            info = image_service.get_infos(
+                image_url=image_route,
+                preview_url=preview_route,
+                sample_url=sample_route,
+                tags=tags,
+                page=page,
+                view_encrypted=view_encrypted
+            )
 
             return flask.jsonify(info)
 
@@ -65,33 +75,49 @@ class ImageController(IController):
         @image_controller.route(f'{info_route}/count', methods=['GET'])
         def get_infos_count() -> flask.Response:
             tags = flask.request.args.get('tags')
+            view_encrypted = flask.request.args.get('viewEncrypted', type=ViewEncrypted, default=ViewEncrypted.NO)
 
-            count = image_service.get_infos_count(tags)
+            count = image_service.get_infos_count(tags, view_encrypted)
 
             return flask.jsonify(count)
 
         @image_controller.route(f'{tag_route}', methods=['GET'])
         def get_tags() -> flask.Response:
-            tags = image_service.get_tags()
+            view_encrypted = flask.request.args.get('viewEncrypted', type=ViewEncrypted, default=ViewEncrypted.NO)
+            
+            tags = image_service.get_tags(view_encrypted)
 
             return flask.jsonify(tags)
 
         @image_controller.route(f'{image_route}/<id>', methods=['GET'])
         def get_image(id: int) -> flask.Response:
             try:
-                image_path = image_service.get_image_path(id)
+                image = image_service.get_image_content(id)
 
-                return flask.send_file(image_path, mimetype='image/jpeg')
+                return flask.send_file(image, mimetype='image/jpeg')
             
             except (EntityNotFound,  FileNotFoundError):
                 flask.abort(404)
 
+        @image_controller.route(f'{image_route}/toggle-encrypt', methods=['POST'])
+        def toggle_encrypt_image() -> flask.Response:
+            images_to_encode = EncryptRequest.from_json(flask.request.get_json(force=True))
+
+            try:
+                encoding_result = image_service.toggle_encrypt_files(images_to_encode)
+
+                return flask.jsonify(encoding_result)
+            
+            except Exception as e:
+                print(e)
+                flask.abort(429)
+
         @image_controller.route(f'{preview_route}/<id>', methods=['GET'])
         def get_preview(id: int) -> flask.Response:
             try:
-                preview_path = image_service.get_preview_path(id)
+                preview = image_service.get_preview_content(id)
 
-                return flask.send_file(preview_path, mimetype='image/jpeg')
+                return flask.send_file(preview, mimetype='image/jpeg')
             
             except (EntityNotFound, FileNotFoundError):
                 flask.abort(404)
@@ -99,9 +125,9 @@ class ImageController(IController):
         @image_controller.route(f'{sample_route}/<id>', methods=['GET'])
         def get_sample(id: int) -> flask.Response:
             try:
-                sample_path = image_service.get_sample_path(id)
+                sample = image_service.get_sample_content(id)
 
-                return flask.send_file(sample_path, mimetype='image/jpeg')
+                return flask.send_file(sample, mimetype='image/jpeg')
             
             except (EntityNotFound, FileNotFoundError):
                 flask.abort(404)

@@ -12,6 +12,7 @@ class ImageData:
     width: int
     height: int
     favourite: bool
+    encrypted: bool
     created_time: str
     path: str | None
     preview: str | None

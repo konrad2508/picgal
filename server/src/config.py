@@ -32,5 +32,8 @@ class Config:
         self.HIGH_LEVEL_NAME: str = cfg['highLevelName']
         self.LOW_LEVEL_NAME: str = cfg['lowLevelName']
 
+        self.GPG_BIN: str = cfg['gpgBin']
+        self.RECIPIENT: str = cfg['recipient']
+
 
 conf = Config('../../config.json')

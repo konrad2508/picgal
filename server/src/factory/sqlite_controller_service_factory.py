@@ -29,7 +29,7 @@ class SqliteControllerServiceFactory(IControllerServiceFactory):
 
         image_request_converter = ImageRequestConverterService()
         path_resolver = PathResolverService(self.cfg)
-        image_service = ImageControllerService(image_repository, image_request_converter, path_resolver)
+        image_service = ImageControllerService(image_repository, image_request_converter, path_resolver, self.cfg)
 
         return image_service
 
