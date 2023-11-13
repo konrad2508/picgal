@@ -7,7 +7,7 @@ const Settings = () => {
 
     const renderOption = (k, i) => {
         const inputField = () => {
-            if (/^[0-9]*$/.test(usedContextValue.config[k])) {
+            if (/^[0-9]+$/.test(usedContextValue.config[k])) {
                 const validator = (e) => {
                     if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
