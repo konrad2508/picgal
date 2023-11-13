@@ -26,6 +26,7 @@ const Metadata = ({ img }) => {
                 </div>
             </div>
             <p><b>ID:</b> {img.id}</p>
+            <p><b>Encrypted:</b> {img.encrypted ? 'Yes' : 'No'}</p>
             <p><b>Resolution:</b> {img.width}x{img.height}</p>
             <p><b>Created at:</b> {img.createdTime}</p>
             <p><b>Location:</b> {img.file}</p>

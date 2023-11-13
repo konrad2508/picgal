@@ -1,0 +1,12 @@
+.container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.previews {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 160px);
+}
+

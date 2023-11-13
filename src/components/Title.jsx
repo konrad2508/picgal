@@ -6,7 +6,9 @@ const Title = () => {
     const { usedContextValue } = useTitleState();
 
     const onClick = () => {
-        if (usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.START) {
+        if (usedContextValue.appState !== AppState.BATCH_EDITING
+            && usedContextValue.appState !== AppState.START
+            && usedContextValue.appState !== AppState.ENCRYPTOR) {
             usedContextValue.onClickTitle();
         }
     };

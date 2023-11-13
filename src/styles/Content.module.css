@@ -3,8 +3,3 @@
     min-height: 500px;
     flex: 1 0 auto;
 }
-
-.previews {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 160px);
-}

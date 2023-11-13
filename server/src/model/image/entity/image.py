@@ -11,4 +11,5 @@ class Image(BaseModel):
     width = peewee.IntegerField()
     height = peewee.IntegerField()
     favourite = peewee.BooleanField()
+    encrypted = peewee.BooleanField()
     created_time = peewee.DateTimeField()

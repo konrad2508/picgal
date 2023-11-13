@@ -39,6 +39,20 @@ const ImagePreview = ({ img, selected=false, active=true, batchEditor=false }) =
         newHeight = MAX_DIM;
     }
 
+    let style;
+    if (img.encrypted && selected) {
+        style = styles.selectedEncrypted;
+    }
+    else if (img.encrypted && !selected) {
+        style = styles.notSelectedEncrypted;
+    }
+    else if (!img.encrypted && selected) {
+        style = styles.selected;
+    }
+    else {
+        style = styles.notSelected;
+    }
+
     return (
         <div className={styles.container}>
             <img
@@ -47,7 +61,7 @@ const ImagePreview = ({ img, selected=false, active=true, batchEditor=false }) =
                 width={newWidth}
                 height={newHeight}
                 onClick={onClickAction}
-                className={selected ? styles.selected : styles.notSelected}
+                className={style}
             />
         </div>
     );

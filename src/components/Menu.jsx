@@ -3,6 +3,7 @@ import React from 'react';
 import Navigation from './Navigation';
 import TagLists from './TagLists';
 import Metadata from './Metadata';
+import Encrypt from './Encrypt';
 import AppState from '../enums/AppState';
 import useMenuState from '../hooks/useMenuState';
 
@@ -28,6 +29,14 @@ const Menu = () => {
         );
     };
 
+    const renderEncryptButton = () => {
+        return (
+            <>
+                <Encrypt/>
+            </>
+        );
+    };
+
     const renderAdditionalComponents = () => {
         if (usedContextValue.appState === AppState.PREVIEW) {
             return renderImageInfo();
@@ -35,6 +44,10 @@ const Menu = () => {
 
         if (usedContextValue.appState === AppState.BATCH_EDITING) {
             return renderBatchEditorTagList();
+        }
+
+        if (usedContextValue.appState === AppState.ENCRYPTOR) {
+            return renderEncryptButton();
         }
 
         return null;

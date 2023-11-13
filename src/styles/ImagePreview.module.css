@@ -14,3 +14,12 @@
 .notSelected {
     
 }
+
+.selectedEncrypted {
+    border: 5px solid #00FF00;
+    filter: grayscale(100%);
+}
+
+.notSelectedEncrypted {
+    border: 5px solid #00FF00;
+}
