@@ -1,27 +1,25 @@
 import flask
 
 from controller.i_controller import IController
-from factory.i_controller_service_factory import IControllerServiceFactory
 from model.exception.database_integrity_violated import DatabaseIntegrityViolated
 from model.exception.entity_not_found import EntityNotFound
 from model.query.request.query_request import QueryRequest
+from service.query.i_query_controller_service import IQueryControllerService
 
 
 class QueryController(IController):
-    def __init__(self, factory: IControllerServiceFactory, route_prefix: str) -> None:
-        self.factory = factory
+    def __init__(self, query_service: IQueryControllerService, route_prefix: str) -> None:
+        self.query_service = query_service
         self.route_prefix = route_prefix
 
     def initialize(self) -> flask.Blueprint:
         query_route = f'{self.route_prefix}/query'
 
-        query_service = self.factory.get_query_service()
-
         query_controller = flask.Blueprint('query', __name__)
 
         @query_controller.route(f'{query_route}', methods=['GET'])
         def get_queries() -> flask.Response:
-            queries = query_service.get_queries()
+            queries = self.query_service.get_queries()
 
             return flask.jsonify(queries)
 
@@ -30,7 +28,7 @@ class QueryController(IController):
             query = QueryRequest.from_json(flask.request.get_json(force=True))
 
             try:
-                created_query = query_service.create_query(query)
+                created_query = self.query_service.create_query(query)
 
                 return flask.jsonify(created_query)
 
@@ -42,7 +40,7 @@ class QueryController(IController):
             modifications = QueryRequest.from_json(flask.request.get_json(force=True))
 
             try:
-                modified_query = query_service.modify_query(id, modifications)
+                modified_query = self.query_service.modify_query(id, modifications)
 
                 return flask.jsonify(modified_query)
 
@@ -55,7 +53,7 @@ class QueryController(IController):
         @query_controller.route(f'{query_route}/<id>', methods=['DELETE'])
         def delete_query(id: int) -> flask.Response:
             try:
-                query_service.delete_query(id)
+                self.query_service.delete_query(id)
 
                 return flask.Response(status=204)
 
