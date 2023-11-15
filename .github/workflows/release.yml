@@ -28,10 +28,10 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            name: Picgal-win32-x64.zip
+            name: Picgal-win32-x64
                     
           - os: ubuntu-latest
-            name: Picgal-linux-x64.zip
+            name: Picgal-linux-x64
             
     runs-on: ${{ matrix.os }}
     steps:
@@ -50,10 +50,12 @@ jobs:
           architecture: 'x64'
       
       - name: Install node requirements
-        run: npm i
+        run: |
+          cd frontend
+          npm i
       
       - name: Install Python requirements
-        run: pip install -r server/requirements.txt
+        run: pip install -r backend/requirements.txt
       
       - name: Install Pyinstaller
         run: pip install pyinstaller
@@ -61,29 +63,43 @@ jobs:
       - name: Build node project
         env:
           CI: ''
-        run: npm run build
+        run: |
+          cd frontend
+          npm run build
       
       - name: Build Python exe
         run: |
-          cd server
+          cd backend
           pyinstaller --onefile -i NONE --name picgal-server src/app.py
           rm -rf build picgal-server.spec
       
       - name: Generate electron app for Windows
         if: matrix.os == 'windows-latest'
-        run: npx electron-packager . Picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --icon=./build/icon.ico --ignore="(^/server/src*|^/server/requirements.txt|^/node_modules/@.*|^/node_modules/.cache|^/node_modules/.package-lock.json|^/.gitignore|^/.github|^/.vscode|^/build-linux-x64|^/build-win32-x64.bat|^/public*|^/previews*|^/samples*|^/database.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App.jsx|^/src/index.jsx)"
-      
+        run: |
+          cd frontend
+          npx electron-packager . Picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --icon=./build/icon.ico --ignore="(^/node_modules/@.*|^/node_modules/.cache|^/node_modules/.package-lock.json|^/public*|^/src/components*|^/src/context*|^/src/enums*|^/src/forms*|^/src/services*|^/src/index.jsx|^/src/index.css)"
+          mv ../backend/dist/picgal-server.exe out/${{ matrix.name }}/resources/app
+          mv ../config.json out/${{ matrix.name }}
+
       - name: Generate electron app for Linux
         if: matrix.os == 'ubuntu-latest'
-        run: npx electron-packager . Picgal --out=out/ --platform=linux --arch=x64 --icon=./build/icon.ico --ignore="(^/server/src*|^/server/requirements\.txt|^/node_modules/@.*|^/node_modules/\.cache|^/node_modules/\.package-lock\.json|^/\.gitignore|^/\.github|^/\.vscode|^/build-linux-x64|^/build-win32-x64\.bat|^/public*|^/previews*|^/samples*|^/database\.sqlite|^/src/components*|^/src/enums*|^/src/forms*|^/src/hooks*|^/src/services*|^/src/styles*|^/src/App\.jsx|^/src/index\.jsx)"
-      
+        run: |
+          cd frontend
+          npx electron-packager . Picgal --out=out/ --platform=linux --arch=x64 --icon=./build/icon.ico --ignore="(^/node_modules/@.*|^/node_modules/\.cache|^/node_modules/\.package-lock\.json|^/public*|^/src/components*|^/src/context*|^/src/enums*|^/src/forms*|^/src/services*|^/src/index\.jsx|^/src/index\.css)"
+          mv ../backend/dist/picgal-server out/${{ matrix.name }}/resources/app
+          mv ../config.json out/${{ matrix.name }}
+
       - name: Compress to zip for Windows
         if: matrix.os == 'windows-latest'
-        run: 7z a out/${{ matrix.name }} out/* 
+        run: |
+          cd frontend/out
+          7z a ../../${{ matrix.name }}.zip * 
 
       - name: Compress to zip for Linux
         if: matrix.os == 'ubuntu-latest'
-        run: zip -r out/${{ matrix.name }} out/*
+        run: |
+          cd frontend/out
+          zip -r ../../${{ matrix.name }}.zip *
       
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
@@ -91,6 +107,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: out/${{ matrix.name }}
-          asset_name: ${{ matrix.name }}
+          asset_path: ${{ matrix.name }}.zip
+          asset_name: ${{ matrix.name }}.zip
           asset_content_type: application/zip
