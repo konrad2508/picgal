@@ -4,19 +4,18 @@
 .vscode
 
 # dependencies
-/node_modules
-/.pnp
+*/node_modules
+*/.pnp
 .pnp.js
 package-lock.json
 
 # testing
-/coverage
+*/coverage
 
 # build
-/build
-/server/build
-/server/dist
-/out
+*/build
+*/dist
+*/out
 
 # misc
 .DS_Store
