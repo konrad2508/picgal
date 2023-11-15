@@ -11,7 +11,7 @@ contextMenu({
     shouldShowMenu: (event, parameters) => parameters.titleText === ' '
 });
 
-const backend = execFile(`${__dirname}/../server/dist/${serverExeName}`, {cwd: `${__dirname}/../server/dist`}, (error) => {
+const backend = execFile(`${__dirname}/../${serverExeName}`, {cwd: `${__dirname}/..`}, (error) => {
     if (error) {
         throw error;
     }
