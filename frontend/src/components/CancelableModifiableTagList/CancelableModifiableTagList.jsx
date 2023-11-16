@@ -8,7 +8,7 @@ import useCancelableModifiableTagListState from './useCancelableModifiableTagLis
 const CancelableModifiableTagList = ({ tagType }) => {
     const { usedContextValue } = useCancelableModifiableTagListState();
 
-    const normalTags = usedContextValue.tagList.filter(e => e.type === TagState.NORMAL).length    
+    const normalTags = usedContextValue.tagList.filter(e => e.type === TagState.NORMAL).length;
 
     return (
         <>

@@ -15,7 +15,7 @@ const useSavedQueriesListState = () => {
     const [ displaySavedQueries, setDisplaySavedQueries ] = React.useState(false);
     const [ modificationMode, setModificatonMode ] = React.useState(false);
 
-    const hookService = savedQueriesListStateService({ setDisplaySavedQueries, setModificatonMode })
+    const hookService = savedQueriesListStateService({ setDisplaySavedQueries, setModificatonMode });
 
     const executeSavedQuery = (savedQuery) => hookService.executeSavedQueryCommand(savedQuery, onClickSavedQuery);
     const executeSearchFavourites = () => hookService.executeSearchFavouritesCommand(onSearchFavouritesClick);

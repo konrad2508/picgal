@@ -28,4 +28,4 @@ const useAddNewSavedQueryState = () => {
     };
 };
 
-export default useAddNewSavedQueryState
+export default useAddNewSavedQueryState;

@@ -42,7 +42,7 @@ const modifiableSavedQueryStateService = ({ setModifiable, setDeletable, setInpu
         enableDeletableCommand,
         disableDeletableCommand,
         enableModifiableCommand
-    }
+    };
 };
 
 export default modifiableSavedQueryStateService;

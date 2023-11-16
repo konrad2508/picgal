@@ -13,7 +13,7 @@ const useDeleteModifiableSavedQueryState = () => {
 
     return {
         usedContextValue
-    }
+    };
 };
 
 export default useDeleteModifiableSavedQueryState;

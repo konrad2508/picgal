@@ -20,7 +20,7 @@ const modificationForm = () => {
         generalRemoved: 'generalAdded',
         metaAdded: 'metaRemoved',
         metaRemoved: 'metaAdded'
-    }
+    };
 
     return { form, formComplements };
 };

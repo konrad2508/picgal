@@ -28,4 +28,4 @@ const useEditModifiableSavedQueryState = () => {
     };
 };
 
-export default useEditModifiableSavedQueryState
+export default useEditModifiableSavedQueryState;

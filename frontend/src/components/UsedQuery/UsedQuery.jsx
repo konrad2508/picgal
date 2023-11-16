@@ -1,5 +1,5 @@
 import styles from './UsedQuery.module.css';
-import React from "react";
+import React from 'react';
 import useUsedQueryState from './useUsedQueryState';
 
 const UsedQuery = () => {

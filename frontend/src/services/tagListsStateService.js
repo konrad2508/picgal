@@ -34,7 +34,7 @@ const tagListsStateService = ({ setModifications, setModificationMode }) => {
     return {
         addModificationCommand,
         switchModeCommand
-    }
+    };
 };
 
 export default tagListsStateService;

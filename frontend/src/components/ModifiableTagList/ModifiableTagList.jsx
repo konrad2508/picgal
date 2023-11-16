@@ -25,7 +25,7 @@ const ModifiableTagList = ({ tagType, tags }) => {
         }
         else {
             return [];
-        };
+        }
     };
 
     const renderTagList = () => {
