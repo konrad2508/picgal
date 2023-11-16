@@ -50,7 +50,7 @@ const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagN
         if (canAddTag(existingTags, tagType, toAdd) && !tagList.map(e => e.name).includes(toAdd)) {
             onModificationsChange(`${tagType.name.toLowerCase()}Added`, toAdd);
 
-            setTagList([...tagList, { name: toAdd, type: TagState.ADDED }])
+            setTagList([...tagList, { name: toAdd, type: TagState.ADDED }]);
         }
 
         setNewTagName('');
@@ -79,7 +79,7 @@ const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagN
     };
 
     const cancelCommand = (type, tag, tagType, onModificationsChange, tagList) => {
-        let action = ''
+        let action = '';
         if (type === TagState.ADDED) {
             action = 'Removed';
         }

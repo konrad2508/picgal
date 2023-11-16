@@ -8,10 +8,10 @@ const autocompleteStateService = ({ setDisplay, setVirtualTagMode, setSubtagList
             }
         };
 
-        window.addEventListener("mousedown", clickOutside);
+        window.addEventListener('mousedown', clickOutside);
         
         return () => {
-            window.removeEventListener("mousedown", clickOutside);
+            window.removeEventListener('mousedown', clickOutside);
         };
     };
 

@@ -11,7 +11,7 @@ const normalTagToInputTag = (normalTag) => {
 };
 
 const normalVirtualTagToInputVirtualTag = (normalVirtualTag) => {
-    return `${normalVirtualTag.trim().toLowerCase().replaceAll(' ', '_')}:`
+    return `${normalVirtualTag.trim().toLowerCase().replaceAll(' ', '_')}:`;
 };
 
 const findPotentialVirtualTag = (input, existingTags) => {

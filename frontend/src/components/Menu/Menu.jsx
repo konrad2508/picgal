@@ -18,7 +18,7 @@ const Menu = () => {
                 <TagLists img={img}/>
                 <Metadata img={img}/>
             </>
-        )
+        );
     };
 
     const renderBatchEditorTagList = () => {

@@ -272,10 +272,10 @@ const appStateService = ({  setQuery,
         const alreadyAdded = batchEditorImages.some((i) => i.id === img.id);
 
         if (alreadyAdded) {
-            setBatchEditorImages(batchEditorImages.filter((v, _) => v.id !== img.id))
+            setBatchEditorImages(batchEditorImages.filter((v, _) => v.id !== img.id));
         }
         else {
-            setBatchEditorImages([...batchEditorImages, img])
+            setBatchEditorImages([...batchEditorImages, img]);
         }
     };
 

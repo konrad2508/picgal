@@ -1,4 +1,4 @@
-import styles from './Pager.module.css'
+import styles from './Pager.module.css';
 import React from 'react';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import AppState from '../../enums/AppState';
@@ -26,7 +26,7 @@ const Pager = () => {
                 <FaAngleRight className='fontAwesome'/>
             </button>
         </div>
-    )
-}
+    );
+};
 
 export default Pager;

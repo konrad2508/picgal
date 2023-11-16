@@ -35,19 +35,19 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     };
 
     const activateSubtags = (suggestion) => {
-        const newInput = `${leftQuery} ${queryService.normalVirtualTagToInputVirtualTag(suggestion.name)}`.trimStart()
+        const newInput = `${leftQuery} ${queryService.normalVirtualTagToInputVirtualTag(suggestion.name)}`.trimStart();
         
         handleQueryChange({ target: { value: newInput } });
         contextValue.enableVirtualTagMode(suggestion.subtags);
     };
 
     const addSuggestion = (suggestion) => {
-        const newInput = `${leftQuery} ${queryService.normalTagToInputTag(suggestion.name)} `.trimStart()
+        const newInput = `${leftQuery} ${queryService.normalTagToInputTag(suggestion.name)} `.trimStart();
 
         handleQueryChange({ target: { value: newInput } });
         contextValue.disableDisplay();
         contextValue.disableVirtualTagMode();
-    }
+    };
 
     const getSuggestions = () => {
         const sortingFunction = (a, b) => {
@@ -79,7 +79,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             .filter(e => e.name.toLowerCase().includes(rightQuery) && rightQuery)
             .sort(sortingFunction)
             .slice(0, 5);
-    }
+    };
 
     const renderSuggestions = () => {
         return (
@@ -109,7 +109,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
                 </div>
             )}
         </div>
-    )
+    );
 };
 
 export default AutocompleteQuery;

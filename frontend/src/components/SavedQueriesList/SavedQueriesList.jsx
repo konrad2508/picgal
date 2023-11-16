@@ -78,7 +78,7 @@ const SavedQueriesList = () => {
         <SavedQueriesListContext.Provider value={contextValue}> 
             { renderSavedQueriesList() }
         </SavedQueriesListContext.Provider>
-    )
+    );
 };
 
 export default SavedQueriesList;

@@ -1,4 +1,4 @@
-import styles from './ToolsSelection.module.css'
+import styles from './ToolsSelection.module.css';
 import React from 'react';
 import ViewEncryptedTool from '../ViewEncryptedTool/ViewEncryptedTool';
 import useToolsSelectionState from './useToolsSelectionState';

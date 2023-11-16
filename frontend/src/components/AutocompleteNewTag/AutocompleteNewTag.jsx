@@ -8,7 +8,7 @@ const AutocompleteNewTag = ({ existingTags }) => {
     const addSuggestion = (e) => {
         usedContextValue.onInputChange({ target: { value: e.name.trim() } });
         contextValue.disableDisplay();
-    }
+    };
 
     const renderSuggestions = () => {
         return (
@@ -33,12 +33,12 @@ const AutocompleteNewTag = ({ existingTags }) => {
             { contextValue.display && (
                 <div className={styles.suggestionsOuterContainer}>
                     <div className={styles.suggestionsInnerContainer}>
-                    { renderSuggestions() }
+                        { renderSuggestions() }
                     </div>
                 </div>
             )}
         </div>
-    )
+    );
 };
 
 export default AutocompleteNewTag;
