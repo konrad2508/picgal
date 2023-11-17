@@ -1,8 +1,11 @@
 import styles from './Image.module.css';
 import React from 'react';
 import networkService from '../../services/networkService';
+import useImageState from './useImageState';
 
 const Image = ({ img }) => {
+    const { contextValue } = useImageState();
+
     const MAX_WIDTH = 800;
 
     const { width, height } = img;
@@ -26,15 +29,28 @@ const Image = ({ img }) => {
         maxHeight: newHeight
     };
 
+    const imageUrl = () => {
+        const url = contextValue.showOriginal ? img.path : img.sample;
+
+        return networkService.getURLToBackend(url);
+    };
+
     return (
         <div className={styles.container}>
-            <img
-                className={styles.img}
-                src={networkService.getURLToBackend(img.sample)}
-                alt={img.path}
-                style={styleImg}
-                title=' '
-            />
+            <div>
+                <button onClick={contextValue.toggleShowOriginal} className={styles.button}>
+                    { contextValue.showOriginal ? 'Show sample' : 'Show original' }
+                </button>
+            </div>
+            <div>
+                <img
+                    className={styles.img}
+                    src={imageUrl()}
+                    alt={img.path}
+                    style={styleImg}
+                    title=' '
+                />
+            </div>
         </div>
     );
 };

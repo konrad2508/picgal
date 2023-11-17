@@ -1,27 +1,26 @@
-import requestService from '../services/requestService'
+import requestService from '../services/requestService';
 import queryService from '../services/queryService';
 import AppState from '../enums/AppState';
 import ViewEncrypted from '../enums/ViewEncrypted';
 
-const appStateService = ({  setQuery,
-                            setImagesToShow,
-                            setAppState,
-                            setViewEncrypted,
-                            setUsedQuery,
-                            setCurrentPage,
-                            setMaxPage,
-                            setExistingTags,
-                            setSavedQueries,
-                            setHistory,
-                            setDeletedCounter,
-                            setRestoredPreviewsCounter,
-                            setRestoredSamplesCounter,
-                            setAddCounter,
-                            setBatchEditorImages,
-                            setConfig },
-                            history,
-                            batchEditorImages) => {
-    
+const appStateService = (setters, history, batchEditorImages) => {
+    const { setQuery,
+        setImagesToShow,
+        setAppState,
+        setViewEncrypted,
+        setUsedQuery,
+        setCurrentPage,
+        setMaxPage,
+        setExistingTags,
+        setSavedQueries,
+        setHistory,
+        setDeletedCounter,
+        setRestoredPreviewsCounter,
+        setRestoredSamplesCounter,
+        setAddCounter,
+        setBatchEditorImages,
+        setConfig } = setters;
+
     const fetchSavedDataEffect = () => {
         requestService
             .getTags(ViewEncrypted.NO)
