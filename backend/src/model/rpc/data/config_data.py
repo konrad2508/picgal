@@ -13,3 +13,4 @@ class ConfigData:
     low_level_name: str
     gpg_bin: str
     recipient: str
+    image_save_dir: str
