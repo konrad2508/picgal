@@ -35,5 +35,7 @@ class Config:
         self.GPG_BIN: str = cfg['gpgBin']
         self.RECIPIENT: str = cfg['recipient']
 
+        self.IMAGE_SAVE_DIR: str = cfg['imageSaveDir']
+
 
 conf = Config('../../config.json')
