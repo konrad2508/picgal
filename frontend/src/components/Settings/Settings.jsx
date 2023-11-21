@@ -19,7 +19,8 @@ const Settings = () => {
                         id={k}
                         type="number"
                         onKeyPress={validator}
-                        defaultValue={usedContextValue.config[k]} className={styles.optionValue}/>
+                        defaultValue={usedContextValue.config[k]} className={styles.optionValue}
+                    />
                 );
             }
             else {

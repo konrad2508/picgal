@@ -4,6 +4,7 @@ import Navigation from '../Navigation/Navigation';
 import TagLists from '../TagLists/TagLists';
 import Metadata from '../Metadata/Metadata';
 import Encrypt from '../Encrypt/Encrypt';
+import SaveImage from '../SaveImage/SaveImage';
 import AppState from '../../enums/AppState';
 import useMenuState from './useMenuState';
 
@@ -17,6 +18,7 @@ const Menu = () => {
             <>
                 <TagLists img={img}/>
                 <Metadata img={img}/>
+                <SaveImage id={img.id}/>
             </>
         );
     };

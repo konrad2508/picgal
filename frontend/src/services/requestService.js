@@ -95,6 +95,12 @@ const toggleEncryptImages = async (imagesToEncrypt) => {
     return camelize(data);
 };
 
+const saveImage = async (id, filename) => {
+    const { data } = await axios.post(`${BASE_URL}/image/${id}/save`, snakeize(filename));
+
+    return camelize(data);
+};
+
 const requestService = {
     getAllImages,
     getAllImagesStats,
@@ -110,6 +116,7 @@ const requestService = {
     getConfig,
     modifyConfig,
     modifyImageBatch,
-    toggleEncryptImages
+    toggleEncryptImages,
+    saveImage
 };
 export default requestService;

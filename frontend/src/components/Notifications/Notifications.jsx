@@ -13,6 +13,7 @@ const Notifications = () => {
     const restoredSamplesCounterNotifText = `Restored ${usedContextValue.restoredSamplesCounter} sample` + pluralizer(usedContextValue.restoredSamplesCounter);
     const addCounterNotifText = `Added ${usedContextValue.addCounter} image` + pluralizer(usedContextValue.addCounter);
     const noChangesToDatabaseNotifText = 'Database is already up to date';
+    const downloadedFileText = `Downloaded file to ${usedContextValue.downloadedFilePath}`;
 
     return (
         <div className={styles.container}>
@@ -25,6 +26,8 @@ const Notifications = () => {
                 [ usedContextValue.deletedCounter, usedContextValue.restoredPreviewsCounter, usedContextValue.restoredSamplesCounter, usedContextValue.addCounter ].every((v) => v === 0) && 
                 <Notification text={noChangesToDatabaseNotifText}/>
             }
+
+            { usedContextValue.downloadedFilePath !== '' && <Notification text={downloadedFileText}/> }
         </div>
     );
 };

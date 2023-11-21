@@ -1,0 +1,30 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    width: 230px;
+    height: 21px;
+}
+
+.saveLocationContainer {
+    word-wrap: break-word;
+}
+
+.titleContainer {
+    width: 60px;
+}
+
+.inputContainer {
+    width: 140px;
+}
+
+.input {
+    width: 132px;
+}
+
+.buttonContainer {
+    width: 30px;
+}
+
+.button {
+    width: 100%;
+}

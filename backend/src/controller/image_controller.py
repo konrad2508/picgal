@@ -4,6 +4,7 @@ from controller.i_controller import IController
 from model.exception.database_integrity_violated import DatabaseIntegrityViolated
 from model.exception.entity_not_found import EntityNotFound
 from model.image.enum.view_encrypted import ViewEncrypted
+from model.image.request.download_request import DownloadRequest
 from model.image.request.image_modification_request import ImageModificationRequest
 from model.image.request.encrypt_request import EncryptRequest
 from service.image.i_image_controller_service import IImageControllerService
@@ -96,6 +97,19 @@ class ImageController(IController):
             
             except (EntityNotFound,  FileNotFoundError):
                 flask.abort(404)
+
+        @image_controller.route(f'{image_route}/<id>/save', methods=['POST'])
+        def download_image(id: int) -> flask.Response:
+            requested_filename = DownloadRequest.from_json(flask.request.get_json(force=True))
+
+            try:
+                download_result = self.image_service.download_image(id, requested_filename)
+
+                return flask.jsonify(download_result)
+        
+            except Exception as e:
+                print(e)
+                flask.abort(403)
 
         @image_controller.route(f'{image_route}/toggle-encrypt', methods=['POST'])
         def toggle_encrypt_image() -> flask.Response:
