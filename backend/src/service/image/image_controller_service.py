@@ -1,12 +1,16 @@
 import io
+import os
 import subprocess
+
 from config import Config
+from model.image.data.download_result import DownloadResult
 from model.image.data.image_data import ImageData
 from model.image.data.count_data import CountData
 from model.image.data.tag_data import TagData
 from model.image.data.virtual_tag_data import VirtualTagData
 from model.image.data.encrypt_result import EncryptResult
 from model.image.enum.view_encrypted import ViewEncrypted
+from model.image.request.download_request import DownloadRequest
 from model.image.request.encrypt_request import EncryptRequest
 from model.image.request.image_modification_request import ImageModificationRequest
 from repository.image.i_image_repository import IImageRepository
@@ -139,6 +143,28 @@ class ImageControllerService(IImageControllerService):
                 sam = io.BytesIO(f.read())
 
         return sam
+
+    def download_image(self, id: int, filename: DownloadRequest) -> DownloadResult:
+        file_location, is_encrypted = self.repository.get_image_original_file_location(id)
+        path = self.path_resolver.resolve_path(file_location)
+
+        if is_encrypted:
+            img = self._decrypt_file(path)
+
+        else:
+            with open(path, 'rb') as f:
+                img = f.read()
+        
+        file_ext = file_location.split('.')[1]
+        fn = f'{filename.dir}/{filename.filename}.{file_ext}'
+
+        os.makedirs(filename.dir, exist_ok=True)
+        with open(f'{fn}', 'wb') as f:
+            f.write(img)
+
+        result = DownloadResult(fn)
+
+        return result
 
     def _encrypt_file(self, path: str) -> bytes:
         file = subprocess.check_output([self.cfg.GPG_BIN, '-o', '-', '-er', self.cfg.RECIPIENT, path])

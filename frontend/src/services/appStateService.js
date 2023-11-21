@@ -4,7 +4,8 @@ import AppState from '../enums/AppState';
 import ViewEncrypted from '../enums/ViewEncrypted';
 
 const appStateService = (setters, history, batchEditorImages) => {
-    const { setQuery,
+    const {
+        setQuery,
         setImagesToShow,
         setAppState,
         setViewEncrypted,
@@ -19,7 +20,9 @@ const appStateService = (setters, history, batchEditorImages) => {
         setRestoredSamplesCounter,
         setAddCounter,
         setBatchEditorImages,
-        setConfig } = setters;
+        setConfig,
+        setDownloadedFilePath
+    } = setters;
 
     const fetchSavedDataEffect = () => {
         requestService
@@ -445,6 +448,25 @@ const appStateService = (setters, history, batchEditorImages) => {
         setCurrentPage(newPageNum);
     };
 
+    const clickSaveImageCommand = (id, dir, filename) => {
+        const body = {
+            dir: dir,
+            filename: filename
+        };
+
+        requestService
+            .saveImage(id, body)
+            .then((saveImageResult) => {
+                const { filename } = saveImageResult;
+
+                setDownloadedFilePath(filename);
+
+                setTimeout(() => {
+                    setDownloadedFilePath('');
+                }, 3000);
+            });
+    };
+
     return {
         fetchSavedDataEffect,
         searchCommand,
@@ -473,7 +495,8 @@ const appStateService = (setters, history, batchEditorImages) => {
         clickFavouritesInBatchEditorCommand,
         clickSavedQueryInBatchEditorCommand,
         modifyImageInBatchEditorCommand,
-        pageNavInBatchEditorCommand
+        pageNavInBatchEditorCommand,
+        clickSaveImageCommand
     };
 };
 

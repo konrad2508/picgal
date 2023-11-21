@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 
 from model.image.data.count_data import CountData
+from model.image.data.download_result import DownloadResult
 from model.image.data.image_data import ImageData
 from model.image.data.tag_data import TagData
 from model.image.data.virtual_tag_data import VirtualTagData
 from model.image.data.encrypt_result import EncryptResult
 from model.image.enum.view_encrypted import ViewEncrypted
+from model.image.request.download_request import DownloadRequest
 from model.image.request.image_modification_request import ImageModificationRequest
 
 
@@ -36,3 +38,6 @@ class IImageControllerService(ABC):
 
     @abstractmethod
     def get_sample_content(self, id: int) -> str: ...
+
+    @abstractmethod
+    def download_image(self, id: int, filename: DownloadRequest) -> DownloadResult: ...

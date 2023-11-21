@@ -19,6 +19,7 @@ const useAppState = () => {
     const [ addCounter, setAddCounter ] = React.useState(-1);
     const [ batchEditorImages, setBatchEditorImages ] = React.useState([]);
     const [ config, setConfig ] = React.useState({});
+    const [ downloadedFilePath, setDownloadedFilePath ] = React.useState('');
 
     const clearState = () => {
         setQuery('');
@@ -46,7 +47,8 @@ const useAppState = () => {
         setRestoredSamplesCounter,
         setAddCounter,
         setBatchEditorImages,
-        setConfig
+        setConfig,
+        setDownloadedFilePath
     };
     const hookService = appStateService(setters, history, batchEditorImages);
 
@@ -89,6 +91,7 @@ const useAppState = () => {
     const onClickSavedQueryInBatchEditor = (savedQuery) => hookService.clickSavedQueryInBatchEditorCommand(savedQuery.query, viewEncrypted);
     const onSaveModifiedTagsClickInBatchEditor = (_, modifications) => hookService.modifyImageInBatchEditorCommand(modifications, viewEncrypted);
     const onPageNavClickInBatchEditor = (pageStep) => hookService.pageNavInBatchEditorCommand(usedQuery, currentPage, pageStep, viewEncrypted);
+    const onClickSaveImage = (id, dir, filename) => hookService.clickSaveImageCommand(id, dir, filename);
 
     const contextValue = {
         appState,
@@ -107,6 +110,7 @@ const useAppState = () => {
         historyLength: history.length - 1,
         batchEditorSelected: batchEditorImages,
         config,
+        downloadedFilePath,
         sendQuery,
         handleQueryChange,
         onImagePreviewClick,
@@ -133,7 +137,8 @@ const useAppState = () => {
         onSearchFavouritesClickInBatchEditor,
         onClickSavedQueryInBatchEditor,
         onSaveModifiedTagsClickInBatchEditor,
-        onPageNavClickInBatchEditor
+        onPageNavClickInBatchEditor,
+        onClickSaveImage
     };
 
     return {
