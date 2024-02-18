@@ -4,7 +4,7 @@ import networkService from '../../services/networkService';
 import useImageState from './useImageState';
 
 const Image = ({ img }) => {
-    const { contextValue } = useImageState();
+    const { usedContextValue } = useImageState();
 
     const MAX_WIDTH = 800;
 
@@ -24,29 +24,20 @@ const Image = ({ img }) => {
         newHeight = height;
     }
 
+    const url = usedContextValue.showOriginal ? img.path : img.sample;
+
     const styleImg = {
         maxWidth: newWidth,
         maxHeight: newHeight
     };
 
-    const imageUrl = () => {
-        const url = contextValue.showOriginal ? img.path : img.sample;
-
-        return networkService.getURLToBackend(url);
-    };
-
     return (
         <div className={styles.container}>
             <div>
-                <button onClick={contextValue.toggleShowOriginal} className={styles.button}>
-                    { contextValue.showOriginal ? 'Show sample' : 'Show original' }
-                </button>
-            </div>
-            <div>
                 <img
                     className={styles.img}
-                    src={imageUrl()}
-                    alt={img.path}
+                    src={networkService.getURLToBackend(url)}
+                    alt={url}
                     style={styleImg}
                     title=' '
                 />

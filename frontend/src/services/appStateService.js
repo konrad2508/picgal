@@ -21,7 +21,8 @@ const appStateService = (setters, history, batchEditorImages) => {
         setAddCounter,
         setBatchEditorImages,
         setConfig,
-        setDownloadedFilePath
+        setDownloadedFilePath,
+        setShowOriginal
     } = setters;
 
     const fetchSavedDataEffect = () => {
@@ -67,6 +68,7 @@ const appStateService = (setters, history, batchEditorImages) => {
             (img) => {
                 setImagesToShow([img]);
                 setAppState(AppState.PREVIEW);
+                setShowOriginal(false);
             }
         )(i);
 
@@ -467,6 +469,10 @@ const appStateService = (setters, history, batchEditorImages) => {
             });
     };
 
+    const toggleShowOriginal = (showOriginal) => {
+        setShowOriginal(!showOriginal);
+    };
+
     return {
         fetchSavedDataEffect,
         searchCommand,
@@ -496,7 +502,8 @@ const appStateService = (setters, history, batchEditorImages) => {
         clickSavedQueryInBatchEditorCommand,
         modifyImageInBatchEditorCommand,
         pageNavInBatchEditorCommand,
-        clickSaveImageCommand
+        clickSaveImageCommand,
+        toggleShowOriginal
     };
 };
 

@@ -2,9 +2,11 @@ import React from 'react';
 import AppContext from '../../context/AppContext';
 
 const useMetadataState = () => {
-    const { onSaveModifiedTagsClick } = React.useContext(AppContext);
+    const { showOriginal, onToggleShowOriginal, onSaveModifiedTagsClick } = React.useContext(AppContext);
 
     const usedContextValue = {
+        showOriginal,
+        onToggleShowOriginal,
         onSaveModifiedTagsClick
     };
 

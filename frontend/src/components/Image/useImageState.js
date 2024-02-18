@@ -1,18 +1,16 @@
 import React from 'react';
+import AppContext from '../../context/AppContext';
 
-const useEncryptState = () => {
-    const [ showOriginal, setShowOriginal ] = React.useState(false);
+const useImageState = () => {
+    const { showOriginal } = React.useContext(AppContext);
 
-    const toggleShowOriginal = () => setShowOriginal(!showOriginal);
-    
-    const contextValue = {
-        showOriginal,
-        toggleShowOriginal
+    const usedContextValue = {
+        showOriginal
     };
 
     return {
-        contextValue
+        usedContextValue
     };
 };
 
-export default useEncryptState;
+export default useImageState;

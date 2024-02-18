@@ -1,6 +1,6 @@
 import styles from './Metadata.module.css';
 import React from 'react';
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaExpand, FaCompress } from 'react-icons/fa';
 import modificationForm from '../../forms/modificationForm';
 import useMetadataState from './useMetadataState';
 
@@ -11,16 +11,17 @@ const Metadata = ({ img }) => {
     modificationsForm.toggleFavourite = true;
 
     const flipFavourite = () => usedContextValue.onSaveModifiedTagsClick(img.id, modificationsForm);
+    const flipShowOriginal = () => usedContextValue.onToggleShowOriginal();
 
     return (
         <div className={styles.container}>
             <div className={styles.titleContainer}>
                 <h2>Metadata</h2>
                 <div className={styles.buttonContainer}>
-                    <button
-                        className={styles.button}
-                        onClick={flipFavourite}
-                    >
+                    <button className={styles.button} onClick={flipShowOriginal}>
+                        {usedContextValue.showOriginal ? <FaExpand className='fontAwesome'/> : <FaCompress className='fontAwesome'/>}
+                    </button>
+                    <button className={styles.button} onClick={flipFavourite}>
                         {img.favourite ? <FaHeart className='fontAwesome'/> : <FaRegHeart className='fontAwesome'/>}
                     </button>
                 </div>
