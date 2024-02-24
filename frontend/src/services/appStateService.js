@@ -6,6 +6,7 @@ import ViewEncrypted from '../enums/ViewEncrypted';
 const appStateService = (setters, history, batchEditorImages) => {
     const {
         setQuery,
+        setImagesCounter,
         setImagesToShow,
         setAppState,
         setViewEncrypted,
@@ -46,7 +47,10 @@ const appStateService = (setters, history, batchEditorImages) => {
 
                 requestService
                     .getImagesStats(urlFormattedQuery, viewEncrypted)
-                    .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+                    .then(stats => {
+                        setImagesCounter(stats.imagesCount);
+                        setMaxPage(Math.max(1, stats.pagesCount));
+                    });
 
                 requestService
                     .getImages(urlFormattedQuery, 1, viewEncrypted)
@@ -88,7 +92,10 @@ const appStateService = (setters, history, batchEditorImages) => {
 
                 requestService
                     .getImagesStats(urlFormattedQuery, viewEncrypted)
-                    .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+                    .then(stats => {
+                        setImagesCounter(stats.imagesCount);
+                        setMaxPage(Math.max(1, stats.pagesCount));
+                    });
 
                 requestService
                     .getImages(urlFormattedQuery, 1, viewEncrypted)
@@ -123,7 +130,10 @@ const appStateService = (setters, history, batchEditorImages) => {
                 
                 requestService
                     .getImagesStats(urlFormattedQuery, viewEncrypted)
-                    .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+                    .then(stats => {
+                        setImagesCounter(stats.imagesCount);
+                        setMaxPage(Math.max(1, stats.pagesCount));
+                    });
                 
                 setAppState(AppState.BROWSING);
                 setUsedQuery(query);
@@ -157,7 +167,10 @@ const appStateService = (setters, history, batchEditorImages) => {
 
                 requestService
                     .getImagesStats(urlFormattedQuery, viewEncrypted)
-                    .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+                    .then(stats => {
+                        setImagesCounter(stats.imagesCount);
+                        setMaxPage(Math.max(1, stats.pagesCount));
+                    });
 
                 requestService
                     .getImages(urlFormattedQuery, 1, viewEncrypted)
@@ -181,7 +194,10 @@ const appStateService = (setters, history, batchEditorImages) => {
 
                 requestService
                     .getImagesStats(urlFormattedQuery, viewEncrypted)
-                    .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+                    .then(stats => {
+                        setImagesCounter(stats.imagesCount);
+                        setMaxPage(Math.max(1, stats.pagesCount));
+                    });
 
                 requestService
                     .getImages(urlFormattedQuery, 1, viewEncrypted)
