@@ -73,7 +73,7 @@ const useAppState = () => {
     const handleQueryChange = (event) => hookService.queryChangeCommand(event);
     const onClickTag = (tag) => hookService.clickTagCommand(tag, viewEncrypted);
     const onBackClick = () => hookService.clickBackCommand();
-    const onPageNavClick = (pageStep) => hookService.pageNavCommand(usedQuery, currentPage, pageStep, viewEncrypted);
+    const onPageNavClick = (newPage) => hookService.pageNavCommand(usedQuery, newPage, viewEncrypted);
     const onSaveModifiedTagsClick = (id, modifications) => hookService.modifyImageCommand(id, modifications, viewEncrypted);
     const onSearchFavouritesClick = () => hookService.clickFavouritesCommand(viewEncrypted);
     const onClickSavedQuery = (savedQuery) => hookService.clickSavedQueryCommand(savedQuery.query, viewEncrypted);
@@ -93,7 +93,7 @@ const useAppState = () => {
     const onSearchFavouritesClickInBatchEditor = () => hookService.clickFavouritesInBatchEditorCommand(viewEncrypted);
     const onClickSavedQueryInBatchEditor = (savedQuery) => hookService.clickSavedQueryInBatchEditorCommand(savedQuery.query, viewEncrypted);
     const onSaveModifiedTagsClickInBatchEditor = (_, modifications) => hookService.modifyImageInBatchEditorCommand(modifications, viewEncrypted);
-    const onPageNavClickInBatchEditor = (pageStep) => hookService.pageNavInBatchEditorCommand(usedQuery, currentPage, pageStep, viewEncrypted);
+    const onPageNavClickInBatchEditor = (newPage) => hookService.pageNavInBatchEditorCommand(usedQuery, newPage, viewEncrypted);
     const onClickSaveImage = (id, dir, filename) => hookService.clickSaveImageCommand(id, dir, filename);
     const onToggleShowOriginal = () => hookService.toggleShowOriginal(showOriginal);
 

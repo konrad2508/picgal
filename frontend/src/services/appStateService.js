@@ -112,10 +112,9 @@ const appStateService = (setters, history, batchEditorImages) => {
         }
     };
 
-    const pageNavCommand = (usedQuery, page, step, viewEncrypted) => {
+    const pageNavCommand = (usedQuery, newPage, viewEncrypted) => {
         const cmd = () => (
-            (query, pageNum, pageStep) => {
-                const newPageNum = pageNum + pageStep;
+            (query, newPageNum) => {
                 const urlFormattedQuery = queryService.inputQueryToUrlQuery(query);
 
                 requestService
@@ -131,7 +130,7 @@ const appStateService = (setters, history, batchEditorImages) => {
                 setQuery('');
                 setCurrentPage(newPageNum);
             }
-        )(usedQuery, page, step);
+        )(usedQuery, newPage);
 
         cmd();
         setHistory([...history, cmd]);
@@ -437,8 +436,7 @@ const appStateService = (setters, history, batchEditorImages) => {
         setBatchEditorImages([]);
     };
 
-    const pageNavInBatchEditorCommand = (usedQuery, page, step, viewEncrypted) => {
-        const newPageNum = page + step;
+    const pageNavInBatchEditorCommand = (usedQuery, newPageNum, viewEncrypted) => {
         const urlFormattedQuery = queryService.inputQueryToUrlQuery(usedQuery);
 
         requestService
