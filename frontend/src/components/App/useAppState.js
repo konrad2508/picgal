@@ -5,6 +5,7 @@ import ViewEncrypted from '../../enums/ViewEncrypted';
 
 const useAppState = () => {
     const [ query, setQuery ] = React.useState('');
+    const [ imagesCounter, setImagesCounter ] = React.useState(0);
     const [ imagesToShow, setImagesToShow ] = React.useState([]);
     const [ appState, setAppState ] = React.useState(AppState.START);
     const [ viewEncrypted, setViewEncrypted ] = React.useState(ViewEncrypted.NO);
@@ -24,6 +25,7 @@ const useAppState = () => {
 
     const clearState = () => {
         setQuery('');
+        setImagesCounter(0);
         setImagesToShow([]);
         setAppState(AppState.START);
         setUsedQuery('');
@@ -35,6 +37,7 @@ const useAppState = () => {
 
     const setters = {
         setQuery,
+        setImagesCounter,
         setImagesToShow,
         setAppState,
         setViewEncrypted,
@@ -103,6 +106,7 @@ const useAppState = () => {
         query,
         usedQuery,
         savedQueries,
+        imagesCounter,
         imagesToShow,
         existingTags,
         pageNumber: currentPage,
