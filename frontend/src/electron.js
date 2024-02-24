@@ -23,7 +23,7 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
 const createWindow = () => {
-    mainWindow = new BrowserWindow({ width: 1250, height: 900 });
+    mainWindow = new BrowserWindow({ width: 1083, height: 900 });
 
     const startUrl = url.format({
         pathname: path.join(__dirname, '/../build/index.html'),
