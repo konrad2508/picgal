@@ -5,7 +5,7 @@ import AppState from '../../enums/AppState';
 import usePagerState from './usePagerState';
 
 const Pager = () => {
-    const { usedContextValue } = usePagerState();
+    const { contextValue, usedContextValue } = usePagerState();
 
     const onClick = (newPage) => {
         if ([AppState.BATCH_EDITING, AppState.ENCRYPTOR].includes(usedContextValue.appState)) {
@@ -14,28 +14,66 @@ const Pager = () => {
         else {
             usedContextValue.onPageNavClick(newPage);
         }
+
+        contextValue.onPagerValueChange(newPage);
+    };
+
+    const validator = (e) => {
+        if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+        }
+    };
+
+    const onFocus = (_) => setTimeout(() => document.execCommand('selectAll', false, null), 0);
+
+    const onBlur = (e) => {
+        const inputtedValue = parseInt(e.currentTarget.innerHTML);
+
+        if (inputtedValue === usedContextValue.pageNumber) {
+            return;
+        }
+
+        if (inputtedValue < 1 || inputtedValue > usedContextValue.maxPage || isNaN(inputtedValue)) {
+            e.currentTarget.innerHTML = usedContextValue.pageNumber;
+        }
+        else {
+            contextValue.onPagerValueChange(inputtedValue);
+            onClick(inputtedValue);
+        }
     };
 
     return (
-        <div className={styles.container}>
-            <button onClick={() => onClick(1)} disabled={usedContextValue.pageNumber === 1}>
-                <FaAngleDoubleLeft className='fontAwesome'/>
-            </button>
+        <>
+            <div className={styles.top}/>
 
-            <button onClick={() => onClick(usedContextValue.pageNumber - 1)} disabled={usedContextValue.pageNumber === 1}>
-                <FaAngleLeft className='fontAwesome'/>
-            </button>
+            <div className={styles.container}>
+                <button onClick={() => onClick(1)} disabled={usedContextValue.pageNumber === 1}>
+                    <FaAngleDoubleLeft className='fontAwesome'/>
+                </button>
 
-            <p className={styles.pageNumber}>{usedContextValue.pageNumber} / {usedContextValue.maxPage}</p>
-            
-            <button onClick={() => onClick(usedContextValue.pageNumber + 1)} disabled={usedContextValue.pageNumber === usedContextValue.maxPage}>
-                <FaAngleRight className='fontAwesome'/>
-            </button>
-            
-            <button onClick={() => onClick(usedContextValue.maxPage)} disabled={usedContextValue.pageNumber === usedContextValue.maxPage}>
-                <FaAngleDoubleRight className='fontAwesome'/>
-            </button>
-        </div>
+                <button onClick={() => onClick(usedContextValue.pageNumber - 1)} disabled={usedContextValue.pageNumber === 1}>
+                    <FaAngleLeft className='fontAwesome'/>
+                </button>
+
+                <div className={styles.pageCounter}>
+                    <div contentEditable={true} className={styles.currentPage} onKeyPress={validator} onFocus={onFocus} onBlur={onBlur}>
+                        {contextValue.pagerValue}
+                    </div>
+                    <p>/</p>
+                    <p className={styles.maxPage}>{usedContextValue.maxPage}</p>
+                </div>
+
+                <button onClick={() => onClick(usedContextValue.pageNumber + 1)} disabled={usedContextValue.pageNumber === usedContextValue.maxPage}>
+                    <FaAngleRight className='fontAwesome'/>
+                </button>
+                
+                <button onClick={() => onClick(usedContextValue.maxPage)} disabled={usedContextValue.pageNumber === usedContextValue.maxPage}>
+                    <FaAngleDoubleRight className='fontAwesome'/>
+                </button>
+            </div>
+
+            <div className={styles.bottom}/>
+        </>
     );
 };
 
