@@ -1,11 +1,29 @@
 .container {
-    margin-top: 10px;
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
-.pageNumber {
-    margin-left: 5px;
-    margin-right: 5px;
+.pageCounter {
+    margin-left: 10px;
+    margin-right: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.currentPage {
+    margin-right: 1ch;
+}
+
+.maxPage {
+    margin-left: 1ch;
+}
+
+.top {
+    height: 1px;
+    margin-top: 9px;
+}
+
+.bottom {
+    height: 1px;
 }
