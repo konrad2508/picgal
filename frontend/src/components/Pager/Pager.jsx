@@ -5,7 +5,7 @@ import AppState from '../../enums/AppState';
 import usePagerState from './usePagerState';
 
 const Pager = () => {
-    const { contextValue, usedContextValue } = usePagerState();
+    const { usedContextValue } = usePagerState();
 
     const onClick = (newPage) => {
         if ([AppState.BATCH_EDITING, AppState.ENCRYPTOR].includes(usedContextValue.appState)) {
@@ -14,8 +14,6 @@ const Pager = () => {
         else {
             usedContextValue.onPageNavClick(newPage);
         }
-
-        contextValue.onPagerValueChange(newPage);
     };
 
     const validator = (e) => {
@@ -37,7 +35,6 @@ const Pager = () => {
             e.currentTarget.innerHTML = usedContextValue.pageNumber;
         }
         else {
-            contextValue.onPagerValueChange(inputtedValue);
             onClick(inputtedValue);
         }
     };
@@ -57,7 +54,7 @@ const Pager = () => {
 
                 <div className={styles.pageCounter}>
                     <div contentEditable={true} className={styles.currentPage} onKeyPress={validator} onFocus={onFocus} onBlur={onBlur}>
-                        {contextValue.pagerValue}
+                        {usedContextValue.pageNumber}
                     </div>
                     <p>/</p>
                     <p className={styles.maxPage}>{usedContextValue.maxPage}</p>
