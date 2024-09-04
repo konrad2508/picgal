@@ -1,7 +1,5 @@
 import TagListState from '../enums/TagListState';
 import TagState from '../enums/TagState';
-import TagType from '../enums/TagType';
-import TagTypeNumerical from '../enums/TagTypeNumerical';
 import queryService from '../services/queryService';
 
 const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagName }) => {
@@ -20,24 +18,7 @@ const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagN
             return true;
         }
 
-        let numericalTagType;
-        if (tagType === TagType.CHARACTERS) {
-            numericalTagType = TagTypeNumerical.CHARACTERS;
-        }
-        else if (tagType === TagType.SOURCES) {
-            numericalTagType = TagTypeNumerical.SOURCES;
-        }
-        else if (tagType === TagType.GENERAL) {
-            numericalTagType = TagTypeNumerical.GENERAL;
-        }
-        else if (tagType === TagType.META) {
-            numericalTagType = TagTypeNumerical.META;
-        }
-        else {
-            numericalTagType = TagTypeNumerical.UNDEFINED;
-        }
-
-        if (potentialDuplicate.type === numericalTagType) {
+        if (potentialDuplicate.type === tagType.value) {
             return true;
         }
 

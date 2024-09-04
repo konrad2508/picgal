@@ -32,7 +32,7 @@ class ImageControllerService(IImageControllerService):
         self.cfg = cfg
 
     def get_infos(self, image_url: str, preview_url: str, sample_url: str, tags: str | None, page: int, view_encrypted: ViewEncrypted) -> list[ImageData]:
-        normal_tag_array, virtual_tag_array = self.image_request_converter.convert_tagstring(self.repository.get_conditions, tagstring=tags)
+        normal_tag_array, virtual_tag_array = self.image_request_converter.convert_tagstring(tags)
 
         images = self.repository.get_images(
             page,
@@ -68,7 +68,7 @@ class ImageControllerService(IImageControllerService):
         return image
 
     def get_infos_count(self, tags: str | None, view_encrypted: ViewEncrypted) -> CountData:
-        normal_tag_array, virtual_tag_array = self.image_request_converter.convert_tagstring(self.repository.get_conditions, tags)
+        normal_tag_array, virtual_tag_array = self.image_request_converter.convert_tagstring(tags)
 
         count = self.repository.get_images_count(view_encrypted, normal_tag_array, virtual_tag_array)
 

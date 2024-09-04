@@ -12,16 +12,16 @@ const ModifiableTagList = ({ tagType, tags }) => {
 
     const filterExistingTags = (tagType) => {
         if (tagType === TagType.CHARACTERS) {
-            return usedContextValue.existingTags.filter(e => e.type === 1);
+            return usedContextValue.existingTags.filter(e => e.type === TagType.CHARACTERS.value);
         }
         else if (tagType === TagType.SOURCES) {
-            return usedContextValue.existingTags.filter(e => e.type === 2);
+            return usedContextValue.existingTags.filter(e => e.type === TagType.SOURCES.value);
         }
         else if (tagType === TagType.GENERAL) {
-            return usedContextValue.existingTags.filter(e => e.type === 3);
+            return usedContextValue.existingTags.filter(e => e.type === TagType.GENERAL.value);
         }
         else if (tagType === TagType.META) {
-            return usedContextValue.existingTags.filter(e => e.type === 4);
+            return usedContextValue.existingTags.filter(e => e.type === TagType.META.value);
         }
         else {
             return [];

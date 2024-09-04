@@ -1,6 +1,6 @@
 from model.image.entity.image import Image
-from model.image.entity.subtag_condition import SubtagCondition
-from model.image.entity.virtual_tag import VirtualTag
+from model.image.entity.inmemory.subtag_condition import SubtagCondition
+from model.image.entity.inmemory.virtual_tag import VirtualTag
 
 
 def generate_virtual_tags() -> list[VirtualTag]:

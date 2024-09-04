@@ -7,11 +7,14 @@ from PIL import Image as Img
 from peewee import SqliteDatabase, DoesNotExist
 
 from config import Config
+from datasource.virtual_tags import generate_virtual_tags
 from service.rpc.i_rpc_controller_service import IRPCControllerService
 from model.image.enum.tag_type import TagType
 from model.image.entity.image import Image
 from model.image.entity.tag import Tag
 from model.image.entity.image_tag import ImageTag
+from model.image.entity.image_virtual_tag import ImageVirtualTag
+from model.image.entity.virtual_tag import VirtualTag
 from model.query.entity.query import Query
 from model.rpc.data.sync_database_result import SyncDatabaseResult
 from model.rpc.data.config_data import ConfigData
@@ -95,7 +98,7 @@ class RPCControllerService(IRPCControllerService):
         ROOT = self.cfg.PICTURES_ROOT
 
         # verify database integrity
-        self.db.create_tables([Image, Tag, ImageTag, Query], safe=True)
+        self.db.create_tables([Image, Tag, ImageTag, Query, VirtualTag, ImageVirtualTag], safe=True)
 
         # check for missing columns
         to_add = []
@@ -143,11 +146,30 @@ class RPCControllerService(IRPCControllerService):
                     os.remove(existing_picture.sample)
                 
                 ImageTag.delete().where(ImageTag.image_id == existing_picture.image_id).execute()
+                ImageVirtualTag.delete().where(ImageVirtualTag.image_id == existing_picture.image_id).execute()
                 existing_picture.delete_instance()
 
                 deleted_counter += 1
-        
+
         with self.db.atomic():
+            # TODO: add new virtual tags
+            for virtual_tag in generate_virtual_tags():
+                for subtag in virtual_tag.subtags:
+                    virtual_tag_obj = {
+                        'name': f'{virtual_tag.name}:{subtag.name}'
+                    }
+
+                    try:
+                        VirtualTag.get(VirtualTag.name == virtual_tag_obj['name'])
+
+                    except DoesNotExist:
+                        virtual_tag_obj_ref = VirtualTag.create(**virtual_tag_obj)
+
+                        matching_images = Image.select().where(subtag.condition())
+
+                        to_insert = [ {'image_id': img.image_id, 'virtual_tag_id': virtual_tag_obj_ref.virtual_tag_id} for img in matching_images ]
+                        ImageVirtualTag.insert_many(to_insert).execute()
+
             # adding images and restoring previews
             add_counter = 0
             restored_previews_counter = 0
@@ -240,6 +262,23 @@ class RPCControllerService(IRPCControllerService):
 
                         meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
                         ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
+
+                    for virtual_tag in generate_virtual_tags():
+                        for subtag in virtual_tag.subtags:
+                            try:
+                                Image.select()\
+                                    .where(Image.image_id == img_ref)\
+                                    .where(subtag.condition())\
+                                    .get()
+
+                                virtual_tag_obj = {
+                                    'name': f'{virtual_tag.name}:{subtag.name}'
+                                }
+                                virtual_tag_obj_ref, _ = VirtualTag.get_or_create(**virtual_tag_obj)
+                                ImageVirtualTag.create(image_id=img_ref, virtual_tag_id=virtual_tag_obj_ref)
+
+                            except DoesNotExist:
+                                continue
 
                     add_counter += 1
 

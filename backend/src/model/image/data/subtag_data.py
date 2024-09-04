@@ -7,3 +7,4 @@ from model.image.enum.tag_category import TagCategory
 class SubtagData:
     name: str
     tag_type: TagCategory
+    count: int

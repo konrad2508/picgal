@@ -1,3 +1,4 @@
+from collections import defaultdict
 import math
 import time
 
@@ -6,11 +7,14 @@ import playhouse.shortcuts
 from config import Config
 from model.image.data.image_data import ImageData
 from model.image.data.count_data import CountData
+from model.image.data.subtag_data import SubtagData
 from model.image.data.tag_data import TagData
+from model.image.data.virtual_tag_data import VirtualTagData
 from model.image.enum.tag_type import TagType
 from model.image.enum.tag_category import TagCategory
 from model.image.entity.image import Image
 from model.image.object.tag_with_count import TagWithCount
+from model.image.object.virtual_tag_with_count import VirtualTagWithCount
 from service.image.i_image_database_converter_service import IImageDatabaseConverterService
 
 
@@ -66,3 +70,27 @@ class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
         )
 
         return converted_tag
+
+    def convert_virtual_tags(self, virtual_tags: list[VirtualTagWithCount]) -> list[VirtualTagData]:
+        vts = defaultdict(lambda: [])
+
+        for virtual_tag in virtual_tags:
+            parent = virtual_tag.name.split(':')[0]
+
+            subtag = SubtagData(
+                name=virtual_tag.name,
+                tag_type=TagCategory.NORMAL,
+                count=virtual_tag.count
+            )
+
+            vts[parent].append(subtag)
+
+        converted_virtual_tags = [
+            VirtualTagData(
+                name=parent,
+                subtags=children,
+                tag_type=TagCategory.VIRTUAL
+            ) for parent, children in vts.items()
+        ]
+
+        return converted_virtual_tags

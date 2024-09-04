@@ -7,17 +7,19 @@ from model.exception.entity_not_found import EntityNotFound
 from model.image.data.count_data import CountData
 from model.image.data.image_data import ImageData
 from model.image.data.tag_data import TagData
+from model.image.data.virtual_tag_data import VirtualTagData
 from model.image.entity.image import Image
 from model.image.entity.image_tag import ImageTag
-from model.image.entity.subtag_condition import SubtagCondition
+from model.image.entity.image_virtual_tag import ImageVirtualTag
+from model.image.entity.virtual_tag import VirtualTag
 from model.image.entity.tag import Tag
 from model.image.enum.view_encrypted import ViewEncrypted
 from model.image.request.image_modification_request import ImageModificationRequest
-from repository.image.i_image_database_repository import IImageDatabaseRepository
+from repository.image.i_image_repository import IImageRepository
 from service.image.i_image_database_converter_service import IImageDatabaseConverterService
 
 
-class SqliteImageDatabaseRepository(IImageDatabaseRepository):
+class SqliteImageRepository(IImageRepository):
     def __init__(self, db: SqliteDatabase, cfg: Config, converter: IImageDatabaseConverterService) -> None:
         self.db = db
         self.cfg = cfg
@@ -28,7 +30,7 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
             page: int,
             view_encrypted: ViewEncrypted,
             normal_tags: list[str] = None,
-            virtual_tags: list[SubtagCondition] = None,
+            virtual_tags: list[str] = None,
             loc_original: str | None = None,
             loc_preview: str | None = None,
             loc_sample: str | None = None) -> list[ImageData]:
@@ -37,20 +39,28 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
             
             if view_encrypted != ViewEncrypted.YES:
                 images = images.where(Image.encrypted == False)
-            
-            if virtual_tags is not None:
-                for virtual_tag in virtual_tags:
-                    images = images.where(virtual_tag())
 
             if normal_tags is not None:
                 images = (images
                             .join(ImageTag, on=ImageTag.image_id == Image.image_id)
                             .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
-                            .where(fn.Lower(Tag.name) << normal_tags)
-                            .group_by(Image.image_id)
-                            .having(fn.Count() == len(normal_tags)))
+                            .where(fn.Lower(Tag.name) << normal_tags))
+
+            else:
+                normal_tags = []
+            
+            if virtual_tags is not None:
+                images = (images
+                            .join(ImageVirtualTag, on=ImageVirtualTag.image_id == Image.image_id)
+                            .join(VirtualTag, on=VirtualTag.virtual_tag_id == ImageVirtualTag.virtual_tag_id)
+                            .where(fn.Lower(VirtualTag.name) << virtual_tags))
+
+            else:
+                virtual_tags = []
 
             images = (images
+                        .group_by(Image.image_id)
+                        .having(fn.Count() == (len(normal_tags) + len(virtual_tags)))
                         .order_by(Image.created_time.desc())
                         .paginate(page, paginate_by=self.cfg.COUNT_PER_PAGE))
 
@@ -160,26 +170,35 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
         except IntegrityError:
             raise DatabaseIntegrityViolated
 
-    def get_images_count(self, view_encrypted: ViewEncrypted, normal_tags: list[str] = None, virtual_tags: list[SubtagCondition] = None) -> CountData:
+    def get_images_count(self, view_encrypted: ViewEncrypted, normal_tags: list[str] = None, virtual_tags: list[str] = None) -> CountData:
         with self.db.atomic():
             count = Image.select(fn.Count().over())
 
             if view_encrypted != ViewEncrypted.YES:
                 count = count.where(Image.encrypted == False)
 
-            if virtual_tags is not None:
-                for virtual_tag in virtual_tags:
-                    count = count.where(virtual_tag())
-
             if normal_tags is not None:
                 count = (count
                             .join(ImageTag, on=ImageTag.image_id == Image.image_id)
                             .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
-                            .where(fn.Lower(Tag.name) << normal_tags)
-                            .group_by(Image.image_id)
-                            .having(fn.Count() == len(normal_tags)))
+                            .where(fn.Lower(Tag.name) << normal_tags))
 
-            count = count.scalar()
+            else:
+                normal_tags = []
+            
+            if virtual_tags is not None:
+                count = (count
+                            .join(ImageVirtualTag, on=ImageVirtualTag.image_id == Image.image_id)
+                            .join(VirtualTag, on=VirtualTag.virtual_tag_id == ImageVirtualTag.virtual_tag_id)
+                            .where(fn.Lower(VirtualTag.name) << virtual_tags))
+
+            else:
+                virtual_tags = []
+
+            count = (count
+                        .group_by(Image.image_id)
+                        .having(fn.Count() == (len(normal_tags) + len(virtual_tags)))
+                        .scalar())
 
         if count is None:
             count = 0
@@ -207,6 +226,21 @@ class SqliteImageDatabaseRepository(IImageDatabaseRepository):
         tags = [ self.image_database_converter.convert_tag(tag) for tag in tags ]
 
         return tags
+    
+    def get_virtual_tags(self) -> list[VirtualTagData]:
+        with self.db.atomic():
+            ivt = ImageVirtualTag.alias()
+            virtual_tag_count = (ivt
+                                    .select(fn.Count())
+                                    .where(VirtualTag.virtual_tag_id == ivt.virtual_tag_id))
+
+            virtual_tags = (VirtualTag
+                            .select(VirtualTag.virtual_tag_id, VirtualTag.name, virtual_tag_count.alias('count')))
+
+        virtual_tags = [ vt for vt in virtual_tags ]
+        virtual_tags = self.image_database_converter.convert_virtual_tags(virtual_tags)
+
+        return virtual_tags
 
     def get_image_original_file_location(self, id: int) -> tuple[str, bool]:
         image = self._get_image_by_id(id)

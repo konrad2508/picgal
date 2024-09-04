@@ -3,6 +3,7 @@ import React from 'react';
 import TagMetatype from '../../enums/TagMetatype';
 import useAutocompleteQueryState from './useAutocompleteQueryState';
 import queryService from '../../services/queryService';
+import TagType from '../../enums/TagType';
 
 const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     const { contextValue } = useAutocompleteQueryState(existingTags);
@@ -82,11 +83,33 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     };
 
     const renderSuggestions = () => {
+        const suggestionTextColor = (sug) => {
+            let color;
+
+            if (sug.type === TagType.CHARACTERS.value) {
+                color = TagType.CHARACTERS.color;
+            }
+            else if (sug.type === TagType.GENERAL.value) {
+                color = TagType.GENERAL.color;
+            }
+            else if (sug.type === TagType.META.value || sug.type === undefined) {
+                color = TagType.META.color;
+            }
+            else if (sug.type === TagType.SOURCES.value) {
+                color = TagType.SOURCES.color;
+            }
+
+            return {
+                color: color
+            };
+        };
+
         return (
             <div className={styles.fixedContainer}>
                 { getSuggestions().map((e, i) => (
                     <div key={i} onClick={() => handleSuggestionClick(e)} className={styles.suggestionBox}>
-                        <p className={styles.suggestion}>{e.name}</p>
+                        <div style={suggestionTextColor(e)} className={styles.suggestion}>{e.name}</div>
+                        <div style={suggestionTextColor(e)} className={styles.counter}>{e.count}</div>
                     </div>
                 ))}
             </div>
