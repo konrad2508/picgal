@@ -36,7 +36,7 @@ class SqliteImageRepository(IImageRepository):
             loc_sample: str | None = None) -> list[ImageData]:
         with self.db.atomic():
             images = Image.select()
-            
+
             if view_encrypted != ViewEncrypted.YES:
                 images = images.where(Image.encrypted == False)
 
@@ -45,22 +45,29 @@ class SqliteImageRepository(IImageRepository):
                             .join(ImageTag, on=ImageTag.image_id == Image.image_id)
                             .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
                             .where(fn.Lower(Tag.name) << normal_tags))
+                
+                normal_tags_count = len(normal_tags)
 
             else:
-                normal_tags = []
-            
+                normal_tags_count = 0
+
             if virtual_tags is not None:
                 images = (images
                             .join(ImageVirtualTag, on=ImageVirtualTag.image_id == Image.image_id)
                             .join(VirtualTag, on=VirtualTag.virtual_tag_id == ImageVirtualTag.virtual_tag_id)
                             .where(fn.Lower(VirtualTag.name) << virtual_tags))
 
+                virtual_tags_count = len(virtual_tags) - 1 if normal_tags_count > 0 else len(virtual_tags)
+
             else:
-                virtual_tags = []
+                virtual_tags_count = 0
+
+            if normal_tags is not None or virtual_tags is not None:
+                images = (images
+                            .group_by(Image.image_id)
+                            .having(fn.Count() == (normal_tags_count + virtual_tags_count)))
 
             images = (images
-                        .group_by(Image.image_id)
-                        .having(fn.Count() == (len(normal_tags) + len(virtual_tags)))
                         .order_by(Image.created_time.desc())
                         .paginate(page, paginate_by=self.cfg.COUNT_PER_PAGE))
 
@@ -183,22 +190,28 @@ class SqliteImageRepository(IImageRepository):
                             .join(Tag, on=Tag.tag_id == ImageTag.tag_id)
                             .where(fn.Lower(Tag.name) << normal_tags))
 
+                normal_tags_count = len(normal_tags)
+
             else:
-                normal_tags = []
-            
+                normal_tags_count = 0
+
             if virtual_tags is not None:
                 count = (count
                             .join(ImageVirtualTag, on=ImageVirtualTag.image_id == Image.image_id)
                             .join(VirtualTag, on=VirtualTag.virtual_tag_id == ImageVirtualTag.virtual_tag_id)
                             .where(fn.Lower(VirtualTag.name) << virtual_tags))
 
-            else:
-                virtual_tags = []
+                virtual_tags_count = len(virtual_tags) - 1 if normal_tags_count > 0 else len(virtual_tags)
 
-            count = (count
-                        .group_by(Image.image_id)
-                        .having(fn.Count() == (len(normal_tags) + len(virtual_tags)))
-                        .scalar())
+            else:
+                virtual_tags_count = 0
+
+            if normal_tags is not None or virtual_tags is not None:
+                count = (count
+                            .group_by(Image.image_id)
+                            .having(fn.Count() == (normal_tags_count + virtual_tags_count)))
+
+            count = count.scalar()
 
         if count is None:
             count = 0
