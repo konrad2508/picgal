@@ -152,12 +152,16 @@ class RPCControllerService(IRPCControllerService):
                 deleted_counter += 1
 
         with self.db.atomic():
-            # TODO: add new virtual tags
+            # adding new virtual tags
+            added_virtual_tags = []
+
             for virtual_tag in generate_virtual_tags():
                 for subtag in virtual_tag.subtags:
                     virtual_tag_obj = {
                         'name': f'{virtual_tag.name}:{subtag.name}'
                     }
+
+                    added_virtual_tags.append(virtual_tag_obj['name'])
 
                     try:
                         VirtualTag.get(VirtualTag.name == virtual_tag_obj['name'])
@@ -169,6 +173,12 @@ class RPCControllerService(IRPCControllerService):
 
                         to_insert = [ {'image_id': img.image_id, 'virtual_tag_id': virtual_tag_obj_ref.virtual_tag_id} for img in matching_images ]
                         ImageVirtualTag.insert_many(to_insert).execute()
+
+            # removing nonexistent virtual tags
+            nonexistent = VirtualTag.select().where(~(VirtualTag.name << added_virtual_tags))
+            ImageVirtualTag.delete().where(ImageVirtualTag.virtual_tag_id << nonexistent).execute()
+
+            VirtualTag.delete().where(~(VirtualTag.name << added_virtual_tags)).execute()
 
             # adding images and restoring previews
             add_counter = 0
