@@ -12,6 +12,7 @@ from model.image.entity.image import Image
 from model.image.entity.image_tag import ImageTag
 from model.image.entity.image_virtual_tag import ImageVirtualTag
 from model.image.entity.virtual_tag import VirtualTag
+from model.image.entity.inmemory.virtual_tag import VirtualTag as inmemVirtualTag
 from model.image.entity.tag import Tag
 from model.image.enum.view_encrypted import ViewEncrypted
 from model.image.request.image_modification_request import ImageModificationRequest
@@ -20,8 +21,9 @@ from service.image.i_image_database_converter_service import IImageDatabaseConve
 
 
 class SqliteImageRepository(IImageRepository):
-    def __init__(self, db: SqliteDatabase, cfg: Config, converter: IImageDatabaseConverterService) -> None:
+    def __init__(self, db: SqliteDatabase, virtual_tags_source: list[inmemVirtualTag], cfg: Config, converter: IImageDatabaseConverterService) -> None:
         self.db = db
+        self.virtual_tags_source = virtual_tags_source
         self.cfg = cfg
         self.image_database_converter = converter
 
@@ -254,6 +256,26 @@ class SqliteImageRepository(IImageRepository):
         virtual_tags = self.image_database_converter.convert_virtual_tags(virtual_tags)
 
         return virtual_tags
+
+    def refresh_virtual_tags(self, ids: list[int]) -> None:
+        with self.db.atomic():
+            ImageVirtualTag.delete().where(ImageVirtualTag.image_id << ids).execute()
+
+            for virtual_tag in self.virtual_tags_source:
+                for subtag in virtual_tag.subtags:
+                    try:
+                        vt_ref = VirtualTag.get(VirtualTag.name == f'{virtual_tag.name}:{subtag.name}')
+
+                    except DoesNotExist:
+                        continue
+
+                    matching_images = (Image
+                                        .select()
+                                        .where(Image.image_id << ids)
+                                        .where(subtag.condition()))
+
+                    to_insert = [ {'image_id': img.image_id, 'virtual_tag_id': vt_ref.virtual_tag_id} for img in matching_images ]
+                    ImageVirtualTag.insert_many(to_insert).execute()
 
     def get_image_original_file_location(self, id: int) -> tuple[str, bool]:
         image = self._get_image_by_id(id)

@@ -1,6 +1,7 @@
 from peewee import SqliteDatabase
 
 from config import Config
+from datasource.virtual_tags import generate_virtual_tags
 from factory.i_controller_service_factory import IControllerServiceFactory
 from repository.image.sqlite_image_repository import SqliteImageRepository
 from repository.query.sqlite_query_repository import SqliteQueryRepository
@@ -23,7 +24,7 @@ class SqliteControllerServiceFactory(IControllerServiceFactory):
 
     def get_image_service(self) -> IImageControllerService:
         image_database_converter = SqliteImageDatabaseConverterService(self.cfg)
-        image_repository = SqliteImageRepository(self.db, self.cfg, image_database_converter)
+        image_repository = SqliteImageRepository(self.db, generate_virtual_tags(), self.cfg, image_database_converter)
 
         image_request_converter = ImageRequestConverterService()
         path_resolver = PathResolverService(self.cfg)

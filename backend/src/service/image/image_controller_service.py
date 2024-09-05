@@ -54,6 +54,8 @@ class ImageControllerService(IImageControllerService):
             sample_url
         )
 
+        self.repository.refresh_virtual_tags(batch_modifications.ids)
+
         return images
 
     def modify_info(self, image_url: str, preview_url: str, sample_url: str, id: int, modifications: ImageModificationRequest) -> ImageData:
@@ -64,6 +66,8 @@ class ImageControllerService(IImageControllerService):
             preview_url,
             sample_url
         )
+
+        self.repository.refresh_virtual_tags([id])
 
         return image
 
@@ -102,6 +106,8 @@ class ImageControllerService(IImageControllerService):
 
             except:
                 f[1](file_location, preview_location, sample_location)
+
+        self.repository.refresh_virtual_tags(images_to_encrypt.ids)
 
         return result
 

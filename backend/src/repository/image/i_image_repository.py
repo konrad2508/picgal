@@ -20,7 +20,7 @@ class IImageRepository(ABC):
             loc_preview: str | None = None,
             loc_sample: str | None = None) -> list[ImageData]:
         ...
-    
+
     @abstractmethod
     def modify_image_batch(
             self,
@@ -48,6 +48,9 @@ class IImageRepository(ABC):
 
     @abstractmethod
     def get_virtual_tags(self) -> list[VirtualTagData]: ...
+
+    @abstractmethod
+    def refresh_virtual_tags(self, ids: list[int]) -> None: ...
 
     @abstractmethod
     def get_image_original_file_location(self, id: int) -> tuple[str, bool]: ...
