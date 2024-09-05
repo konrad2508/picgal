@@ -80,7 +80,7 @@ class ImageControllerService(IImageControllerService):
 
     def get_tags(self, view_encrypted: ViewEncrypted) -> list[TagData | VirtualTagData]:
         normal_tags = self.repository.get_tags(view_encrypted)
-        virtual_tags = self.repository.get_virtual_tags()
+        virtual_tags = self.repository.get_virtual_tags(view_encrypted)
 
         tags = normal_tags + virtual_tags
 

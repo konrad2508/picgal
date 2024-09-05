@@ -21,7 +21,12 @@ from service.image.i_image_database_converter_service import IImageDatabaseConve
 
 
 class SqliteImageRepository(IImageRepository):
-    def __init__(self, db: SqliteDatabase, virtual_tags_source: list[inmemVirtualTag], cfg: Config, converter: IImageDatabaseConverterService) -> None:
+    def __init__(
+            self,
+            db: SqliteDatabase,
+            virtual_tags_source: list[inmemVirtualTag],
+            cfg: Config,
+            converter: IImageDatabaseConverterService) -> None:
         self.db = db
         self.virtual_tags_source = virtual_tags_source
         self.cfg = cfg
@@ -242,12 +247,17 @@ class SqliteImageRepository(IImageRepository):
 
         return tags
     
-    def get_virtual_tags(self) -> list[VirtualTagData]:
+    def get_virtual_tags(self, view_encrypted: ViewEncrypted) -> list[VirtualTagData]:
         with self.db.atomic():
             ivt = ImageVirtualTag.alias()
             virtual_tag_count = (ivt
                                     .select(fn.Count())
                                     .where(VirtualTag.virtual_tag_id == ivt.virtual_tag_id))
+            
+            if view_encrypted == ViewEncrypted.NO:
+                virtual_tag_count = (virtual_tag_count
+                                        .join(Image, on=Image.image_id == ivt.image_id)
+                                        .where(Image.encrypted == False))
 
             virtual_tags = (VirtualTag
                             .select(VirtualTag.virtual_tag_id, VirtualTag.name, virtual_tag_count.alias('count')))
