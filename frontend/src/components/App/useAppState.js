@@ -18,7 +18,7 @@ const useAppState = () => {
     const [ restoredPreviewsCounter, setRestoredPreviewsCounter ] = React.useState(-1);
     const [ restoredSamplesCounter, setRestoredSamplesCounter ] = React.useState(-1);
     const [ addCounter, setAddCounter ] = React.useState(-1);
-    const [ batchEditorImages, setBatchEditorImages ] = React.useState([]);
+    const [ multiselectImages, setMultiselectImages ] = React.useState([]);
     const [ config, setConfig ] = React.useState({});
     const [ downloadedFilePath, setDownloadedFilePath ] = React.useState('');
     const [ showOriginal, setShowOriginal ] = React.useState(false);
@@ -51,12 +51,12 @@ const useAppState = () => {
         setRestoredPreviewsCounter,
         setRestoredSamplesCounter,
         setAddCounter,
-        setBatchEditorImages,
+        setMultiselectImages,
         setConfig,
         setDownloadedFilePath,
         setShowOriginal
     };
-    const hookService = appStateService(setters, history, batchEditorImages);
+    const hookService = appStateService(setters, history, multiselectImages);
 
     React.useEffect(hookService.fetchSavedDataEffect, []);
 
@@ -66,10 +66,10 @@ const useAppState = () => {
         hookService.searchCommand(query, viewEncrypted);
     };
 
-    const sendQueryInBatchEditor = (event) => {
+    const sendQueryInMultiselect = (event) => {
         event.preventDefault();
 
-        hookService.searchInBatchEditorCommand(query, viewEncrypted);
+        hookService.searchInMultiselectCommand(query, viewEncrypted);
     };
 
     const onImagePreviewClick = (img) => hookService.previewCommand(img);
@@ -83,18 +83,18 @@ const useAppState = () => {
     const onDeleteSavedQuery = (id) => hookService.deleteSavedQueryCommand(id, savedQueries);
     const onAddSavedQuery = (newSavedQuery) => hookService.addSavedQueryCommand(newSavedQuery, savedQueries);
     const onSyncDatabase = () => hookService.syncDatabase(viewEncrypted);
-    const onStartBatchEditor = () => hookService.startBatchEditorCommand(viewEncrypted);
+    const onStartBatchTagEditor = () => hookService.startBatchTagEditorCommand(viewEncrypted);
     const onStartSettings = () => hookService.startSettingsCommand();
     const onStartEncryptor = () => hookService.startEncryptorCommand(viewEncrypted);
     const onClickEncrypt = () => hookService.clickEncryptCommand();
     const onClickViewEncrypted = () => hookService.clickViewEncrypted(viewEncrypted);
     const onSaveSettings = (modifications) => hookService.saveSettingsCommand(modifications);
-    const onClickPreviewInBatchEditor = (img) => hookService.clickPreviewInBatchEditorCommand(img);
-    const onCancelBatchEditor = () => hookService.cancelBatchEditorCommand();
+    const onClickPreviewInMultiselect = (img) => hookService.clickPreviewInMultiselectCommand(img);
+    const onCancelMultiselect = () => hookService.cancelMultiselectCommand();
     const onClickTitle = () => hookService.clickTitleCommand();
-    const onClickSavedQueryInBatchEditor = (savedQuery) => hookService.clickSavedQueryInBatchEditorCommand(savedQuery.query, viewEncrypted);
-    const onSaveModifiedTagsClickInBatchEditor = (_, modifications) => hookService.modifyImageInBatchEditorCommand(modifications, viewEncrypted);
-    const onPageNavClickInBatchEditor = (newPage) => hookService.pageNavInBatchEditorCommand(usedQuery, newPage, viewEncrypted);
+    const onClickSavedQueryInMultiselect = (savedQuery) => hookService.clickSavedQueryInMultiselectCommand(savedQuery.query, viewEncrypted);
+    const onSaveModifiedTagsClickInBatchTagEditor = (_, modifications) => hookService.modifyImageInBatchTagEditorCommand(modifications, viewEncrypted);
+    const onPageNavClickInMultiselect = (newPage) => hookService.pageNavInMultiselectCommand(usedQuery, newPage, viewEncrypted);
     const onClickSaveImage = (id, dir, filename) => hookService.clickSaveImageCommand(id, dir, filename);
     const onToggleShowOriginal = () => hookService.toggleShowOriginal(showOriginal);
 
@@ -114,7 +114,7 @@ const useAppState = () => {
         restoredSamplesCounter,
         addCounter,
         historyLength: history.length - 1,
-        batchEditorSelected: batchEditorImages,
+        multiselectSelected: multiselectImages,
         config,
         downloadedFilePath,
         showOriginal,
@@ -130,19 +130,19 @@ const useAppState = () => {
         onDeleteSavedQuery,
         onAddSavedQuery,
         onSyncDatabase,
-        onStartBatchEditor,
+        onStartBatchTagEditor,
         onStartSettings,
         onStartEncryptor,
         onClickEncrypt,
         onClickViewEncrypted,
         onSaveSettings,
-        onClickPreviewInBatchEditor,
-        sendQueryInBatchEditor,
-        onCancelBatchEditor,
+        onClickPreviewInMultiselect,
+        sendQueryInMultiselect,
+        onCancelMultiselect,
         onClickTitle,
-        onClickSavedQueryInBatchEditor,
-        onSaveModifiedTagsClickInBatchEditor,
-        onPageNavClickInBatchEditor,
+        onClickSavedQueryInMultiselect,
+        onSaveModifiedTagsClickInBatchTagEditor,
+        onPageNavClickInMultiselect,
         onClickSaveImage,
         onToggleShowOriginal
     };

@@ -1,12 +1,12 @@
 import React from 'react';
 import AppContext from '../../context/AppContext';
 
-const useBatchSelectState = () => {
-    const { imagesToShow, batchEditorSelected } = React.useContext(AppContext);
+const useMultiselectState = () => {
+    const { imagesToShow, multiselectSelected } = React.useContext(AppContext);
 
     const usedContextValue = {
         imagesToShow,
-        batchEditorSelected
+        multiselectSelected
     };
 
     return {
@@ -14,4 +14,4 @@ const useBatchSelectState = () => {
     };
 };
 
-export default useBatchSelectState;
+export default useMultiselectState;

@@ -8,8 +8,8 @@ const Pager = () => {
     const { usedContextValue } = usePagerState();
 
     const onClick = (newPage) => {
-        if ([AppState.BATCH_EDITING, AppState.ENCRYPTOR].includes(usedContextValue.appState)) {
-            usedContextValue.onPageNavClickInBatchEditor(newPage);
+        if (AppState.isMultiselect(usedContextValue.appState)) {
+            usedContextValue.onPageNavClickInMultiselect(newPage);
         }
         else {
             usedContextValue.onPageNavClick(newPage);

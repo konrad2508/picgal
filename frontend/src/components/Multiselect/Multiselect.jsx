@@ -1,12 +1,12 @@
-import styles from './BatchSelect.module.css';
+import styles from './Multiselect.module.css';
 import React from 'react';
 import UsedQuery from '../UsedQuery/UsedQuery';
 import ImagePreview from '../ImagePreview/ImagePreview';
 import Pager from '../Pager/Pager';
-import useBatchSelectState from './useBatchSelectState';
+import useMultiselectState from './useMultiselectState';
 
-const BatchSelect = ({ title }) => {
-    const { usedContextValue } = useBatchSelectState();
+const Multiselect = ({ title }) => {
+    const { usedContextValue } = useMultiselectState();
 
     return (
         <>
@@ -18,8 +18,8 @@ const BatchSelect = ({ title }) => {
                         <ImagePreview
                             key={img.id}
                             img={img}
-                            batchEditor={true}
-                            selected={usedContextValue.batchEditorSelected.some((i) => i.id === img.id)}
+                            multiselect={true}
+                            selected={usedContextValue.multiselectSelected.some((i) => i.id === img.id)}
                         />
                     )
                 }
@@ -29,10 +29,10 @@ const BatchSelect = ({ title }) => {
             </div>
             <h3>Selected images</h3>
             <div className={styles.previews}>
-                {usedContextValue.batchEditorSelected.map(img => <ImagePreview key={img.id} img={img} active={false}/>)}
+                {usedContextValue.multiselectSelected.map(img => <ImagePreview key={img.id} img={img} active={false}/>)}
             </div>
         </>
     );
 };
 
-export default BatchSelect;
+export default Multiselect;

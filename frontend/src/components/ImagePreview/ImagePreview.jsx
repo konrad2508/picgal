@@ -3,7 +3,7 @@ import React from 'react';
 import networkService from '../../services/networkService';
 import useImagePreviewState from './useImagePreviewState';
 
-const ImagePreview = ({ img, selected=false, active=true, batchEditor=false }) => {
+const ImagePreview = ({ img, selected=false, active=true, multiselect=false }) => {
     const { usedContextValue } = useImagePreviewState();
 
     const onClickAction = () => {
@@ -11,8 +11,8 @@ const ImagePreview = ({ img, selected=false, active=true, batchEditor=false }) =
             return;
         }
 
-        if (batchEditor) {
-            usedContextValue.onClickPreviewInBatchEditor(img);
+        if (multiselect) {
+            usedContextValue.onClickPreviewInMultiselect(img);
         }
         else {
             usedContextValue.onImagePreviewClick(img);

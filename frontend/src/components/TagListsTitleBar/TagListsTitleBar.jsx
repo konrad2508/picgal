@@ -9,15 +9,15 @@ const TagListsTitleBar = () => {
     const { usedContextValue } = useTagListsTitleBarState();
 
     const onClickHandler = (mode) => {
-        if (usedContextValue.appState === AppState.BATCH_EDITING) {
-            usedContextValue.changeModificationModeInBatchEditor(mode);
+        if (usedContextValue.appState === AppState.BATCH_TAG_EDITOR) {
+            usedContextValue.changeModificationModeInBatchTagEditor(mode);
         }
         else {
             usedContextValue.changeModificationMode(mode);
         }
     };
 
-    if (usedContextValue.modificationMode || usedContextValue.appState === AppState.BATCH_EDITING) {
+    if (usedContextValue.modificationMode || usedContextValue.appState === AppState.BATCH_TAG_EDITOR) {
         return (
             <div className={styles.container}>
                 <h2>Tags</h2>
@@ -28,7 +28,8 @@ const TagListsTitleBar = () => {
                     >
                         <FaSave className='fontAwesome'/>
                     </button>
-                    { usedContextValue.appState !== AppState.BATCH_EDITING && <button
+                    { usedContextValue.appState !== AppState.BATCH_TAG_EDITOR &&
+                    <button
                         className={styles.button}
                         onClick={() => onClickHandler(ModificationMode.CANCEL)}
                     >

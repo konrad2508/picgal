@@ -23,7 +23,7 @@ const Menu = () => {
         );
     };
 
-    const renderBatchEditorTagList = () => {
+    const renderBatchTagEditorTagList = () => {
         return (
             <>
                 <TagLists/>
@@ -44,8 +44,8 @@ const Menu = () => {
             return renderImageInfo();
         }
 
-        if (usedContextValue.appState === AppState.BATCH_EDITING) {
-            return renderBatchEditorTagList();
+        if (usedContextValue.appState === AppState.BATCH_TAG_EDITOR) {
+            return renderBatchTagEditorTagList();
         }
 
         if (usedContextValue.appState === AppState.ENCRYPTOR) {

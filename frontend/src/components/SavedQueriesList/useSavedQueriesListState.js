@@ -6,7 +6,7 @@ const useSavedQueriesListState = () => {
     const {
         savedQueries,
         onClickSavedQuery,
-        onClickSavedQueryInBatchEditor,
+        onClickSavedQueryInMultiselect,
         appState
     } = React.useContext(AppContext);
 
@@ -19,12 +19,12 @@ const useSavedQueriesListState = () => {
     const toggleDisplaySavedQueries = () => hookService.toggleDisplaySavedQueriesCommand(displaySavedQueries);
     const enterModificationMode = () => hookService.enterModificationModeCommand();
     const exitModificationMode = () => hookService.exitModificationModeCommand();
-    const executeSavedQueryInBatchEditor = (savedQuery) => hookService.executeSavedQueryCommand(savedQuery, onClickSavedQueryInBatchEditor);
+    const executeSavedQueryInMultiselect = (savedQuery) => hookService.executeSavedQueryCommand(savedQuery, onClickSavedQueryInMultiselect);
 
     const usedContextValue = {
         savedQueries,
         onClickSavedQuery,
-        onClickSavedQueryInBatchEditor,
+        onClickSavedQueryInMultiselect,
         appState
     };
 
@@ -35,7 +35,7 @@ const useSavedQueriesListState = () => {
         toggleDisplaySavedQueries,
         enterModificationMode,
         exitModificationMode,
-        executeSavedQueryInBatchEditor
+        executeSavedQueryInMultiselect
     };
 
     return {

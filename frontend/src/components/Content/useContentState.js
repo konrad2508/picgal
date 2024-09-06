@@ -2,13 +2,11 @@ import React from 'react';
 import AppContext from '../../context/AppContext';
 
 const useContentState = () => {
-    const { imagesToShow, appState, viewEncrypted, batchEditorSelected } = React.useContext(AppContext);
+    const { imagesToShow, appState } = React.useContext(AppContext);
 
     const usedContextValue = {
         imagesToShow,
-        appState,
-        viewEncrypted,
-        batchEditorSelected
+        appState
     };
 
     return {

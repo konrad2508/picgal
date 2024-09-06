@@ -10,25 +10,22 @@ const SearchBar = () => {
 
     return (
         <form onSubmit={
-            usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.ENCRYPTOR
+            !AppState.isMultiselect(usedContextValue.appState)
                 ? usedContextValue.sendQuery
-                : usedContextValue.sendQueryInBatchEditor}>
+                : usedContextValue.sendQueryInMultiselect}>
             <div className={styles.form}>
                 <div className={styles.backContainer}>
                     <button
                         type='button'
                         className={styles.back}
                         onClick={
-                            usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.ENCRYPTOR
+                            !AppState.isMultiselect(usedContextValue.appState)
                                 ? usedContextValue.onBackClick
-                                : usedContextValue.onCancelBatchEditor
+                                : usedContextValue.onCancelMultiselect
                         }
-                        disabled={usedContextValue.historyLength === 0
-                            && usedContextValue.appState !== AppState.BATCH_EDITING
-                            && usedContextValue.appState !== AppState.ENCRYPTOR
-                        }
+                        disabled={usedContextValue.historyLength === 0 && !AppState.isMultiselect(usedContextValue.appState)}
                     >
-                        { usedContextValue.appState !== AppState.BATCH_EDITING && usedContextValue.appState !== AppState.ENCRYPTOR
+                        { !AppState.isMultiselect(usedContextValue.appState)
                             ? <FaArrowLeft className='fontAwesome'/>
                             : <FaTimes className='fontAwesome'/> }
                     </button>

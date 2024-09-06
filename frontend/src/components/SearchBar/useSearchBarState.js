@@ -4,9 +4,9 @@ import AppContext from '../../context/AppContext';
 const useSearchBarState = () => {
     const {
         sendQuery,
-        sendQueryInBatchEditor,
+        sendQueryInMultiselect,
         onBackClick,
-        onCancelBatchEditor,
+        onCancelMultiselect,
         appState,
         query,
         handleQueryChange,
@@ -16,9 +16,9 @@ const useSearchBarState = () => {
 
     const usedContextValue = {
         sendQuery,
-        sendQueryInBatchEditor,
+        sendQueryInMultiselect,
         onBackClick,
-        onCancelBatchEditor,
+        onCancelMultiselect,
         appState,
         query,
         handleQueryChange,

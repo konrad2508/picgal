@@ -28,8 +28,8 @@ const SavedQueriesList = () => {
                                 key={e.id}
                                 savedQueryName={e.name}
                                 onClickSavedQuery={
-                                    () => usedContextValue.appState === AppState.BATCH_EDITING
-                                        ? contextValue.executeSavedQueryInBatchEditor(e)
+                                    () => AppState.isMultiselect(usedContextValue.appState)
+                                        ? contextValue.executeSavedQueryInMultiselect(e)
                                         : contextValue.executeSavedQuery(e)
                                 }
                             />

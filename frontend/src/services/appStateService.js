@@ -3,7 +3,7 @@ import queryService from '../services/queryService';
 import AppState from '../enums/AppState';
 import ViewEncrypted from '../enums/ViewEncrypted';
 
-const appStateService = (setters, history, batchEditorImages) => {
+const appStateService = (setters, history, multiselectImages) => {
     const {
         setQuery,
         setImagesCounter,
@@ -20,7 +20,7 @@ const appStateService = (setters, history, batchEditorImages) => {
         setRestoredPreviewsCounter,
         setRestoredSamplesCounter,
         setAddCounter,
-        setBatchEditorImages,
+        setMultiselectImages,
         setConfig,
         setDownloadedFilePath,
         setShowOriginal
@@ -241,7 +241,7 @@ const appStateService = (setters, history, batchEditorImages) => {
             });
     };
 
-    const startBatchEditorCommand = (viewEncrypted) => {
+    const startBatchTagEditorCommand = (viewEncrypted) => {
         const urlFormattedQuery = queryService.inputQueryToUrlQuery('');
 
         requestService
@@ -252,24 +252,24 @@ const appStateService = (setters, history, batchEditorImages) => {
             .getImages(urlFormattedQuery, 1, viewEncrypted)
             .then(images => setImagesToShow(images));
 
-        setAppState(AppState.BATCH_EDITING);
+        setAppState(AppState.BATCH_TAG_EDITOR);
         setUsedQuery('');
         setQuery('');
         setCurrentPage(1);
     };
 
-    const clickPreviewInBatchEditorCommand = (img) => {
-        const alreadyAdded = batchEditorImages.some((i) => i.id === img.id);
+    const clickPreviewInMultiselectCommand = (img) => {
+        const alreadyAdded = multiselectImages.some((i) => i.id === img.id);
 
         if (alreadyAdded) {
-            setBatchEditorImages(batchEditorImages.filter((v, _) => v.id !== img.id));
+            setMultiselectImages(multiselectImages.filter((v, _) => v.id !== img.id));
         }
         else {
-            setBatchEditorImages([...batchEditorImages, img]);
+            setMultiselectImages([...multiselectImages, img]);
         }
     };
 
-    const searchInBatchEditorCommand = (q, viewEncrypted) => {
+    const searchInMultiselectCommand = (q, viewEncrypted) => {
         const urlFormattedQuery = queryService.inputQueryToUrlQuery(q);
 
         requestService
@@ -285,9 +285,9 @@ const appStateService = (setters, history, batchEditorImages) => {
         setCurrentPage(1);
     };
 
-    const cancelBatchEditorCommand = () => {
+    const cancelMultiselectCommand = () => {
         setAppState(AppState.START);
-        setBatchEditorImages([]);
+        setMultiselectImages([]);
     };
 
     const startSettingsCommand = () => {
@@ -332,14 +332,14 @@ const appStateService = (setters, history, batchEditorImages) => {
     };
 
     const clickEncryptCommand = () => {
-        const imagesToEncrypt = {ids: batchEditorImages.map((v) => v.id)};
+        const imagesToEncrypt = {ids: multiselectImages.map((v) => v.id)};
 
         requestService
             .toggleEncryptImages(imagesToEncrypt)
             .then((_) => {});
 
         setAppState(AppState.START);
-        setBatchEditorImages([]);
+        setMultiselectImages([]);
     };
 
     const clickViewEncrypted = (viewEncrypted) => {
@@ -374,7 +374,7 @@ const appStateService = (setters, history, batchEditorImages) => {
         setHistory([...history, cmd]);
     };
 
-    const clickSavedQueryInBatchEditorCommand = (q, viewEncrypted) => {
+    const clickSavedQueryInMultiselectCommand = (q, viewEncrypted) => {
         const urlFormattedQuery = queryService.inputQueryToUrlQuery(q);
 
         requestService
@@ -390,8 +390,8 @@ const appStateService = (setters, history, batchEditorImages) => {
         setCurrentPage(1);
     };
 
-    const modifyImageInBatchEditorCommand = (modifications, viewEncrypted) => {
-        const batchModifications = {...modifications, ids: batchEditorImages.map((v) => v.id)};
+    const modifyImageInBatchTagEditorCommand = (modifications, viewEncrypted) => {
+        const batchModifications = {...modifications, ids: multiselectImages.map((v) => v.id)};
 
         requestService
             .modifyImageBatch(batchModifications)
@@ -402,10 +402,10 @@ const appStateService = (setters, history, batchEditorImages) => {
             });
 
         setAppState(AppState.START);
-        setBatchEditorImages([]);
+        setMultiselectImages([]);
     };
 
-    const pageNavInBatchEditorCommand = (usedQuery, newPageNum, viewEncrypted) => {
+    const pageNavInMultiselectCommand = (usedQuery, newPageNum, viewEncrypted) => {
         const urlFormattedQuery = queryService.inputQueryToUrlQuery(usedQuery);
 
         requestService
@@ -454,19 +454,19 @@ const appStateService = (setters, history, batchEditorImages) => {
         deleteSavedQueryCommand,
         addSavedQueryCommand,
         syncDatabase,
-        startBatchEditorCommand,
-        clickPreviewInBatchEditorCommand,
-        searchInBatchEditorCommand,
-        cancelBatchEditorCommand,
+        startBatchTagEditorCommand,
+        clickPreviewInMultiselectCommand,
+        searchInMultiselectCommand,
+        cancelMultiselectCommand,
         startSettingsCommand,
         saveSettingsCommand,
         startEncryptorCommand,
         clickEncryptCommand,
         clickViewEncrypted,
         clickTitleCommand,
-        clickSavedQueryInBatchEditorCommand,
-        modifyImageInBatchEditorCommand,
-        pageNavInBatchEditorCommand,
+        clickSavedQueryInMultiselectCommand,
+        modifyImageInBatchTagEditorCommand,
+        pageNavInMultiselectCommand,
         clickSaveImageCommand,
         toggleShowOriginal
     };

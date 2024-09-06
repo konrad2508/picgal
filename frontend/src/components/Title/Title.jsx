@@ -6,9 +6,7 @@ const Title = () => {
     const { usedContextValue } = useTitleState();
 
     const onClick = () => {
-        if (usedContextValue.appState !== AppState.BATCH_EDITING
-            && usedContextValue.appState !== AppState.START
-            && usedContextValue.appState !== AppState.ENCRYPTOR) {
+        if (usedContextValue.appState !== AppState.START && !AppState.isMultiselect(usedContextValue.appState)) {
             usedContextValue.onClickTitle();
         }
     };

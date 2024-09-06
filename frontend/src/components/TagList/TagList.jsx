@@ -8,7 +8,7 @@ import useTagListState from './useTagListState';
 const TagList = ({ tagType, tags }) => {
     const { usedContextValue } = useTagListState();
 
-    if (usedContextValue.modificationMode || usedContextValue.appState === AppState.BATCH_EDITING) {
+    if (usedContextValue.modificationMode || usedContextValue.appState === AppState.BATCH_TAG_EDITOR) {
         return (
             <ModifiableTagList tagType={tagType} tags={tags}/>
         );

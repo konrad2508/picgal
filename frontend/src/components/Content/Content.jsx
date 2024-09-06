@@ -4,7 +4,7 @@ import Browser from '../Browser/Browser';
 import Image from '../Image/Image';
 import Settings from '../Settings/Settings';
 import ToolsSelection from '../ToolsSelection/ToolsSelection';
-import BatchSelect from '../BatchSelect/BatchSelect';
+import Multiselect from '../Multiselect/Multiselect';
 import Notifications from '../Notifications/Notifications';
 import AppState from '../../enums/AppState';
 import useContentState from './useContentState';
@@ -21,10 +21,10 @@ const Content = () => {
             </>
         );
     }
-    else if (usedContextValue.appState === AppState.BATCH_EDITING) {
+    else if (usedContextValue.appState === AppState.BATCH_TAG_EDITOR) {
         content = (
             <>
-                <BatchSelect title='Batch Tag Editor'/>
+                <Multiselect title='Batch Tag Editor'/>
             </>
         );
     }
@@ -52,7 +52,7 @@ const Content = () => {
     else if (usedContextValue.appState === AppState.ENCRYPTOR) {
         content = (
             <>
-                <BatchSelect title='Encryptor'/>
+                <Multiselect title='Encryptor'/>
             </>
         );
     }

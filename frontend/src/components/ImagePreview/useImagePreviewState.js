@@ -2,11 +2,11 @@ import React from 'react';
 import AppContext from '../../context/AppContext';
 
 const useImagePreviewState = () => {
-    const { onImagePreviewClick, onClickPreviewInBatchEditor } = React.useContext(AppContext);
+    const { onImagePreviewClick, onClickPreviewInMultiselect } = React.useContext(AppContext);
 
     const usedContextValue = {
         onImagePreviewClick,
-        onClickPreviewInBatchEditor
+        onClickPreviewInMultiselect
     };
 
     return {

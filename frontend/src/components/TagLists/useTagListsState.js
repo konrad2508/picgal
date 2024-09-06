@@ -4,7 +4,7 @@ import tagListsStateService from '../../services/tagListsStateService';
 import AppContext from '../../context/AppContext';
 
 const useTagListsState = (img) => {
-    const { onSaveModifiedTagsClick, onSaveModifiedTagsClickInBatchEditor } = React.useContext(AppContext);
+    const { onSaveModifiedTagsClick, onSaveModifiedTagsClickInBatchTagEditor } = React.useContext(AppContext);
 
     const { form: modificationsForm, formComplements } = modificationForm();
 
@@ -15,12 +15,12 @@ const useTagListsState = (img) => {
 
     const onModificationsChange  = (op, element) => hookService.addModificationCommand(modifications, op, element, formComplements);
     const changeModificationMode = (mode) => hookService.switchModeCommand(mode, img?.id, modifications, onSaveModifiedTagsClick, modificationsForm);
-    const changeModificationModeInBatchEditor = (mode) =>
-        hookService.switchModeCommand(mode, null, modifications, onSaveModifiedTagsClickInBatchEditor, modificationsForm);
+    const changeModificationModeInBatchTagEditor = (mode) =>
+        hookService.switchModeCommand(mode, null, modifications, onSaveModifiedTagsClickInBatchTagEditor, modificationsForm);
 
     const usedContextValue = {
         onSaveModifiedTagsClick,
-        onSaveModifiedTagsClickInBatchEditor
+        onSaveModifiedTagsClickInBatchTagEditor
     };
 
     const contextValue = {
@@ -28,7 +28,7 @@ const useTagListsState = (img) => {
         modificationMode,
         onModificationsChange,
         changeModificationMode,
-        changeModificationModeInBatchEditor
+        changeModificationModeInBatchTagEditor
     };
 
     return {

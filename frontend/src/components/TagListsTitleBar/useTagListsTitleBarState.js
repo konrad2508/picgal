@@ -4,13 +4,13 @@ import TagListsContext from '../../context/TagListsContext';
 
 const useTagListsTitleBarState = () => {
     const { appState } = React.useContext(AppContext);
-    const { modificationMode, changeModificationMode, changeModificationModeInBatchEditor } = React.useContext(TagListsContext);
+    const { modificationMode, changeModificationMode, changeModificationModeInBatchTagEditor } = React.useContext(TagListsContext);
 
     const usedContextValue = {
         appState,
         modificationMode,
         changeModificationMode,
-        changeModificationModeInBatchEditor
+        changeModificationModeInBatchTagEditor
     };
 
     return {
