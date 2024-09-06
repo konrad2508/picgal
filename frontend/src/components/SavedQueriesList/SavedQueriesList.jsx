@@ -22,14 +22,6 @@ const SavedQueriesList = () => {
         return (
             <div className={styles.savedQueriesOuterContainer}>
                 <div className={styles.savedQueriesInnerContainer}>
-                    <SavedQuery
-                        savedQueryName={'Favourites'}
-                        onClickSavedQuery={
-                            usedContextValue.appState === AppState.BATCH_EDITING
-                                ? contextValue.executeSearchFavouritesInBatchEditor
-                                : contextValue.executeSearchFavourites
-                        }
-                    />
                     {
                         usedContextValue.savedQueries.map((e) =>
                             <SavedQuery 

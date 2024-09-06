@@ -3,7 +3,6 @@ import React from 'react';
 import { FaPlus, FaTimes } from 'react-icons/fa';
 import ModifiableSavedQuery from '../ModifiableSavedQuery/ModifiableSavedQuery';
 import AddNewSavedQuery from '../AddNewSavedQuery/AddNewSavedQuery';
-import StubFavourites from '../StubFavourites/StubFavourites';
 import useModifiableSavedQueriesListState from './useModifiableSavedQueriesListState';
 import ModifiableSavedQueriesListContext from '../../context/ModifiableSavedQueriesListContext';
 
@@ -31,8 +30,6 @@ const ModifiableSavedQueriesList = () => {
             <div className={styles.savedQueriesOuterContainer}>
                 <div className={styles.savedQueriesInnerContainer}>
                     { contextValue.addingSavedQuery && <AddNewSavedQuery/> }
-
-                    <StubFavourites/>
                     { usedContextValue.savedQueries.map((e) => <ModifiableSavedQuery key={e.id} savedQuery={e}/>)}
                 </div>
             </div>

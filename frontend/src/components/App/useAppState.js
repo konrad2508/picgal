@@ -78,7 +78,6 @@ const useAppState = () => {
     const onBackClick = () => hookService.clickBackCommand();
     const onPageNavClick = (newPage) => hookService.pageNavCommand(usedQuery, newPage, viewEncrypted);
     const onSaveModifiedTagsClick = (id, modifications) => hookService.modifyImageCommand(id, modifications, viewEncrypted);
-    const onSearchFavouritesClick = () => hookService.clickFavouritesCommand(viewEncrypted);
     const onClickSavedQuery = (savedQuery) => hookService.clickSavedQueryCommand(savedQuery.query, viewEncrypted);
     const onModifySavedQuery = (id, modifications) => hookService.modifySavedQueryCommand(id, modifications, savedQueries);
     const onDeleteSavedQuery = (id) => hookService.deleteSavedQueryCommand(id, savedQueries);
@@ -93,7 +92,6 @@ const useAppState = () => {
     const onClickPreviewInBatchEditor = (img) => hookService.clickPreviewInBatchEditorCommand(img);
     const onCancelBatchEditor = () => hookService.cancelBatchEditorCommand();
     const onClickTitle = () => hookService.clickTitleCommand();
-    const onSearchFavouritesClickInBatchEditor = () => hookService.clickFavouritesInBatchEditorCommand(viewEncrypted);
     const onClickSavedQueryInBatchEditor = (savedQuery) => hookService.clickSavedQueryInBatchEditorCommand(savedQuery.query, viewEncrypted);
     const onSaveModifiedTagsClickInBatchEditor = (_, modifications) => hookService.modifyImageInBatchEditorCommand(modifications, viewEncrypted);
     const onPageNavClickInBatchEditor = (newPage) => hookService.pageNavInBatchEditorCommand(usedQuery, newPage, viewEncrypted);
@@ -127,7 +125,6 @@ const useAppState = () => {
         onBackClick,
         onClickTag,
         onSaveModifiedTagsClick,
-        onSearchFavouritesClick,
         onClickSavedQuery,
         onModifySavedQuery,
         onDeleteSavedQuery,
@@ -143,7 +140,6 @@ const useAppState = () => {
         sendQueryInBatchEditor,
         onCancelBatchEditor,
         onClickTitle,
-        onSearchFavouritesClickInBatchEditor,
         onClickSavedQueryInBatchEditor,
         onSaveModifiedTagsClickInBatchEditor,
         onPageNavClickInBatchEditor,

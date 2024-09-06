@@ -4,11 +4,6 @@ const savedQueriesListStateService = ({ setDisplaySavedQueries, setModificatonMo
         onClickSavedQuery(savedQuery);
     };
 
-    const executeSearchFavouritesCommand = (onSearchFavouritesClick) => {
-        setDisplaySavedQueries(false);
-        onSearchFavouritesClick();
-    };
-
     const toggleDisplaySavedQueriesCommand = (displaySavedQueries) => {
         setDisplaySavedQueries(!displaySavedQueries);
     };
@@ -23,7 +18,6 @@ const savedQueriesListStateService = ({ setDisplaySavedQueries, setModificatonMo
 
     return {
         executeSavedQueryCommand,
-        executeSearchFavouritesCommand,
         toggleDisplaySavedQueriesCommand,
         enterModificationModeCommand,
         exitModificationModeCommand

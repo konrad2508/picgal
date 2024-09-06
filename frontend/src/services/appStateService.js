@@ -158,35 +158,6 @@ const appStateService = (setters, history, batchEditorImages) => {
             });
     };
 
-    const clickFavouritesCommand = (viewEncrypted) => {
-        const cmd = () => (
-            () => {
-                const favouriteQuery = 'favourite:yes';
-
-                const urlFormattedQuery = queryService.inputQueryToUrlQuery(favouriteQuery);
-
-                requestService
-                    .getImagesStats(urlFormattedQuery, viewEncrypted)
-                    .then(stats => {
-                        setImagesCounter(stats.imagesCount);
-                        setMaxPage(Math.max(1, stats.pagesCount));
-                    });
-
-                requestService
-                    .getImages(urlFormattedQuery, 1, viewEncrypted)
-                    .then(images => setImagesToShow(images));
-
-                setAppState(AppState.BROWSING);
-                setUsedQuery(favouriteQuery);
-                setQuery('');
-                setCurrentPage(1);
-            }
-        )();
-
-        cmd();
-        setHistory([...history, cmd]);
-    };
-
     const clickSavedQueryCommand = (q, viewEncrypted) => {
         const cmd = () => (
             (query) => {
@@ -403,24 +374,6 @@ const appStateService = (setters, history, batchEditorImages) => {
         setHistory([...history, cmd]);
     };
 
-    const clickFavouritesInBatchEditorCommand = (viewEncrypted) => {
-        const favouriteQuery = 'favourite:yes';
-
-        const urlFormattedQuery = queryService.inputQueryToUrlQuery(favouriteQuery);
-
-        requestService
-            .getImagesStats(urlFormattedQuery, viewEncrypted)
-            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
-
-        requestService
-            .getImages(urlFormattedQuery, 1, viewEncrypted)
-            .then(images => setImagesToShow(images));
-
-        setUsedQuery(favouriteQuery);
-        setQuery('');
-        setCurrentPage(1);
-    };
-
     const clickSavedQueryInBatchEditorCommand = (q, viewEncrypted) => {
         const urlFormattedQuery = queryService.inputQueryToUrlQuery(q);
 
@@ -496,7 +449,6 @@ const appStateService = (setters, history, batchEditorImages) => {
         clickBackCommand,
         pageNavCommand,
         modifyImageCommand,
-        clickFavouritesCommand,
         clickSavedQueryCommand,
         modifySavedQueryCommand,
         deleteSavedQueryCommand,
@@ -512,7 +464,6 @@ const appStateService = (setters, history, batchEditorImages) => {
         clickEncryptCommand,
         clickViewEncrypted,
         clickTitleCommand,
-        clickFavouritesInBatchEditorCommand,
         clickSavedQueryInBatchEditorCommand,
         modifyImageInBatchEditorCommand,
         pageNavInBatchEditorCommand,
