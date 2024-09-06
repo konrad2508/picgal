@@ -19,7 +19,7 @@ const TagList = ({ tagType, tags }) => {
                 <div className={styles.container}>
                     <h3>{tagType.overridedBy ? usedContextValue.config[tagType.overridedBy] : tagType.name}</h3>
                     <ul>
-                        {tags.map((e, i) => <Tag key={i} tag={e}/>)}
+                        {tags.map((e, i) => <Tag key={i} tag={e} color={tagType.color}/>)}
                     </ul>
                 </div>
             );

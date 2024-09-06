@@ -8,6 +8,6 @@ from model.image.enum.tag_type import TagType
 class TagData:
     id: int
     name: str
-    type: TagType
+    tag_type: TagType
     count: int
-    tag_type: TagCategory
+    tag_category: TagCategory

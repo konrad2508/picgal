@@ -18,7 +18,7 @@ const modifiableTagListStateService = ({ setTagList, setTagListState, setNewTagN
             return true;
         }
 
-        if (potentialDuplicate.type === tagType.value) {
+        if (potentialDuplicate.tagType === tagType.value) {
             return true;
         }
 

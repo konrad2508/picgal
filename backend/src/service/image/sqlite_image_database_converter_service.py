@@ -64,9 +64,9 @@ class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
         converted_tag = TagData(
             id=tag.tag_id,
             name=tag.name.lower(),
-            type=TagType(tag.type),
+            tag_type=TagType(tag.type),
             count=tag.count,
-            tag_type=TagCategory.NORMAL
+            tag_category=TagCategory.NORMAL
         )
 
         return converted_tag
@@ -79,7 +79,8 @@ class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
 
             subtag = SubtagData(
                 name=virtual_tag.name,
-                tag_type=TagCategory.NORMAL,
+                tag_category=TagCategory.NORMAL,
+                tag_type=TagType.VIRTUAL,
                 count=virtual_tag.count
             )
 
@@ -89,7 +90,8 @@ class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
             VirtualTagData(
                 name=parent,
                 subtags=children,
-                tag_type=TagCategory.VIRTUAL
+                tag_category=TagCategory.VIRTUAL,
+                tag_type=TagType.VIRTUAL
             ) for parent, children in vts.items()
         ]
 

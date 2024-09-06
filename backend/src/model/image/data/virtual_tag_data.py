@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from model.image.enum.tag_category import TagCategory
+from model.image.enum.tag_type import TagType
 from model.image.data.subtag_data import SubtagData
 
 
@@ -8,4 +9,5 @@ from model.image.data.subtag_data import SubtagData
 class VirtualTagData:
     name: str
     subtags: list[SubtagData]
-    tag_type: TagCategory
+    tag_category: TagCategory
+    tag_type: TagType

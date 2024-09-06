@@ -22,6 +22,12 @@ const TagType = {
         overridedBy: null,
         value: 4,
         color: '#e0101e'
+    },
+    VIRTUAL: {
+        name: 'Virtual',
+        overridedBy: null,
+        value: 5,
+        color: '#11baa9'
     }
 };
 

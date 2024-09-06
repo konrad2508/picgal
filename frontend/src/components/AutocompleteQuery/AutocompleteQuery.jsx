@@ -1,6 +1,6 @@
 import styles from './AutocompleteQuery.module.css';
 import React from 'react';
-import TagMetatype from '../../enums/TagMetatype';
+import TagCategory from '../../enums/TagCategory';
 import useAutocompleteQueryState from './useAutocompleteQueryState';
 import queryService from '../../services/queryService';
 import TagType from '../../enums/TagType';
@@ -27,10 +27,10 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     }
 
     const handleSuggestionClick = (suggestion) => {
-        if (suggestion.tagType === TagMetatype.VIRTUAL) {
+        if (suggestion.tagCategory === TagCategory.VIRTUAL) {
             activateSubtags(suggestion);
         }
-        else if (suggestion.tagType === TagMetatype.NORMAL) {
+        else if (suggestion.tagCategory === TagCategory.NORMAL) {
             addSuggestion(suggestion);
         }
     };
@@ -76,6 +76,8 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             ? contextValue.subtagList
             : existingTags;
 
+        console.log(suggestions);
+
         return suggestions
             .filter(e => e.name.toLowerCase().includes(rightQuery) && rightQuery)
             .sort(sortingFunction)
@@ -86,17 +88,20 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         const suggestionTextColor = (sug) => {
             let color;
 
-            if (sug.type === TagType.CHARACTERS.value) {
+            if (sug.tagType === TagType.CHARACTERS.value) {
                 color = TagType.CHARACTERS.color;
             }
-            else if (sug.type === TagType.GENERAL.value) {
+            else if (sug.tagType === TagType.GENERAL.value) {
                 color = TagType.GENERAL.color;
             }
-            else if (sug.type === TagType.META.value || sug.type === undefined) {
+            else if (sug.tagType === TagType.META.value) {
                 color = TagType.META.color;
             }
-            else if (sug.type === TagType.SOURCES.value) {
+            else if (sug.tagType === TagType.SOURCES.value) {
                 color = TagType.SOURCES.color;
+            }
+            else if (sug.tagType === TagType.VIRTUAL.value) {
+                color = TagType.VIRTUAL.color;
             }
 
             return {
