@@ -56,10 +56,10 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             let bScore = 0;
 
             if (a.name.startsWith(rightQuery)) {
-                aScore += 2;
+                aScore += 4;
             }
             if (b.name.startsWith(rightQuery)) {
-                bScore += 2;
+                bScore += 4;
             }
 
             if (a.name.length < b.name.length) {
@@ -67,6 +67,13 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             }
             else if (b.name.length < a.name.length) {
                 bScore += 1;
+            }
+
+            if (a.count > b.count) {
+                aScore += 2;
+            }
+            else if (b.count > a.count) {
+                bScore += 2;
             }
 
             return bScore - aScore;
