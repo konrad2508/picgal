@@ -11,8 +11,8 @@ const TagLists = ({ img }) => {
     return (
         <TagListsContext.Provider value={contextValue}>
             <TagListsTitleBar/>
-            <TagList tagType={TagType.CHARACTERS} tags={img?.characters}/>
-            <TagList tagType={TagType.SOURCES} tags={img?.sources}/>
+            <TagList tagType={TagType.LOWLEVEL} tags={img?.lowlevel}/>
+            <TagList tagType={TagType.HIGHLEVEL} tags={img?.highlevel}/>
             <TagList tagType={TagType.GENERAL} tags={img?.general}/>
             <TagList tagType={TagType.META} tags={img?.meta}/>
         </TagListsContext.Provider>

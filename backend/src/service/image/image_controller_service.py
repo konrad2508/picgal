@@ -113,7 +113,7 @@ class ImageControllerService(IImageControllerService):
 
     def get_image_content(self, id: int) -> str:
         file_location, is_encrypted = self.repository.get_image_original_file_location(id)
-        path = self.path_resolver.resolve_path(file_location)
+        path = self.path_resolver.resolve_path(self.cfg.PICTURES_ROOT, file_location)
 
         if is_encrypted:
             img = io.BytesIO(self._decrypt_file(path))
@@ -126,7 +126,7 @@ class ImageControllerService(IImageControllerService):
 
     def get_preview_content(self, id: int) -> str:
         preview_location, is_encrypted = self.repository.get_image_preview_file_location(id)
-        path = self.path_resolver.resolve_path(preview_location)
+        path = self.path_resolver.resolve_path(self.cfg.PREVIEWS_DIR, preview_location)
 
         if is_encrypted:
             prev = io.BytesIO(self._decrypt_file(path))
@@ -139,7 +139,7 @@ class ImageControllerService(IImageControllerService):
 
     def get_sample_content(self, id: int) -> str:
         sample_location, is_encrypted = self.repository.get_image_sample_file_location(id)
-        path = self.path_resolver.resolve_path(sample_location)
+        path = self.path_resolver.resolve_path(self.cfg.SAMPLES_DIR, sample_location)
 
         if is_encrypted:
             sam = io.BytesIO(self._decrypt_file(path))
@@ -152,7 +152,7 @@ class ImageControllerService(IImageControllerService):
 
     def download_image(self, id: int, filename: DownloadRequest) -> DownloadResult:
         file_location, is_encrypted = self.repository.get_image_original_file_location(id)
-        path = self.path_resolver.resolve_path(file_location)
+        path = self.path_resolver.resolve_path(self.cfg.PICTURES_ROOT, file_location)
 
         if is_encrypted:
             img = self._decrypt_file(path)

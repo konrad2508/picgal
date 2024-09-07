@@ -5,10 +5,10 @@ from typing import Optional
 
 @dataclass
 class ImageModificationRequest:
-    characters_added: list[str]
-    characters_removed: list[str]
-    sources_added: list[str]
-    sources_removed: list[str]
+    lowlevel_added: list[str]
+    lowlevel_removed: list[str]
+    highlevel_added: list[str]
+    highlevel_removed: list[str]
     general_added: list[str]
     general_removed: list[str]
     meta_added: list[str]
@@ -19,10 +19,10 @@ class ImageModificationRequest:
     @classmethod
     def from_json(cls, json: dict[str, list[str] | bool]) -> ImageModificationRequest:
         obj = cls(
-            characters_added=json['characters_added'],
-            characters_removed=json['characters_removed'],
-            sources_added=json['sources_added'],
-            sources_removed=json['sources_removed'],
+            lowlevel_added=json['lowlevel_added'],
+            lowlevel_removed=json['lowlevel_removed'],
+            highlevel_added=json['highlevel_added'],
+            highlevel_removed=json['highlevel_removed'],
             general_added=json['general_added'],
             general_removed=json['general_removed'],
             meta_added=json['meta_added'],

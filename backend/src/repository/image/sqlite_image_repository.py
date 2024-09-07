@@ -96,16 +96,16 @@ class SqliteImageRepository(IImageRepository):
                     if not Image.select().where(Image.image_id == id).exists():
                         raise EntityNotFound
 
-                    for tag in batch_modifications.characters_added:
-                        self._add_tag_to_image(id, tag, TagType.CHARACTER)
+                    for tag in batch_modifications.lowlevel_added:
+                        self._add_tag_to_image(id, tag, TagType.LOWLEVEL)
 
-                    for tag in batch_modifications.characters_removed:
+                    for tag in batch_modifications.lowlevel_removed:
                         self._delete_tag_to_image(id, tag)
 
-                    for tag in batch_modifications.sources_added:
-                        self._add_tag_to_image(id, tag, TagType.SOURCE)
+                    for tag in batch_modifications.highlevel_added:
+                        self._add_tag_to_image(id, tag, TagType.HIGHLEVEL)
 
-                    for tag in batch_modifications.sources_removed:
+                    for tag in batch_modifications.highlevel_removed:
                         self._delete_tag_to_image(id, tag)
 
                     for tag in batch_modifications.general_added:
@@ -148,16 +148,16 @@ class SqliteImageRepository(IImageRepository):
                 if not Image.select().where(Image.image_id == id).exists():
                     raise EntityNotFound
 
-                for tag in modifications.characters_added:
-                    self._add_tag_to_image(id, tag, TagType.CHARACTER)
+                for tag in modifications.lowlevel_added:
+                    self._add_tag_to_image(id, tag, TagType.LOWLEVEL)
 
-                for tag in modifications.characters_removed:
+                for tag in modifications.lowlevel_removed:
                     self._delete_tag_to_image(id, tag)
 
-                for tag in modifications.sources_added:
-                    self._add_tag_to_image(id, tag, TagType.SOURCE)
+                for tag in modifications.highlevel_added:
+                    self._add_tag_to_image(id, tag, TagType.HIGHLEVEL)
 
-                for tag in modifications.sources_removed:
+                for tag in modifications.highlevel_removed:
                     self._delete_tag_to_image(id, tag)
 
                 for tag in modifications.general_added:

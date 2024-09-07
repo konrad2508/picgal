@@ -34,8 +34,8 @@ class SqliteImageDatabaseConverterService(IImageDatabaseConverterService):
 
         converted_image = ImageData(
             id=dict_image['image_id'],
-            characters=[ tag['name'] for tag in tags if tag['type'] == TagType.CHARACTER ],
-            sources=[ tag['name'] for tag in tags if tag['type'] == TagType.SOURCE ],
+            lowlevel=[ tag['name'] for tag in tags if tag['type'] == TagType.LOWLEVEL ],
+            highlevel=[ tag['name'] for tag in tags if tag['type'] == TagType.HIGHLEVEL ],
             general=[ tag['name'] for tag in tags if tag['type'] == TagType.GENERAL ],
             meta=[ tag['name'] for tag in tags if tag['type'] == TagType.META ],
             file=dict_image['file'],

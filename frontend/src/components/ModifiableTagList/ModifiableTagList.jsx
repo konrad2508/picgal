@@ -11,11 +11,11 @@ const ModifiableTagList = ({ tagType, tags }) => {
     const { usedContextValue, contextValue } = useModifiableTagListState(tagType, tags); 
 
     const filterExistingTags = (tagType) => {
-        if (tagType === TagType.CHARACTERS) {
-            return usedContextValue.existingTags.filter(e => e.tagType === TagType.CHARACTERS.value);
+        if (tagType === TagType.LOWLEVEL) {
+            return usedContextValue.existingTags.filter(e => e.tagType === TagType.LOWLEVEL.value);
         }
-        else if (tagType === TagType.SOURCES) {
-            return usedContextValue.existingTags.filter(e => e.tagType === TagType.SOURCES.value);
+        else if (tagType === TagType.HIGHLEVEL) {
+            return usedContextValue.existingTags.filter(e => e.tagType === TagType.HIGHLEVEL.value);
         }
         else if (tagType === TagType.GENERAL) {
             return usedContextValue.existingTags.filter(e => e.tagType === TagType.GENERAL.value);

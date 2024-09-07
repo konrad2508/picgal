@@ -27,7 +27,7 @@ class SqliteControllerServiceFactory(IControllerServiceFactory):
         image_repository = SqliteImageRepository(self.db, generate_virtual_tags(), self.cfg, image_database_converter)
 
         image_request_converter = ImageRequestConverterService()
-        path_resolver = PathResolverService(self.cfg)
+        path_resolver = PathResolverService()
         image_service = ImageControllerService(image_repository, image_request_converter, path_resolver, self.cfg)
 
         return image_service

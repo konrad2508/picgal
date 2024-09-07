@@ -88,8 +88,8 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         const suggestionTextColor = (sug) => {
             let color;
 
-            if (sug.tagType === TagType.CHARACTERS.value) {
-                color = TagType.CHARACTERS.color;
+            if (sug.tagType === TagType.LOWLEVEL.value) {
+                color = TagType.LOWLEVEL.color;
             }
             else if (sug.tagType === TagType.GENERAL.value) {
                 color = TagType.GENERAL.color;
@@ -97,8 +97,8 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             else if (sug.tagType === TagType.META.value) {
                 color = TagType.META.color;
             }
-            else if (sug.tagType === TagType.SOURCES.value) {
-                color = TagType.SOURCES.color;
+            else if (sug.tagType === TagType.HIGHLEVEL.value) {
+                color = TagType.HIGHLEVEL.color;
             }
             else if (sug.tagType === TagType.VIRTUAL.value) {
                 color = TagType.VIRTUAL.color;

@@ -1,21 +1,15 @@
 import sys
 from pathlib import Path
 
-from config import Config
 from service.i_path_resolver_service import IPathResolverService
 
 
 class PathResolverService(IPathResolverService):
-    def __init__(self, cfg: Config) -> None:
-        self.cfg = cfg
+    def resolve_path(self, path_prefix: str, path: str) -> str:
+        resolved_path = Path(path_prefix) / Path(path).relative_to('/')
 
-    def resolve_path(self, path: str) -> str:
-        if getattr(sys, 'frozen', False) and not Path(path).is_absolute():
-            basedir = sys.executable
-            last_dir = basedir.rfind(self.cfg.SEP)
-            basedir = basedir[:last_dir + 1]
+        if getattr(sys, 'frozen', False) and not Path(resolved_path).is_absolute():
+            return str(Path(sys.executable).parent / resolved_path)
 
-            return basedir + path
-        
         else:
-            return path
+            return resolved_path

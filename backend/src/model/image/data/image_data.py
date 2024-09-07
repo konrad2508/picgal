@@ -4,8 +4,8 @@ from dataclasses import dataclass
 @dataclass
 class ImageData:
     id: int
-    characters: list[str]
-    sources: list[str]
+    lowlevel: list[str]
+    highlevel: list[str]
     general: list[str]
     meta: list[str]
     file: str

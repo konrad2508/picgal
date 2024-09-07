@@ -13,7 +13,6 @@ class Config:
         self.PORT: int = cfg['port']
         self.ROUTE_PREFIX: str = cfg['routePrefix']
 
-        self.SEP: str = cfg['sep']
         self.HIGHRES: int = cfg['highres']
         self.ABSURDRES: int = cfg['absurdres']
 

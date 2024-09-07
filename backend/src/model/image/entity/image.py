@@ -14,3 +14,4 @@ class Image(BaseModel):
     favourite = peewee.BooleanField(default=False)
     encrypted = peewee.BooleanField(default=False)
     created_time = peewee.DateTimeField(default=datetime.datetime.min)
+    added_time = peewee.DateTimeField(default=datetime.datetime.min)

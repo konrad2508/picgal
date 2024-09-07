@@ -1,9 +1,9 @@
 const modificationForm = () => {
     const form = {
-        charactersAdded: [],
-        charactersRemoved: [],
-        sourcesAdded: [],
-        sourcesRemoved: [],
+        lowlevelAdded: [],
+        lowlevelRemoved: [],
+        highlevelAdded: [],
+        highlevelRemoved: [],
         generalAdded: [],
         generalRemoved: [],
         metaAdded: [],
@@ -12,10 +12,10 @@ const modificationForm = () => {
     };
 
     const formComplements = {
-        charactersAdded: 'charactersRemoved',
-        charactersRemoved: 'charactersAdded',
-        sourcesAdded: 'sourcesRemoved',
-        sourcesRemoved: 'sourcesAdded',
+        lowlevelAdded: 'lowlevelRemoved',
+        lowlevelRemoved: 'lowlevelAdded',
+        highlevelAdded: 'highlevelRemoved',
+        highlevelRemoved: 'highlevelAdded',
         generalAdded: 'generalRemoved',
         generalRemoved: 'generalAdded',
         metaAdded: 'metaRemoved',

@@ -1,7 +1,9 @@
+import datetime
 import glob
 import json
 import os
 import playhouse.migrate as migrate
+from pathlib import Path
 
 from PIL import Image as Img
 from peewee import SqliteDatabase, DoesNotExist
@@ -27,14 +29,22 @@ class RPCControllerService(IRPCControllerService):
         self.cfg = cfg
 
     def sync_database(self) -> SyncDatabaseResult:
+        def get_file_path(file: str) -> Path:
+            return Path(self.cfg.PICTURES_ROOT) / Path(file).relative_to('/')
+
+        def get_preview_path(file: str) -> Path:
+            return Path(self.cfg.PREVIEWS_DIR) / Path(file).relative_to('/')
+
+        def get_sample_path(file: str) -> Path:
+            return Path(self.cfg.SAMPLES_DIR) / Path(file).relative_to('/')
+
         def is_animated(image: Img.Image) -> bool:
             try:
                 return image.is_animated
             except AttributeError:
                 return False
 
-
-        def thumbnail_animated(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
+        def thumbnail_animated(image: Img.Image, save_as: Path, size: tuple[int, int]) -> None:
             frames: list[Img.Image] = []
             for frame in range(1, image.n_frames):
                 image.seek(frame)
@@ -48,54 +58,37 @@ class RPCControllerService(IRPCControllerService):
                 append_images=frames[1:],
                 background = (0, 0, 0, 0))
 
-
-        def thumbnail_static(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
+        def thumbnail_static(image: Img.Image, save_as: Path, size: tuple[int, int]) -> None:
             image.thumbnail(size, Img.LANCZOS)
             image.save(save_as, 'WEBP')
 
-
-        def make_thumbnail(image: Img.Image, save_as: str, size: tuple[int, int]) -> None:
+        def make_thumbnail(image: Img.Image, save_as: Path, size: tuple[int, int]) -> None:
             if is_animated(image):
                 thumbnail_animated(image, save_as, size)
 
             else:
                 thumbnail_static(image, save_as, size)
 
-
         def restore_thumbnail(existing_picture: Image, type: str) -> None:
-            with Img.open(existing_picture.file) as opened:
+            with Img.open(get_file_path(existing_picture.file)) as opened:
                 if type == 'preview':
-                    new_thumbnail_location = SEP.join([self.cfg.PREVIEWS_DIR, *existing_picture.preview.split(SEP)[-3:]])
-                    existing_picture.preview = new_thumbnail_location
-                    thumbnail_size = PREVIEW_SIZE
+                    thumbnail_location = get_preview_path(existing_picture.preview)
+                    thumbnail_size = self.cfg.PREVIEW_SIZE
 
                 else:
-                    new_thumbnail_location = SEP.join([self.cfg.SAMPLES_DIR, *existing_picture.sample.split(SEP)[-3:]])
-                    existing_picture.sample = new_thumbnail_location
-                    thumbnail_size = SAMPLE_SIZE
+                    thumbnail_location = get_sample_path(existing_picture.sample)
+                    thumbnail_size = self.cfg.SAMPLE_SIZE
 
-                preview_parent_dir = SEP.join(new_thumbnail_location.split(SEP)[:-1])
-                os.makedirs(preview_parent_dir, exist_ok=True)
+                thumbnail_location.parent.mkdir(parents=True, exist_ok=True)
 
-                make_thumbnail(opened, new_thumbnail_location, thumbnail_size)
+                make_thumbnail(opened, thumbnail_location, thumbnail_size)
 
-                existing_picture.save()
+        def listpop(l: list[object]) -> object | None:
+            try:
+                return l.pop(0)
 
-
-        SEP = self.cfg.SEP
-        HIGHRES = self.cfg.HIGHRES
-        ABSURDRES = self.cfg.ABSURDRES
-
-        PREVIEWS_DIR = self.cfg.PREVIEWS_DIR
-        PREVIEW_SIZE = self.cfg.PREVIEW_SIZE
-
-        SAMPLES_DIR = self.cfg.SAMPLES_DIR
-        SAMPLE_SIZE = self.cfg.SAMPLE_SIZE
-
-        # STRUCTURE
-        # /<ROOT>/<SOURCE>/<CHARACTER>/<image>
-
-        ROOT = self.cfg.PICTURES_ROOT
+            except IndexError:
+                return None
 
         # verify database integrity
         self.db.create_tables([Image, Tag, ImageTag, Query, VirtualTag, ImageVirtualTag], safe=True)
@@ -103,11 +96,21 @@ class RPCControllerService(IRPCControllerService):
         # check for missing columns
         to_add = []
 
-        # check if encrypted column exists
         image_columns = self.db.get_columns('image')
+
+        # check if encrypted column exists
+        # TODO remove in future update
         if not any(column.name == 'encrypted' for column in image_columns):
             to_add.append(('image', 'encrypted', Image.encrypted))
         
+        # check if added_time column exists
+        # TODO remove in future update
+        added_time_column_added = False
+
+        if not any(column.name == 'added_time' for column in image_columns):
+            to_add.append(('image', 'added_time', Image.added_time))
+            added_time_column_added = True
+
         # perform migration
         if len(to_add) > 0:
             migrator = migrate.SqliteMigrator(self.db)
@@ -117,20 +120,37 @@ class RPCControllerService(IRPCControllerService):
                     *[ migrator.add_column(*args) for args in to_add ]
                 )
 
-        with self.db.atomic():
-            # syncing root
-            existing_pictures: list[Image] = list(Image.select())
+        # added_time: initialize column with values from created_time
+        # TODO remove in future update
+        if added_time_column_added:
+            with self.db.atomic():
+                imgs = Image.select()
 
-            if len(existing_pictures) > 0:
-                example_pic = existing_pictures[0]
-                old_root = SEP.join(example_pic.file.split(SEP)[:-3])
+                for img in imgs:
+                    img.added_time = img.created_time
 
-                if old_root != ROOT:
-                    for existing_picture in existing_pictures:
-                        picture_path = SEP.join(existing_picture.file.split(SEP)[-3:])
+                Image.bulk_update(imgs, fields=['added_time'], batch_size=50)
+        
+        # added_time: if that column was missing, then filenames are outdated; assume here that gallery root is up to date
+        # TODO remove in future update
+        if added_time_column_added:
+            with self.db.atomic():
+                imgs = Image.select()
 
-                        existing_picture.file = f'{ROOT}{SEP}{picture_path}'
-                        existing_picture.save()
+                for img in imgs:
+                    outdated_filepath = img.file
+
+                    new_file_filepath = outdated_filepath.split(self.cfg.PICTURES_ROOT)[1]
+
+                    new_filepath_pathobj = Path(new_file_filepath)
+                    new_preview_filepath = str(new_filepath_pathobj.with_suffix('.webp'))
+                    new_sample_filepath = str(new_filepath_pathobj.with_suffix('.webp'))
+
+                    img.file = new_file_filepath
+                    img.preview = new_preview_filepath
+                    img.sample = new_sample_filepath
+
+                Image.bulk_update(imgs, fields=['file', 'preview', 'sample'], batch_size=50)
 
         # deleting
         deleted_counter = 0
@@ -138,13 +158,10 @@ class RPCControllerService(IRPCControllerService):
         existing_pictures: list[Image] = Image.select()
 
         for existing_picture in existing_pictures:
-            if not os.path.isfile(existing_picture.file):
-                if os.path.isfile(existing_picture.preview):
-                    os.remove(existing_picture.preview)
-                
-                if os.path.isfile(existing_picture.sample):
-                    os.remove(existing_picture.sample)
-                
+            if not get_file_path(existing_picture.file).is_file():
+                get_preview_path(existing_picture.preview).unlink(missing_ok=True)
+                get_sample_path(existing_picture.sample).unlink(missing_ok=True)
+
                 ImageTag.delete().where(ImageTag.image_id == existing_picture.image_id).execute()
                 ImageVirtualTag.delete().where(ImageVirtualTag.image_id == existing_picture.image_id).execute()
                 existing_picture.delete_instance()
@@ -185,77 +202,93 @@ class RPCControllerService(IRPCControllerService):
             restored_previews_counter = 0
             restored_samples_counter = 0
 
-            pictures = glob.glob(f'{ROOT}/*/*/*')
+            pictures = glob.glob(f'{self.cfg.PICTURES_ROOT}/**/*.*', recursive=True)
+            # TODO? check if we can deal with incoming file ext
 
             for picture in pictures:
-                try:
-                    existing_picture: Image = Image.get(Image.file == picture)
+                picture_file = picture.split(self.cfg.PICTURES_ROOT)[1]
 
-                    if not os.path.isfile(existing_picture.preview) or not self.cfg.PREVIEWS_DIR == SEP.join(existing_picture.preview.split(SEP)[:-3]):
+                try:
+                    existing_picture: Image = Image.get(Image.file == picture_file)
+
+                    if not get_preview_path(existing_picture.preview).is_file():
                         restore_thumbnail(existing_picture, 'preview')
 
                         restored_previews_counter += 1
 
-                    if not os.path.isfile(existing_picture.sample) or not self.cfg.SAMPLES_DIR == SEP.join(existing_picture.sample.split(SEP)[:-3]):
+                    if not get_sample_path(existing_picture.sample).is_file():
                         restore_thumbnail(existing_picture, 'sample')
 
                         restored_samples_counter += 1
 
                 except DoesNotExist:
-                    source = picture.split(SEP)[-3]
-                    character = picture.split(SEP)[-2]
-                    image = ''.join(picture.split(SEP)[-1].split('.')[:-1])
-
-                    preview_loc = f'{PREVIEWS_DIR}{SEP}{source}{SEP}{character}'
-                    sample_loc = f'{SAMPLES_DIR}{SEP}{source}{SEP}{character}'
-
-                    if source.lower() == character.lower() == 'none':
-                        continue
+                    picture_file_pathobj = Path(picture_file)
+                    picture_dirs = list(picture_file_pathobj.parts[1:-1])
 
                     with Img.open(picture) as opened:
                         width, height = opened.size
-                        preview_file = f'{preview_loc}{SEP}{image}.webp'
-                        sample_file = f'{sample_loc}{SEP}{image}.webp'
 
-                        os.makedirs(preview_loc, exist_ok=True)
-                        os.makedirs(sample_loc, exist_ok=True)
+                        preview_file = picture_file_pathobj.with_suffix('.webp')
+                        sample_file = picture_file_pathobj.with_suffix('.webp')
+                        
+                        preview_loc = Path(self.cfg.PREVIEWS_DIR) / preview_file.relative_to('/')
+                        preview_loc.parent.mkdir(parents=True, exist_ok=True)
+                        
+                        sample_loc = Path(self.cfg.SAMPLES_DIR) / sample_file.relative_to('/')
+                        sample_loc.parent.mkdir(parents=True, exist_ok=True)
 
-                        make_thumbnail(opened.copy(), preview_file, PREVIEW_SIZE)
-                        make_thumbnail(opened.copy(), sample_file, SAMPLE_SIZE)
+                        make_thumbnail(opened.copy(), preview_loc, self.cfg.PREVIEW_SIZE)
+                        make_thumbnail(opened.copy(), sample_loc, self.cfg.SAMPLE_SIZE)
 
                     pic = {
-                        'file': picture,
-                        'preview': preview_file,
-                        'sample': sample_file,
+                        'file': picture_file,
+                        'preview': str(preview_file),
+                        'sample': str(sample_file),
                         'width': width,
                         'height': height,
                         'favourite': False,
                         'encrypted': False,
-                        'created_time': os.path.getmtime(picture)
+                        'created_time': os.path.getmtime(picture),
+                        'added_time': datetime.datetime.utcnow()
                     }
 
                     img_ref = Image.create(**pic)
 
-                    if source.lower() != 'none':
-                        source_tag = {
-                            'name': source.lower(),
-                            'type': TagType.SOURCE
+                    # high level tag
+                    high_tag = listpop(picture_dirs)
+                    if high_tag is not None and high_tag.lower() != 'notag':
+                        high_tag_obj = {
+                            'name': high_tag.lower(),
+                            'type': TagType.HIGHLEVEL
                         }
 
-                        src_tag_ref, _ = Tag.get_or_create(**source_tag)
-                        ImageTag.create(image_id=img_ref, tag_id=src_tag_ref)
+                        high_tag_ref, _ = Tag.get_or_create(**high_tag_obj)
+                        ImageTag.create(image_id=img_ref, tag_id=high_tag_ref)
 
-                    if character.lower() != 'none':
-                        character_tag = {
-                            'name': character.lower(),
-                            'type': TagType.CHARACTER
+                    # low level tag
+                    low_tag = listpop(picture_dirs)
+                    if low_tag is not None and low_tag.lower() != 'notag':
+                        low_tag_obj = {
+                            'name': low_tag.lower(),
+                            'type': TagType.LOWLEVEL
                         }
 
-                        char_tag_ref, _ = Tag.get_or_create(**character_tag)
-                        ImageTag.create(image_id=img_ref, tag_id=char_tag_ref)
+                        gen_tag_ref, _ = Tag.get_or_create(**low_tag_obj)
+                        ImageTag.create(image_id=img_ref, tag_id=gen_tag_ref)
 
+                    # general tags (if any)
+                    for gen_tag in picture_dirs:
+                        gen_tag_obj = {
+                            'name': gen_tag.lower(),
+                            'type': TagType.GENERAL
+                        }
+
+                        gen_tag_ref, _ = Tag.get_or_create(**gen_tag_obj)
+                        ImageTag.create(image_id=img_ref, tag_id=gen_tag_ref)
+
+                    # meta tags
                     im_quality = width * height
-                    if ABSURDRES > 0 and im_quality >= ABSURDRES:
+                    if self.cfg.ABSURDRES > 0 and im_quality >= self.cfg.ABSURDRES:
                         meta_tag = {
                             'name': 'absurdres',
                             'type': TagType.META
@@ -264,7 +297,7 @@ class RPCControllerService(IRPCControllerService):
                         meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
                         ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
 
-                    elif HIGHRES > 0 and im_quality >= HIGHRES:
+                    elif self.cfg.HIGHRES > 0 and im_quality >= self.cfg.HIGHRES:
                         meta_tag = {
                             'name': 'highres',
                             'type': TagType.META
@@ -273,6 +306,7 @@ class RPCControllerService(IRPCControllerService):
                         meta_tag_ref, _ = Tag.get_or_create(**meta_tag)
                         ImageTag.create(image_id=img_ref, tag_id=meta_tag_ref)
 
+                    # virtual tags
                     for virtual_tag in generate_virtual_tags():
                         for subtag in virtual_tag.subtags:
                             try:

@@ -1,12 +1,12 @@
 const TagType = {
-    CHARACTERS: {
-        name: 'Characters',
+    LOWLEVEL: {
+        name: 'Lowlevel',
         overridedBy: 'lowLevelName',
         value: 1,
         color: '#39ed21'
     },
-    SOURCES: { 
-        name: 'Sources',
+    HIGHLEVEL: { 
+        name: 'Highlevel',
         overridedBy: 'highLevelName',
         value: 2,
         color: '#7921ed'
