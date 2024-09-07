@@ -76,8 +76,6 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             ? contextValue.subtagList
             : existingTags;
 
-        console.log(suggestions);
-
         return suggestions
             .filter(e => e.name.toLowerCase().includes(rightQuery) && rightQuery)
             .sort(sortingFunction)
