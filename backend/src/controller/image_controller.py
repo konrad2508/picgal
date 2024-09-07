@@ -93,7 +93,10 @@ class ImageController(IController):
             try:
                 image = self.image_service.get_image_content(id)
 
-                return flask.send_file(image, mimetype='image/jpeg')
+                response = flask.make_response(flask.send_file(image, mimetype='image/jpeg'))
+                response.headers['Cache-Control'] = 'no-store'
+
+                return response
             
             except (EntityNotFound,  FileNotFoundError):
                 flask.abort(404)
@@ -129,7 +132,10 @@ class ImageController(IController):
             try:
                 preview = self.image_service.get_preview_content(id)
 
-                return flask.send_file(preview, mimetype='image/jpeg')
+                response = flask.make_response(flask.send_file(preview, mimetype='image/jpeg'))
+                response.headers['Cache-Control'] = 'no-store'
+
+                return response
             
             except (EntityNotFound, FileNotFoundError):
                 flask.abort(404)
@@ -139,7 +145,10 @@ class ImageController(IController):
             try:
                 sample = self.image_service.get_sample_content(id)
 
-                return flask.send_file(sample, mimetype='image/jpeg')
+                response = flask.make_response(flask.send_file(sample, mimetype='image/jpeg'))
+                response.headers['Cache-Control'] = 'no-store'
+
+                return response
             
             except (EntityNotFound, FileNotFoundError):
                 flask.abort(404)
