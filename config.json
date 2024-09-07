@@ -2,7 +2,6 @@
     "host": "127.0.0.1",
     "port": 3001,
     "routePrefix": "/api/v1",
-    "sep": "/",
     "highres": 6000000,
     "absurdres": 9000000,
     "databasePath": "../../database.sqlite",
