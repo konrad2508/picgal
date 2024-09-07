@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class ConfigRequest:
     highres: int
-    absurdres: int
+    veryhighres: int
     pictures_root: str
     previews_dir: str
     samples_dir: str
@@ -20,7 +20,7 @@ class ConfigRequest:
     def from_json(cls, json: dict[str, str]) -> ConfigRequest:
         return cls(
             highres=int(json['highres']),
-            absurdres=int(json['absurdres']),
+            veryhighres=int(json['veryhighres']),
             pictures_root=json['pictures_root'],
             previews_dir=json['previews_dir'],
             samples_dir=json['samples_dir'],

@@ -151,6 +151,16 @@ class RPCControllerService(IRPCControllerService):
                     img.sample = new_sample_filepath
 
                 Image.bulk_update(imgs, fields=['file', 'preview', 'sample'], batch_size=50)
+        
+        # added_time: if that column was missing, then rename absurdres tag to veryhighres
+        # TODO remove in future update
+        if added_time_column_added:
+            with self.db.atomic():
+                absurdres_ref: Tag = Tag.get(Tag.name == 'absurdres')
+
+                absurdres_ref.name = 'veryhighres'
+
+                absurdres_ref.save(only=[Tag.name])
 
         # deleting
         deleted_counter = 0
@@ -288,9 +298,9 @@ class RPCControllerService(IRPCControllerService):
 
                     # meta tags
                     im_quality = width * height
-                    if self.cfg.ABSURDRES > 0 and im_quality >= self.cfg.ABSURDRES:
+                    if self.cfg.VERYHIGHRES > 0 and im_quality >= self.cfg.VERYHIGHRES:
                         meta_tag = {
-                            'name': 'absurdres',
+                            'name': 'veryhighres',
                             'type': TagType.META
                         }
 
@@ -336,7 +346,7 @@ class RPCControllerService(IRPCControllerService):
     def get_config(self) -> ConfigData:
         config = ConfigData(
             self.cfg.HIGHRES,
-            self.cfg.ABSURDRES,
+            self.cfg.VERYHIGHRES,
             self.cfg.PICTURES_ROOT,
             self.cfg.PREVIEWS_DIR,
             self.cfg.SAMPLES_DIR,
@@ -356,7 +366,7 @@ class RPCControllerService(IRPCControllerService):
             cfg = json.loads(cfg_content)
 
             cfg['highres'] = modifications.highres
-            cfg['absurdres'] = modifications.absurdres
+            cfg['veryhighres'] = modifications.veryhighres
             cfg['picturesRoot'] = modifications.pictures_root
             cfg['previewsDir'] = modifications.previews_dir
             cfg['samplesDir'] = modifications.samples_dir
@@ -372,7 +382,7 @@ class RPCControllerService(IRPCControllerService):
             cfg_file.truncate()
         
         self.cfg.HIGHRES = modifications.highres
-        self.cfg.ABSURDRES = modifications.absurdres
+        self.cfg.VERYHIGHRES = modifications.veryhighres
         self.cfg.PICTURES_ROOT = modifications.pictures_root
         self.cfg.PREVIEWS_DIR = modifications.previews_dir
         self.cfg.SAMPLES_DIR = modifications.samples_dir
@@ -385,7 +395,7 @@ class RPCControllerService(IRPCControllerService):
 
         new_config = ConfigData(
             modifications.highres,
-            modifications.absurdres,
+            modifications.veryhighres,
             modifications.pictures_root,
             modifications.previews_dir,
             modifications.samples_dir,

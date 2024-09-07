@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class ConfigData:
     highres: int
-    absurdres: int
+    veryhighres: int
     pictures_root: str
     previews_dir: str
     samples_dir: str

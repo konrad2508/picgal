@@ -14,7 +14,7 @@ class Config:
         self.ROUTE_PREFIX: str = cfg['routePrefix']
 
         self.HIGHRES: int = cfg['highres']
-        self.ABSURDRES: int = cfg['absurdres']
+        self.VERYHIGHRES: int = cfg['veryhighres']
 
         self.DATABASE_PATH: str = cfg['databasePath']
 
