@@ -127,7 +127,7 @@ class RPCControllerService(IRPCControllerService):
                 imgs = Image.select()
 
                 for img in imgs:
-                    img.added_time = img.created_time
+                    img.added_time = datetime.datetime.utcfromtimestamp(img.created_time)
 
                 Image.bulk_update(imgs, fields=['added_time'], batch_size=50)
         
