@@ -127,18 +127,9 @@ class RPCControllerService(IRPCControllerService):
 
         image_columns = self.db.get_columns('image')
 
-        # check if encrypted column exists
-        # TODO remove in future update
-        if not any(column.name == 'encrypted' for column in image_columns):
-            to_add.append(('image', 'encrypted', Image.encrypted))
-        
-        # check if added_time column exists
-        # TODO remove in future update
-        added_time_column_added = False
-
-        if not any(column.name == 'added_time' for column in image_columns):
-            to_add.append(('image', 'added_time', Image.added_time))
-            added_time_column_added = True
+        # example of checking if a column exists
+        if not any(column.name == 'file' for column in image_columns):
+            to_add.append(('image', 'file', Image.file))
 
         # perform migration
         if len(to_add) > 0:
@@ -148,48 +139,6 @@ class RPCControllerService(IRPCControllerService):
                 migrate.migrate(
                     *[ migrator.add_column(*args) for args in to_add ]
                 )
-
-        # added_time: initialize column with values from created_time
-        # TODO remove in future update
-        if added_time_column_added:
-            with self.db.atomic():
-                imgs = Image.select()
-
-                for img in imgs:
-                    img.added_time = datetime.datetime.utcfromtimestamp(img.created_time)
-
-                Image.bulk_update(imgs, fields=['added_time'], batch_size=50)
-        
-        # added_time: if that column was missing, then filenames are outdated; assume here that gallery root is up to date
-        # TODO remove in future update
-        if added_time_column_added:
-            with self.db.atomic():
-                imgs = Image.select()
-
-                for img in imgs:
-                    outdated_filepath = img.file
-
-                    new_file_filepath = outdated_filepath.split(self.cfg.PICTURES_ROOT)[1]
-
-                    new_filepath_pathobj = Path(new_file_filepath)
-                    new_preview_filepath = str(new_filepath_pathobj.with_suffix('.webp'))
-                    new_sample_filepath = str(new_filepath_pathobj.with_suffix('.webp'))
-
-                    img.file = new_file_filepath
-                    img.preview = new_preview_filepath
-                    img.sample = new_sample_filepath
-
-                Image.bulk_update(imgs, fields=['file', 'preview', 'sample'], batch_size=50)
-        
-        # added_time: if that column was missing, then rename absurdres tag to veryhighres
-        # TODO remove in future update
-        if added_time_column_added:
-            with self.db.atomic():
-                absurdres_ref: Tag = Tag.get(Tag.name == 'absurdres')
-
-                absurdres_ref.name = 'veryhighres'
-
-                absurdres_ref.save(only=[Tag.name])
 
         # deleting
         deleted_counter = 0
