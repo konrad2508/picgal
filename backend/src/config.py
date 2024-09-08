@@ -19,6 +19,7 @@ class Config:
         self.DATABASE_PATH: str = cfg['databasePath']
 
         self.PICTURES_ROOT: str = cfg['picturesRoot']
+        self.NOTAG_DIR: str = cfg['notagDir']
 
         self.PREVIEWS_DIR: str = cfg['previewsDir']
         self.PREVIEW_SIZE: tuple[int, int] = cfg['previewSize']

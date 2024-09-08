@@ -6,6 +6,7 @@
     "veryhighres": 9000000,
     "databasePath": "../../database.sqlite",
     "picturesRoot": "",
+    "notagDir": "notag",
     "previewsDir": "../../previews",
     "previewSize": [
         150,

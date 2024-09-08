@@ -248,7 +248,7 @@ class RPCControllerService(IRPCControllerService):
 
                     # high level tag
                     high_tag = listpop(picture_dirs)
-                    if high_tag is not None and high_tag.lower() != 'notag':
+                    if high_tag is not None and high_tag.lower() != self.cfg.NOTAG_DIR:
                         high_tag_obj = {
                             'name': high_tag.lower(),
                             'type': TagType.HIGHLEVEL
@@ -259,7 +259,7 @@ class RPCControllerService(IRPCControllerService):
 
                     # low level tag
                     low_tag = listpop(picture_dirs)
-                    if low_tag is not None and low_tag.lower() != 'notag':
+                    if low_tag is not None and low_tag.lower() != self.cfg.NOTAG_DIR:
                         low_tag_obj = {
                             'name': low_tag.lower(),
                             'type': TagType.LOWLEVEL
