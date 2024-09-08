@@ -91,11 +91,14 @@ class ImageControllerService(IImageControllerService):
 
         for id in images_to_encrypt.ids:
             file_location, preview_location, sample_location, is_encrypted = self.repository.get_image_file_location(id)
+            file_path = self.path_resolver.resolve_path(self.cfg.PICTURES_ROOT, file_location)
+            preview_path = self.path_resolver.resolve_path(self.cfg.PREVIEWS_DIR, preview_location)
+            sample_path = self.path_resolver.resolve_path(self.cfg.SAMPLES_DIR, sample_location)
 
             f = [ self._decrypt_image, self._encrypt_image ] if is_encrypted else [ self._encrypt_image, self._decrypt_image ]
 
             try:
-                f[0](file_location, preview_location, sample_location)
+                f[0](file_path, preview_path, sample_path)
 
             except:
                 continue
@@ -105,7 +108,7 @@ class ImageControllerService(IImageControllerService):
                 result.images.append(img)
 
             except:
-                f[1](file_location, preview_location, sample_location)
+                f[1](file_path, preview_path, sample_path)
 
         self.repository.refresh_virtual_tags(images_to_encrypt.ids)
 

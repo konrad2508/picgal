@@ -1,8 +1,10 @@
 import datetime
 import glob
+import io
 import json
 import os
 import playhouse.migrate as migrate
+import subprocess
 from pathlib import Path
 
 from PIL import Image as Img
@@ -70,18 +72,45 @@ class RPCControllerService(IRPCControllerService):
                 thumbnail_static(image, save_as, size)
 
         def restore_thumbnail(existing_picture: Image, type: str) -> None:
-            with Img.open(get_file_path(existing_picture.file)) as opened:
-                if type == 'preview':
-                    thumbnail_location = get_preview_path(existing_picture.preview)
-                    thumbnail_size = self.cfg.PREVIEW_SIZE
+            if type == 'preview':
+                thumbnail_location = get_preview_path(existing_picture.preview)
+                thumbnail_size = self.cfg.PREVIEW_SIZE
 
-                else:
-                    thumbnail_location = get_sample_path(existing_picture.sample)
-                    thumbnail_size = self.cfg.SAMPLE_SIZE
+            else:
+                thumbnail_location = get_sample_path(existing_picture.sample)
+                thumbnail_size = self.cfg.SAMPLE_SIZE
 
-                thumbnail_location.parent.mkdir(parents=True, exist_ok=True)
+            thumbnail_location.parent.mkdir(parents=True, exist_ok=True)
 
+            img = get_file_path(existing_picture.file)
+
+            if existing_picture.encrypted:
+                img = io.BytesIO(decrypt_file(str(img)))
+
+            with Img.open(img) as opened:
                 make_thumbnail(opened, thumbnail_location, thumbnail_size)
+
+            if existing_picture.encrypted:
+                try:
+                    encrypted = encrypt_file(str(thumbnail_location))
+
+                    with open(thumbnail_location, 'wb') as f:
+                        f.write(encrypted)
+
+                except Exception as e:
+                    thumbnail_location.unlink()
+
+                    raise e
+
+        def encrypt_file(path: str) -> bytes:
+            file = subprocess.check_output([self.cfg.GPG_BIN, '-o', '-', '-er', self.cfg.RECIPIENT, path])
+
+            return file
+    
+        def decrypt_file(path: str) -> bytes:
+            file = subprocess.check_output([self.cfg.GPG_BIN, '-qd', path])
+
+            return file
 
         def listpop(l: list[object]) -> object | None:
             try:
@@ -222,14 +251,18 @@ class RPCControllerService(IRPCControllerService):
                     existing_picture: Image = Image.get(Image.file == picture_file)
 
                     if not get_preview_path(existing_picture.preview).is_file():
-                        restore_thumbnail(existing_picture, 'preview')
-
-                        restored_previews_counter += 1
+                        try:
+                            restore_thumbnail(existing_picture, 'preview')
+                            restored_previews_counter += 1
+                        except:
+                            pass
 
                     if not get_sample_path(existing_picture.sample).is_file():
-                        restore_thumbnail(existing_picture, 'sample')
-
-                        restored_samples_counter += 1
+                        try:
+                            restore_thumbnail(existing_picture, 'sample')
+                            restored_samples_counter += 1
+                        except:
+                            pass
 
                 except DoesNotExist:
                     picture_file_pathobj = Path(picture_file)
