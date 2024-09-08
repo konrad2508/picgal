@@ -12,4 +12,4 @@ class PathResolverService(IPathResolverService):
             return str(Path(sys.executable).parent / resolved_path)
 
         else:
-            return resolved_path
+            return str(resolved_path)
