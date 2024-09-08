@@ -3,7 +3,7 @@
     "port": 3001,
     "routePrefix": "/api/v1",
     "highres": 6000000,
-    "absurdres": 9000000,
+    "veryhighres": 9000000,
     "databasePath": "../../database.sqlite",
     "picturesRoot": "",
     "previewsDir": "../../previews",
