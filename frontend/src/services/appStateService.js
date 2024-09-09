@@ -55,9 +55,11 @@ const appStateService = (setters, history, multiselectImages) => {
 
                 requestService
                     .getImages(urlFormattedQuery, 1, viewEncrypted)
-                    .then(images => setImagesToShow(images));
+                    .then(images => {
+                        setImagesToShow(images);
+                        setAppState(AppState.BROWSING);
+                    });
 
-                setAppState(AppState.BROWSING);
                 setUsedQuery(query);
                 setQuery('');
                 setCurrentPage(1);
@@ -100,9 +102,11 @@ const appStateService = (setters, history, multiselectImages) => {
 
                 requestService
                     .getImages(urlFormattedQuery, 1, viewEncrypted)
-                    .then(images => setImagesToShow(images));
+                    .then(images => {
+                        setImagesToShow(images);
+                        setAppState(AppState.BROWSING);
+                    });
                 
-                setAppState(AppState.BROWSING);
                 setUsedQuery(inputTag);
                 setQuery('');
                 setCurrentPage(1);
@@ -127,7 +131,10 @@ const appStateService = (setters, history, multiselectImages) => {
 
                 requestService
                     .getImages(urlFormattedQuery, newPageNum, viewEncrypted)
-                    .then(images => setImagesToShow(images));
+                    .then(images => {
+                        setImagesToShow(images);
+                        setAppState(AppState.BROWSING);
+                    });
                 
                 requestService
                     .getImagesStats(urlFormattedQuery, viewEncrypted)
@@ -136,7 +143,6 @@ const appStateService = (setters, history, multiselectImages) => {
                         setMaxPage(Math.max(1, stats.pagesCount));
                     });
                 
-                setAppState(AppState.BROWSING);
                 setUsedQuery(query);
                 setQuery('');
                 setCurrentPage(newPageNum);
@@ -173,9 +179,11 @@ const appStateService = (setters, history, multiselectImages) => {
 
                 requestService
                     .getImages(urlFormattedQuery, 1, viewEncrypted)
-                    .then(images => setImagesToShow(images));
+                    .then(images => {
+                        setImagesToShow(images);
+                        setAppState(AppState.BROWSING);
+                    });
 
-                setAppState(AppState.BROWSING);
                 setUsedQuery(query);
                 setQuery('');
                 setCurrentPage(1);
@@ -267,9 +275,11 @@ const appStateService = (setters, history, multiselectImages) => {
 
         requestService
             .getImages(urlFormattedQuery, 1, viewEncrypted)
-            .then(images => setImagesToShow(images));
+            .then(images => {
+                setImagesToShow(images);
+                setAppState(AppState.BATCH_TAG_EDITOR);
+            });
 
-        setAppState(AppState.BATCH_TAG_EDITOR);
         setUsedQuery('');
         setQuery('');
         setCurrentPage(1);
@@ -340,9 +350,11 @@ const appStateService = (setters, history, multiselectImages) => {
 
         requestService
             .getImages(urlFormattedQuery, 1, viewEncrypted)
-            .then(images => setImagesToShow(images));
+            .then(images => {
+                setImagesToShow(images);
+                setAppState(AppState.ENCRYPTOR);
+            });
 
-        setAppState(AppState.ENCRYPTOR);
         setUsedQuery('');
         setQuery('');
         setCurrentPage(1);
