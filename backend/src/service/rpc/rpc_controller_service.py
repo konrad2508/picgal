@@ -53,21 +53,24 @@ class RPCControllerService(IRPCControllerService):
 
         def thumbnail_animated(image: Img.Image, save_as: Path, size: tuple[int, int]) -> None:
             frames: list[Img.Image] = []
-            for frame in range(1, image.n_frames):
+            for frame in range(0, image.n_frames):
                 image.seek(frame)
                 new_frame = image.copy()
                 new_frame.thumbnail(size, Img.LANCZOS)
                 frames.append(new_frame)
-            
+
             frames[0].save(save_as,
                 'WEBP',
                 save_all=True,
                 append_images=frames[1:],
                 background = (0, 0, 0, 0))
 
+            image.seek(0)
+
         def thumbnail_static(image: Img.Image, save_as: Path, size: tuple[int, int]) -> None:
-            image.thumbnail(size, Img.LANCZOS)
-            image.save(save_as, 'WEBP')
+            thumb = image.copy()
+            thumb.thumbnail(size, Img.LANCZOS)
+            thumb.save(save_as, 'WEBP')
 
         def make_thumbnail(image: Img.Image, save_as: Path, size: tuple[int, int]) -> None:
             if is_animated(image):
@@ -268,8 +271,8 @@ class RPCControllerService(IRPCControllerService):
                         sample_loc = Path(self.cfg.SAMPLES_DIR) / sample_file.relative_to('/')
                         sample_loc.parent.mkdir(parents=True, exist_ok=True)
 
-                        make_thumbnail(opened.copy(), preview_loc, self.cfg.PREVIEW_SIZE)
-                        make_thumbnail(opened.copy(), sample_loc, self.cfg.SAMPLE_SIZE)
+                        make_thumbnail(opened, preview_loc, self.cfg.PREVIEW_SIZE)
+                        make_thumbnail(opened, sample_loc, self.cfg.SAMPLE_SIZE)
 
                     pic = {
                         'file': picture_file,
