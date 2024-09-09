@@ -1,7 +1,9 @@
 import flask
 
 from controller.i_controller import IController
+from model.image.enum.view_encrypted import ViewEncrypted
 from model.rpc.request.config_request import ConfigRequest
+from model.rpc.request.scan_request import ScanRequest
 from service.rpc.i_rpc_controller_service import IRPCControllerService
 
 
@@ -39,5 +41,14 @@ class RpcController(IController):
             except Exception as e:
                 print(e)
                 flask.abort(429)
+        
+        @rpc_controller.route(f'{rpc_route}/scanner', methods=['POST'])
+        def scan_directory() -> flask.Response:
+            scan_request = ScanRequest.from_json(flask.request.get_json(force=True))
+            view_encrypted = flask.request.args.get('viewEncrypted', type=ViewEncrypted, default=ViewEncrypted.NO)
+
+            syncing_result = self.rpc_service.scan_directory_for_duplicates(scan_request, view_encrypted)
+
+            return flask.jsonify(syncing_result)
 
         return rpc_controller

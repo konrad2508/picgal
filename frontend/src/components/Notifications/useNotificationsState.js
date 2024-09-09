@@ -7,7 +7,8 @@ const useNotificationsState = () => {
         restoredPreviewsCounter,
         restoredSamplesCounter,
         addCounter,
-        downloadedFilePath
+        downloadedFilePath,
+        scanReportFilePath
     } = React.useContext(AppContext);
 
     const usedContextValue = {
@@ -15,7 +16,8 @@ const useNotificationsState = () => {
         restoredPreviewsCounter,
         restoredSamplesCounter,
         addCounter,
-        downloadedFilePath
+        downloadedFilePath,
+        scanReportFilePath
     };
 
     return {

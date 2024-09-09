@@ -22,6 +22,7 @@ const useAppState = () => {
     const [ config, setConfig ] = React.useState({});
     const [ downloadedFilePath, setDownloadedFilePath ] = React.useState('');
     const [ showOriginal, setShowOriginal ] = React.useState(false);
+    const [ scanReportFilePath, setScanReportFilePath ] = React.useState('');
 
     const clearState = () => {
         setQuery('');
@@ -54,7 +55,8 @@ const useAppState = () => {
         setMultiselectImages,
         setConfig,
         setDownloadedFilePath,
-        setShowOriginal
+        setShowOriginal,
+        setScanReportFilePath
     };
     const hookService = appStateService(setters, history, multiselectImages);
 
@@ -83,9 +85,11 @@ const useAppState = () => {
     const onDeleteSavedQuery = (id) => hookService.deleteSavedQueryCommand(id, savedQueries);
     const onAddSavedQuery = (newSavedQuery) => hookService.addSavedQueryCommand(newSavedQuery, savedQueries);
     const onSyncDatabase = () => hookService.syncDatabase(viewEncrypted);
+    const onStartDuplicatesScanner = () => hookService.startDuplicatesScannerCommand();
     const onStartBatchTagEditor = () => hookService.startBatchTagEditorCommand(viewEncrypted);
     const onStartSettings = () => hookService.startSettingsCommand();
     const onStartEncryptor = () => hookService.startEncryptorCommand(viewEncrypted);
+    const onStartScanning = (scanDir, outDir, viewEncrypted) => hookService.startScanningCommand(scanDir, outDir, viewEncrypted);
     const onClickEncrypt = () => hookService.clickEncryptCommand();
     const onClickViewEncrypted = () => hookService.clickViewEncrypted(viewEncrypted);
     const onSaveSettings = (modifications) => hookService.saveSettingsCommand(modifications);
@@ -118,6 +122,7 @@ const useAppState = () => {
         config,
         downloadedFilePath,
         showOriginal,
+        scanReportFilePath,
         sendQuery,
         handleQueryChange,
         onImagePreviewClick,
@@ -130,9 +135,11 @@ const useAppState = () => {
         onDeleteSavedQuery,
         onAddSavedQuery,
         onSyncDatabase,
+        onStartDuplicatesScanner,
         onStartBatchTagEditor,
         onStartSettings,
         onStartEncryptor,
+        onStartScanning,
         onClickEncrypt,
         onClickViewEncrypted,
         onSaveSettings,

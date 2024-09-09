@@ -14,6 +14,7 @@ const Notifications = () => {
     const addCounterNotifText = `Added ${usedContextValue.addCounter} image` + pluralizer(usedContextValue.addCounter);
     const noChangesToDatabaseNotifText = 'Database is already up to date';
     const downloadedFileText = `Downloaded file to ${usedContextValue.downloadedFilePath}`;
+    const scanRaportFileText = `Finished scanning for duplicates, results in ${usedContextValue.scanReportFilePath}`;
 
     return (
         <div className={styles.container}>
@@ -28,6 +29,7 @@ const Notifications = () => {
             }
 
             { usedContextValue.downloadedFilePath !== '' && <Notification text={downloadedFileText}/> }
+            { usedContextValue.scanReportFilePath !== '' && <Notification text={scanRaportFileText}/> }
         </div>
     );
 };

@@ -71,6 +71,12 @@ const syncDatabase = async () => {
     return camelize(data);
 };
 
+const scanForDuplicates = async (scanRequest, viewEncrypted) => {
+    const { data } = await axios.post(`${BASE_URL}/rpc/scanner?viewEncrypted=${viewEncrypted}`, snakeize(scanRequest));
+
+    return camelize(data);
+};
+
 const getConfig = async () => {
     const { data } = await axios.get(`${BASE_URL}/rpc/config`);
 
@@ -113,6 +119,7 @@ const requestService = {
     deleteSavedQuery,
     createSavedQuery,
     syncDatabase,
+    scanForDuplicates,
     getConfig,
     modifyConfig,
     modifyImageBatch,

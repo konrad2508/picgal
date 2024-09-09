@@ -23,7 +23,8 @@ const appStateService = (setters, history, multiselectImages) => {
         setMultiselectImages,
         setConfig,
         setDownloadedFilePath,
-        setShowOriginal
+        setShowOriginal,
+        setScanReportFilePath
     } = setters;
 
     const fetchSavedDataEffect = () => {
@@ -241,6 +242,22 @@ const appStateService = (setters, history, multiselectImages) => {
             });
     };
 
+    const startDuplicatesScannerCommand = () => {
+        const cmd = () => (
+            () => {
+                setAppState(AppState.DUPLICATES_SCANNER);
+                setUsedQuery('');
+                setQuery('');
+                setCurrentPage(1);
+                setMaxPage(1);
+                setImagesToShow([]);
+            }
+        )();
+
+        cmd();
+        setHistory([...history, cmd]);
+    };
+
     const startBatchTagEditorCommand = (viewEncrypted) => {
         const urlFormattedQuery = queryService.inputQueryToUrlQuery('');
 
@@ -329,6 +346,24 @@ const appStateService = (setters, history, multiselectImages) => {
         setUsedQuery('');
         setQuery('');
         setCurrentPage(1);
+    };
+
+    const startScanningCommand = (scanDir, outDir, viewEncrypted) => {
+        const scanRequest = { scanDir, outDir };
+
+        requestService
+            .scanForDuplicates(scanRequest, viewEncrypted)
+            .then((scanResult) => {
+                const { raportFile } = scanResult;
+
+                setScanReportFilePath(raportFile);
+
+                setTimeout(() => {
+                    setScanReportFilePath('');
+                }, 3000);
+            });
+
+        setAppState(AppState.START);
     };
 
     const clickEncryptCommand = () => {
@@ -454,6 +489,7 @@ const appStateService = (setters, history, multiselectImages) => {
         deleteSavedQueryCommand,
         addSavedQueryCommand,
         syncDatabase,
+        startDuplicatesScannerCommand,
         startBatchTagEditorCommand,
         clickPreviewInMultiselectCommand,
         searchInMultiselectCommand,
@@ -461,6 +497,7 @@ const appStateService = (setters, history, multiselectImages) => {
         startSettingsCommand,
         saveSettingsCommand,
         startEncryptorCommand,
+        startScanningCommand,
         clickEncryptCommand,
         clickViewEncrypted,
         clickTitleCommand,

@@ -2,6 +2,7 @@ import styles from './Content.module.css';
 import React from 'react';
 import Browser from '../Browser/Browser';
 import Image from '../Image/Image';
+import DuplicatesScanner from '../DuplicatesScanner/DuplicatesScanner';
 import Settings from '../Settings/Settings';
 import ToolsSelection from '../ToolsSelection/ToolsSelection';
 import Multiselect from '../Multiselect/Multiselect';
@@ -46,6 +47,13 @@ const Content = () => {
         content = (
             <>
                 <Settings/>
+            </>
+        );
+    }
+    else if (usedContextValue.appState === AppState.DUPLICATES_SCANNER) {
+        content = (
+            <>
+                <DuplicatesScanner/>
             </>
         );
     }

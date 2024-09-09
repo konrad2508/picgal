@@ -7,6 +7,7 @@ import playhouse.migrate as migrate
 import subprocess
 from pathlib import Path
 
+import imagehash
 from PIL import Image as Img
 from peewee import SqliteDatabase, DoesNotExist
 
@@ -14,15 +15,18 @@ from config import Config
 from datasource.virtual_tags import generate_virtual_tags
 from service.rpc.i_rpc_controller_service import IRPCControllerService
 from model.image.enum.tag_type import TagType
+from model.image.enum.view_encrypted import ViewEncrypted
 from model.image.entity.image import Image
 from model.image.entity.tag import Tag
 from model.image.entity.image_tag import ImageTag
 from model.image.entity.image_virtual_tag import ImageVirtualTag
 from model.image.entity.virtual_tag import VirtualTag
 from model.query.entity.query import Query
+from model.rpc.data.scan_result import ScanResult
 from model.rpc.data.sync_database_result import SyncDatabaseResult
 from model.rpc.data.config_data import ConfigData
 from model.rpc.request.config_request import ConfigRequest
+from model.rpc.request.scan_request import ScanRequest
 
 
 class RPCControllerService(IRPCControllerService):
@@ -130,6 +134,18 @@ class RPCControllerService(IRPCControllerService):
         # example of checking if a column exists
         if not any(column.name == 'file' for column in image_columns):
             to_add.append(('image', 'file', Image.file))
+        
+        # check if hash columns exist
+        # TODO: remove in future update
+        hashes_missing = False
+
+        if not any(column.name == 'avg_hash' for column in image_columns):
+            hashes_missing = True
+
+            to_add.append(('image', 'avg_hash', Image.avg_hash))
+            to_add.append(('image', 'p_hash', Image.p_hash))
+            to_add.append(('image', 'd_hash', Image.d_hash))
+            to_add.append(('image', 'w_hash', Image.w_hash))
 
         # perform migration
         if len(to_add) > 0:
@@ -139,6 +155,23 @@ class RPCControllerService(IRPCControllerService):
                 migrate.migrate(
                     *[ migrator.add_column(*args) for args in to_add ]
                 )
+
+        # populate columns with hashes
+        # TODO: remove in future update
+        if hashes_missing:
+            with self.db.atomic():
+                images: list[Image] = Image.select()
+
+                for image in images:
+                    image_file = get_file_path(image.file)
+                    
+                    with Img.open(image_file) as image_content:
+                        image.avg_hash = str(imagehash.average_hash(image_content))
+                        image.p_hash = str(imagehash.phash(image_content))
+                        image.d_hash = str(imagehash.dhash(image_content))
+                        image.w_hash = str(imagehash.whash(image_content))
+
+                Image.bulk_update(images, fields=[Image.avg_hash, Image.p_hash, Image.d_hash, Image.w_hash], batch_size=50)
 
         # deleting
         deleted_counter = 0
@@ -220,6 +253,11 @@ class RPCControllerService(IRPCControllerService):
                     with Img.open(picture) as opened:
                         width, height = opened.size
 
+                        avg_hash = imagehash.average_hash(opened)
+                        p_hash = imagehash.phash(opened)
+                        d_hash = imagehash.dhash(opened)
+                        w_hash = imagehash.whash(opened)
+
                         preview_file = picture_file_pathobj.with_suffix('.webp')
                         sample_file = picture_file_pathobj.with_suffix('.webp')
                         
@@ -241,7 +279,11 @@ class RPCControllerService(IRPCControllerService):
                         'favourite': False,
                         'encrypted': False,
                         'created_time': os.path.getmtime(picture),
-                        'added_time': datetime.datetime.utcnow()
+                        'added_time': datetime.datetime.utcnow(),
+                        'avg_hash': str(avg_hash),
+                        'p_hash': str(p_hash),
+                        'd_hash': str(d_hash),
+                        'w_hash': str(w_hash)
                     }
 
                     img_ref = Image.create(**pic)
@@ -390,3 +432,32 @@ class RPCControllerService(IRPCControllerService):
         )
 
         return new_config
+
+    def scan_directory_for_duplicates(self, scan_request: ScanRequest, view_encrypted: ViewEncrypted) -> ScanResult:
+        scanned_pictures = glob.glob(f'{scan_request.scan_dir}/**/*.*', recursive=True)
+
+        scanned_pics = []
+        for scanned_picture in scanned_pictures:
+            with Img.open(scanned_picture) as opened:
+                scanned_pics.append({ 'path': scanned_picture, 'hash': imagehash.average_hash(opened) })
+        
+        gallery_pics = Image.select(Image.file, Image.avg_hash)
+        if view_encrypted != ViewEncrypted.YES:
+            gallery_pics = gallery_pics.where(Image.encrypted == False)
+        gallery_pics = list(gallery_pics)
+
+        dupes = [
+            {'file': gal_pic.file, 'dupe': scn_pic['path']}
+            for scn_pic in scanned_pics
+            for gal_pic in gallery_pics
+            if scn_pic['hash'] - imagehash.hex_to_hash(gal_pic.avg_hash) <= 5
+                and scn_pic['path'] != str(Path(self.cfg.PICTURES_ROOT) / Path(gal_pic.file).relative_to('/'))
+        ]
+
+        output = Path(scan_request.out_dir) / 'Picgal_dupescan_result.json'
+        output.parent.mkdir(parents=True, exist_ok=True)
+
+        with output.open('w') as f:
+            json.dump(dupes, f, indent=4)
+
+        return ScanResult(str(output))
