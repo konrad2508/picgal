@@ -366,31 +366,44 @@ const appStateService = (setters, history, multiselectImages) => {
         setAppState(AppState.START);
     };
 
-    const clickEncryptCommand = () => {
+    const clickEncryptCommand = (viewEncrypted) => {
         const imagesToEncrypt = {ids: multiselectImages.map((v) => v.id)};
 
         requestService
             .toggleEncryptImages(imagesToEncrypt)
-            .then((_) => {});
+            .then((_) => {
+                requestService
+                    .getTags(viewEncrypted)
+                    .then(tags => setExistingTags(tags));
+            });
 
         setAppState(AppState.START);
         setMultiselectImages([]);
     };
 
     const clickViewEncrypted = (viewEncrypted) => {
-        let newView;
+        const setCorrectView = (newView) => {
+            setViewEncrypted(newView);
+
+            requestService
+                .getTags(newView)
+                .then(tags => setExistingTags(tags));
+        };
+
         if (viewEncrypted === ViewEncrypted.NO) {
-            newView = ViewEncrypted.YES;
+            requestService
+                .authenticate()
+                .then((result) => {
+                    const { success } = result;
+
+                    if (success) {
+                        setCorrectView(ViewEncrypted.YES);
+                    }
+                });
         }
         else {
-            newView = ViewEncrypted.NO;
+            setCorrectView(ViewEncrypted.NO);
         }
-
-        setViewEncrypted(newView);
-
-        requestService
-            .getTags(newView)
-            .then(tags => setExistingTags(tags));
     };
 
     const clickTitleCommand = () => {

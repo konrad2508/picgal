@@ -90,7 +90,7 @@ const useAppState = () => {
     const onStartSettings = () => hookService.startSettingsCommand();
     const onStartEncryptor = () => hookService.startEncryptorCommand(viewEncrypted);
     const onStartScanning = (scanDir, outDir, viewEncrypted) => hookService.startScanningCommand(scanDir, outDir, viewEncrypted);
-    const onClickEncrypt = () => hookService.clickEncryptCommand();
+    const onClickEncrypt = () => hookService.clickEncryptCommand(viewEncrypted);
     const onClickViewEncrypted = () => hookService.clickViewEncrypted(viewEncrypted);
     const onSaveSettings = (modifications) => hookService.saveSettingsCommand(modifications);
     const onClickPreviewInMultiselect = (img) => hookService.clickPreviewInMultiselectCommand(img);

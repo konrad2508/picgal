@@ -22,6 +22,7 @@ from model.image.entity.image_tag import ImageTag
 from model.image.entity.image_virtual_tag import ImageVirtualTag
 from model.image.entity.virtual_tag import VirtualTag
 from model.query.entity.query import Query
+from model.rpc.data.authenticate_result import AuthenticateResult
 from model.rpc.data.scan_result import ScanResult
 from model.rpc.data.sync_database_result import SyncDatabaseResult
 from model.rpc.data.config_data import ConfigData
@@ -461,3 +462,16 @@ class RPCControllerService(IRPCControllerService):
             json.dump(dupes, f, indent=4)
 
         return ScanResult(str(output))
+
+    def authenticate(self) -> AuthenticateResult:
+        return AuthenticateResult(self._is_gpg_password_correct())
+
+    def _is_gpg_password_correct(self) -> bool:
+        try:
+            encoded = subprocess.check_output([self.cfg.GPG_BIN, '-er', self.cfg.RECIPIENT], input=b'random message')
+            subprocess.check_output([self.cfg.GPG_BIN, '-qd'], input=encoded)
+
+            return True
+
+        except:
+            return False

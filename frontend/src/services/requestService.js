@@ -107,6 +107,12 @@ const saveImage = async (id, filename) => {
     return camelize(data);
 };
 
+const authenticate = async () => {
+    const { data } = await axios.post(`${BASE_URL}/rpc/auth`);
+
+    return camelize(data);
+};
+
 const requestService = {
     getAllImages,
     getAllImagesStats,
@@ -124,6 +130,7 @@ const requestService = {
     modifyConfig,
     modifyImageBatch,
     toggleEncryptImages,
-    saveImage
+    saveImage,
+    authenticate
 };
 export default requestService;

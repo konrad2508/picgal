@@ -50,5 +50,11 @@ class RpcController(IController):
             syncing_result = self.rpc_service.scan_directory_for_duplicates(scan_request, view_encrypted)
 
             return flask.jsonify(syncing_result)
+        
+        @rpc_controller.route(f'{rpc_route}/auth', methods=['POST'])
+        def authenticate() -> flask.Response:
+            auth_result = self.rpc_service.authenticate()
+
+            return flask.jsonify(auth_result)
 
         return rpc_controller

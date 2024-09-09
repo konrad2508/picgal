@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 
 from model.image.enum.view_encrypted import ViewEncrypted
+from model.rpc.data.authenticate_result import AuthenticateResult
 from model.rpc.data.scan_result import ScanResult
 from model.rpc.data.sync_database_result import SyncDatabaseResult
 from model.rpc.data.config_data import ConfigData
@@ -20,4 +21,7 @@ class IRPCControllerService(ABC):
 
     @abstractmethod
     def scan_directory_for_duplicates(self, scan_request: ScanRequest, view_encrypted: ViewEncrypted) -> ScanResult: ...
+
+    @abstractmethod
+    def authenticate(self) -> AuthenticateResult: ...
 
