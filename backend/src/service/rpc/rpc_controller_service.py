@@ -36,6 +36,26 @@ class RPCControllerService(IRPCControllerService):
         self.db = db
         self.cfg = cfg
 
+        self.VALID_EXTENSIONS = [
+            # png
+            '.png',
+
+            # jpg
+            '.jpg', '.jpeg',
+
+            # webp
+            '.webp',
+
+            # gif
+            '.gif',
+
+            # bmp
+            '.bmp',
+
+            # avif
+            '.avif', '.avifs',
+        ]
+
     def sync_database(self) -> SyncDatabaseResult:
         def get_file_path(file: str) -> Path:
             return Path(self.cfg.PICTURES_ROOT) / Path(file).relative_to('/')
@@ -128,26 +148,6 @@ class RPCControllerService(IRPCControllerService):
             except IndexError:
                 return None
 
-        VALID_EXTENSIONS = [
-            # png
-            '.png',
-
-            # jpg
-            '.jpg', '.jpeg',
-
-            # webp
-            '.webp',
-
-            # gif
-            '.gif',
-
-            # bmp
-            '.bmp',
-
-            # avif
-            '.avif', '.avifs',
-        ]
-
         # verify database integrity
         self.db.create_tables([Image, Tag, ImageTag, Query, VirtualTag, ImageVirtualTag], safe=True)
 
@@ -225,7 +225,7 @@ class RPCControllerService(IRPCControllerService):
                 picture_file = picture.split(self.cfg.PICTURES_ROOT)[1]
                 picture_file_pathobj = Path(picture_file)
 
-                if picture_file_pathobj.suffix not in VALID_EXTENSIONS:
+                if picture_file_pathobj.suffix not in self.VALID_EXTENSIONS:
                     continue
 
                 try:
@@ -440,10 +440,19 @@ class RPCControllerService(IRPCControllerService):
 
         scanned_pics = []
         for scanned_picture in scanned_pictures:
+            if Path(scanned_picture).suffix not in self.VALID_EXTENSIONS:
+                continue
+
             with Img.open(scanned_picture) as opened:
-                scanned_pics.append({ 'path': scanned_picture, 'hash': imagehash.average_hash(opened) })
+                scanned_pics.append({
+                    'path': scanned_picture,
+                    'a': imagehash.average_hash(opened),
+                    'd': imagehash.dhash(opened),
+                    'p': imagehash.phash(opened),
+                    'w': imagehash.whash(opened)
+                })
         
-        gallery_pics = Image.select(Image.file, Image.avg_hash)
+        gallery_pics = Image.select(Image.file, Image.avg_hash, Image.p_hash, Image.d_hash, Image.w_hash)
         if view_encrypted != ViewEncrypted.YES:
             gallery_pics = gallery_pics.where(Image.encrypted == False)
         gallery_pics = list(gallery_pics)
@@ -452,7 +461,10 @@ class RPCControllerService(IRPCControllerService):
             {'file': gal_pic.file, 'dupe': scn_pic['path']}
             for scn_pic in scanned_pics
             for gal_pic in gallery_pics
-            if scn_pic['hash'] - imagehash.hex_to_hash(gal_pic.avg_hash) <= 5
+            if (scn_pic['a'] - imagehash.hex_to_hash(gal_pic.avg_hash) == 0
+                or scn_pic['p'] - imagehash.hex_to_hash(gal_pic.p_hash) == 0
+                or scn_pic['d'] - imagehash.hex_to_hash(gal_pic.d_hash) == 0
+                or scn_pic['w'] - imagehash.hex_to_hash(gal_pic.w_hash) == 0)
                 and scn_pic['path'] != str(Path(self.cfg.PICTURES_ROOT) / Path(gal_pic.file).relative_to('/'))
         ]
 
