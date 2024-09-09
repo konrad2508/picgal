@@ -24,7 +24,9 @@ def generate_virtual_tags() -> list[VirtualTag]:
             .add_subtag('png', SubtagCondition(lambda: Image.file.endswith('.png')))
             .add_subtag('jpg', SubtagCondition(lambda: Image.file.endswith('.jpg') | Image.file.endswith('.jpeg')))
             .add_subtag('webp', SubtagCondition(lambda: Image.file.endswith('.webp')))
-            .add_subtag('gif', SubtagCondition(lambda: Image.file.endswith('.gif')))),
+            .add_subtag('gif', SubtagCondition(lambda: Image.file.endswith('.gif')))
+            .add_subtag('bmp', SubtagCondition(lambda: Image.file.endswith('.bmp')))
+            .add_subtag('avif', SubtagCondition(lambda: Image.file.endswith('.avif') | Image.file.endswith('.avifs')))),
         
         (VirtualTag('added')
             .add_subtag('today', SubtagCondition(lambda: Image.added_time > (datetime.datetime.utcnow() - datetime.timedelta(days=1))))
