@@ -159,18 +159,6 @@ class RPCControllerService(IRPCControllerService):
         # example of checking if a column exists
         if not any(column.name == 'file' for column in image_columns):
             to_add.append(('image', 'file', Image.file))
-        
-        # check if hash columns exist
-        # TODO: remove in future update
-        hashes_missing = False
-
-        if not any(column.name == 'avg_hash' for column in image_columns):
-            hashes_missing = True
-
-            to_add.append(('image', 'avg_hash', Image.avg_hash))
-            to_add.append(('image', 'p_hash', Image.p_hash))
-            to_add.append(('image', 'd_hash', Image.d_hash))
-            to_add.append(('image', 'w_hash', Image.w_hash))
 
         # perform migration
         if len(to_add) > 0:
@@ -180,23 +168,6 @@ class RPCControllerService(IRPCControllerService):
                 migrate.migrate(
                     *[ migrator.add_column(*args) for args in to_add ]
                 )
-
-        # populate columns with hashes
-        # TODO: remove in future update
-        if hashes_missing:
-            with self.db.atomic():
-                images: list[Image] = Image.select()
-
-                for image in images:
-                    image_file = get_file_path(image.file)
-                    
-                    with Img.open(image_file) as image_content:
-                        image.avg_hash = str(imagehash.average_hash(image_content))
-                        image.p_hash = str(imagehash.phash(image_content))
-                        image.d_hash = str(imagehash.dhash(image_content))
-                        image.w_hash = str(imagehash.whash(image_content))
-
-                Image.bulk_update(images, fields=[Image.avg_hash, Image.p_hash, Image.d_hash, Image.w_hash], batch_size=50)
 
         # deleting
         deleted_counter = 0
