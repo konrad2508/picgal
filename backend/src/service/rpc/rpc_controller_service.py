@@ -8,6 +8,7 @@ import subprocess
 from pathlib import Path
 
 import imagehash
+import pillow_avif
 from PIL import Image as Img
 from peewee import SqliteDatabase, DoesNotExist
 
@@ -127,6 +128,26 @@ class RPCControllerService(IRPCControllerService):
             except IndexError:
                 return None
 
+        VALID_EXTENSIONS = [
+            # png
+            '.png',
+
+            # jpg
+            '.jpg', '.jpeg',
+
+            # webp
+            '.webp',
+
+            # gif
+            '.gif',
+
+            # bmp
+            '.bmp',
+
+            # avif
+            '.avif', '.avifs',
+        ]
+
         # verify database integrity
         self.db.create_tables([Image, Tag, ImageTag, Query, VirtualTag, ImageVirtualTag], safe=True)
 
@@ -228,10 +249,13 @@ class RPCControllerService(IRPCControllerService):
             restored_samples_counter = 0
 
             pictures = glob.glob(f'{self.cfg.PICTURES_ROOT}/**/*.*', recursive=True)
-            # TODO? check if we can deal with incoming file ext
 
             for picture in pictures:
                 picture_file = picture.split(self.cfg.PICTURES_ROOT)[1]
+                picture_file_pathobj = Path(picture_file)
+
+                if picture_file_pathobj.suffix not in VALID_EXTENSIONS:
+                    continue
 
                 try:
                     existing_picture: Image = Image.get(Image.file == picture_file)
@@ -251,10 +275,13 @@ class RPCControllerService(IRPCControllerService):
                             pass
 
                 except DoesNotExist:
-                    picture_file_pathobj = Path(picture_file)
                     picture_dirs = list(picture_file_pathobj.parts[1:-1])
 
                     with Img.open(picture) as opened:
+                        # ignore apng disguised as png because it cannot be converted to webp thumbnail
+                        if picture_file_pathobj.suffix == '.png' and opened.is_animated:
+                            continue
+
                         width, height = opened.size
 
                         avg_hash = imagehash.average_hash(opened)
