@@ -8,7 +8,7 @@ const DuplicatesScanner = () => {
     const onPressScan = () => {
         const directoryToScan = document.getElementById('scanDir').value;
 
-        usedContextValue.onStartScanning(directoryToScan, usedContextValue.config.imageSaveDir);
+        usedContextValue.onStartScanning(directoryToScan, usedContextValue.config.saveDir);
     };
 
     return (

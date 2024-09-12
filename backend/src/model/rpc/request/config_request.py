@@ -14,7 +14,7 @@ class ConfigRequest:
     low_level_name: str
     gpg_bin: str
     recipient: str
-    image_save_dir: str
+    save_dir: str
 
     @classmethod
     def from_json(cls, json: dict[str, str]) -> ConfigRequest:
@@ -29,5 +29,5 @@ class ConfigRequest:
             low_level_name=json['low_level_name'],
             gpg_bin=json['gpg_bin'],
             recipient=json['recipient'],
-            image_save_dir=json['image_save_dir']
+            save_dir=json['save_dir']
         )

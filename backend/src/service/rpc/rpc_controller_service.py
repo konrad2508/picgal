@@ -381,7 +381,7 @@ class RPCControllerService(IRPCControllerService):
             self.cfg.LOW_LEVEL_NAME,
             self.cfg.GPG_BIN,
             self.cfg.RECIPIENT,
-            self.cfg.IMAGE_SAVE_DIR
+            self.cfg.SAVE_DIR
         )
 
         return config
@@ -401,7 +401,7 @@ class RPCControllerService(IRPCControllerService):
             cfg['lowLevelName'] = modifications.low_level_name
             cfg['gpgBin'] = modifications.gpg_bin
             cfg['recipient'] = modifications.recipient
-            cfg['imageSaveDir'] = modifications.image_save_dir
+            cfg['saveDir'] = modifications.save_dir
 
             cfg_file.seek(0)
             json.dump(cfg, cfg_file, indent=4)
@@ -417,7 +417,7 @@ class RPCControllerService(IRPCControllerService):
         self.cfg.LOW_LEVEL_NAME = modifications.low_level_name
         self.cfg.GPG_BIN = modifications.gpg_bin
         self.cfg.RECIPIENT = modifications.recipient
-        self.cfg.IMAGE_SAVE_DIR = modifications.image_save_dir
+        self.cfg.SAVE_DIR = modifications.save_dir
 
         new_config = ConfigData(
             modifications.highres,
@@ -430,7 +430,7 @@ class RPCControllerService(IRPCControllerService):
             modifications.low_level_name,
             modifications.gpg_bin,
             modifications.recipient,
-            modifications.image_save_dir
+            modifications.save_dir
         )
 
         return new_config

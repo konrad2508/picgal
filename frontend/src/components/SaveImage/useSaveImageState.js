@@ -9,7 +9,7 @@ const useSaveImageState = (id) => {
     const onFileNameChange = (e) => setFileName(e.target.value);
 
     const onSaveImage = () => {
-        onClickSaveImage(id, config.imageSaveDir, filename);
+        onClickSaveImage(id, config.saveDir, filename);
         setFileName('');
     };
 
