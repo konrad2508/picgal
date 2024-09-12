@@ -1,5 +1,11 @@
+@font-face{
+    font-family: 'Noto Sans Regular';
+    src: local('NotoSans'), url(./fonts/NotoSans-VariableFont_wdth,wght.ttf) format('truetype');
+}
+
 * {
     image-rendering: -webkit-optimize-contrast !important;
+    font-family: 'Noto Sans Regular';
 }
 
 h1, h2, h3, h4, h5, h6, p, li, ul {
