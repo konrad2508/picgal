@@ -7,9 +7,8 @@ const DuplicatesScanner = () => {
 
     const onPressScan = () => {
         const directoryToScan = document.getElementById('scanDir').value;
-        const outputDirectory = document.getElementById('outDir').value;
 
-        usedContextValue.onStartScanning(directoryToScan, outputDirectory);
+        usedContextValue.onStartScanning(directoryToScan, usedContextValue.config.imageSaveDir);
     };
 
     return (
@@ -19,10 +18,6 @@ const DuplicatesScanner = () => {
                 <div className={styles.paramContainer}>
                     <h4 className={styles.paramTitle}>Directory to scan:</h4>
                     <input id='scanDir' type="text" className={styles.paramValue}/>
-                </div>
-                <div className={styles.paramContainer}>
-                    <h4 className={styles.paramTitle}>Report location:</h4>
-                    <input id='outDir' type="text" defaultValue={usedContextValue.config.imageSaveDir} className={styles.paramValue}/>
                 </div>
             </div>
             <button onClick={onPressScan} className={styles.button}>Scan</button>
