@@ -8,6 +8,7 @@
 }
 
 .selected {
+    border: 2px dashed gray;
     filter: grayscale(100%);
 }
 
@@ -16,10 +17,11 @@
 }
 
 .selectedEncrypted {
-    border: 5px solid #00FF00;
+    outline: 5px solid #00FF00;
+    border: 2px dashed gray;
     filter: grayscale(100%);
 }
 
 .notSelectedEncrypted {
-    border: 5px solid #00FF00;
+    outline: 5px solid #00FF00;
 }
