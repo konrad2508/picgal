@@ -27,10 +27,6 @@ const Multiselect = ({ title }) => {
             <div>
                 <Pager/>
             </div>
-            <h3>Selected images</h3>
-            <div className={styles.previews}>
-                {usedContextValue.multiselectSelected.map(img => <ImagePreview key={img.id} img={img} active={false}/>)}
-            </div>
         </>
     );
 };

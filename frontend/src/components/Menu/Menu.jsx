@@ -3,6 +3,7 @@ import React from 'react';
 import Navigation from '../Navigation/Navigation';
 import TagLists from '../TagLists/TagLists';
 import Metadata from '../Metadata/Metadata';
+import MultiselectCount from '../MultiselectCount/MultiselectCount';
 import Encrypt from '../Encrypt/Encrypt';
 import SaveImage from '../SaveImage/SaveImage';
 import AppState from '../../enums/AppState';
@@ -26,6 +27,7 @@ const Menu = () => {
     const renderBatchTagEditorTagList = () => {
         return (
             <>
+                <MultiselectCount/>
                 <TagLists/>
             </>
         );
@@ -34,6 +36,7 @@ const Menu = () => {
     const renderEncryptButton = () => {
         return (
             <>
+                <MultiselectCount/>
                 <Encrypt/>
             </>
         );
