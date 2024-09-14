@@ -1,3 +1,4 @@
+import styles from './Title.module.css';
 import React from 'react';
 import AppState from '../../enums/AppState';
 import useTitleState from './useTitleState';
@@ -12,7 +13,7 @@ const Title = () => {
     };
 
     return (
-        <h1 onClick={onClick}>Picgal</h1>
+        <h1 className={styles.title} onClick={onClick}>Picgal</h1>
     );
 };
 
