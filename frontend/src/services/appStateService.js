@@ -1,9 +1,10 @@
-import requestService from '../services/requestService';
-import queryService from '../services/queryService';
+import requestService from './requestService';
+import queryService from './queryService';
+import notificationService from './notificationService';
 import AppState from '../enums/AppState';
 import ViewEncrypted from '../enums/ViewEncrypted';
 
-const appStateService = (setters, history, multiselectImages) => {
+const appStateService = (setters, history, multiselectImages, notifications) => {
     const {
         setQuery,
         setImagesCounter,
@@ -16,15 +17,10 @@ const appStateService = (setters, history, multiselectImages) => {
         setExistingTags,
         setSavedQueries,
         setHistory,
-        setDeletedCounter,
-        setRestoredPreviewsCounter,
-        setRestoredSamplesCounter,
-        setAddCounter,
         setMultiselectImages,
         setConfig,
-        setDownloadedFilePath,
         setShowOriginal,
-        setScanReportFilePath
+        setNotifications
     } = setters;
 
     const fetchSavedDataEffect = () => {
@@ -232,17 +228,19 @@ const appStateService = (setters, history, multiselectImages) => {
             .then((syncDatabaseResult) => {
                 const { deletedCounter, restoredPreviewsCounter, restoredSamplesCounter, addCounter } = syncDatabaseResult;
 
-                setDeletedCounter(deletedCounter);
-                setRestoredPreviewsCounter(restoredPreviewsCounter);
-                setRestoredSamplesCounter(restoredSamplesCounter);
-                setAddCounter(addCounter);
-
-                setTimeout(() => {
-                    setDeletedCounter(-1);
-                    setRestoredPreviewsCounter(-1);
-                    setRestoredSamplesCounter(-1);
-                    setAddCounter(-1);
-                }, 3000);
+                if ([ deletedCounter, restoredPreviewsCounter, restoredSamplesCounter, addCounter ].every((c) => c === 0)) {
+                    setNotifications([...notifications, notificationService.noChangesNotification()]);
+                }
+                else {
+                    deletedCounter > 0 &&
+                        setNotifications([...notifications, notificationService.deletedNotification(deletedCounter)]);
+                    restoredPreviewsCounter > 0 &&
+                        setNotifications([...notifications, notificationService.restoredPreviewsNotification(restoredPreviewsCounter)]);
+                    restoredSamplesCounter > 0 &&
+                        setNotifications([...notifications, notificationService.restoredSamplesNotification(restoredSamplesCounter)]);
+                    addCounter > 0 &&
+                        setNotifications([...notifications, notificationService.addedNotification(addCounter)]);
+                }
 
                 requestService
                     .getTags(viewEncrypted)
@@ -368,11 +366,7 @@ const appStateService = (setters, history, multiselectImages) => {
             .then((scanResult) => {
                 const { raportFile } = scanResult;
 
-                setScanReportFilePath(raportFile);
-
-                setTimeout(() => {
-                    setScanReportFilePath('');
-                }, 3000);
+                setNotifications([...notifications, notificationService.scanReportNotification(raportFile)]);
             });
 
         setAppState(AppState.START);
@@ -488,16 +482,16 @@ const appStateService = (setters, history, multiselectImages) => {
             .then((saveImageResult) => {
                 const { filename } = saveImageResult;
 
-                setDownloadedFilePath(filename);
-
-                setTimeout(() => {
-                    setDownloadedFilePath('');
-                }, 3000);
+                setNotifications([...notifications, notificationService.downloadedImageNotification(filename)]);
             });
     };
 
     const toggleShowOriginal = (showOriginal) => {
         setShowOriginal(!showOriginal);
+    };
+
+    const clickNotificationCommand = (id) => {
+        setNotifications(notifications.filter(notif => notif.id !== id));
     };
 
     return {
@@ -530,7 +524,8 @@ const appStateService = (setters, history, multiselectImages) => {
         modifyImageInBatchTagEditorCommand,
         pageNavInMultiselectCommand,
         clickSaveImageCommand,
-        toggleShowOriginal
+        toggleShowOriginal,
+        clickNotificationCommand
     };
 };
 

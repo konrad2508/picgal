@@ -14,15 +14,10 @@ const useAppState = () => {
     const [ maxPage, setMaxPage ] = React.useState(1);
     const [ existingTags, setExistingTags ] = React.useState([]);
     const [ savedQueries, setSavedQueries ] = React.useState([]);
-    const [ deletedCounter, setDeletedCounter ] = React.useState(-1);
-    const [ restoredPreviewsCounter, setRestoredPreviewsCounter ] = React.useState(-1);
-    const [ restoredSamplesCounter, setRestoredSamplesCounter ] = React.useState(-1);
-    const [ addCounter, setAddCounter ] = React.useState(-1);
     const [ multiselectImages, setMultiselectImages ] = React.useState([]);
     const [ config, setConfig ] = React.useState({});
-    const [ downloadedFilePath, setDownloadedFilePath ] = React.useState('');
     const [ showOriginal, setShowOriginal ] = React.useState(false);
-    const [ scanReportFilePath, setScanReportFilePath ] = React.useState('');
+    const [ notifications, setNotifications ] = React.useState([]);
 
     const clearState = () => {
         setQuery('');
@@ -48,17 +43,12 @@ const useAppState = () => {
         setExistingTags,
         setSavedQueries,
         setHistory,
-        setDeletedCounter,
-        setRestoredPreviewsCounter,
-        setRestoredSamplesCounter,
-        setAddCounter,
         setMultiselectImages,
         setConfig,
-        setDownloadedFilePath,
         setShowOriginal,
-        setScanReportFilePath
+        setNotifications
     };
-    const hookService = appStateService(setters, history, multiselectImages);
+    const hookService = appStateService(setters, history, multiselectImages, notifications);
 
     React.useEffect(hookService.fetchSavedDataEffect, []);
 
@@ -101,6 +91,7 @@ const useAppState = () => {
     const onPageNavClickInMultiselect = (newPage) => hookService.pageNavInMultiselectCommand(usedQuery, newPage, viewEncrypted);
     const onClickSaveImage = (id, dir, filename) => hookService.clickSaveImageCommand(id, dir, filename);
     const onToggleShowOriginal = () => hookService.toggleShowOriginal(showOriginal);
+    const onClickNotification = (id) => hookService.clickNotificationCommand(id);
 
     const contextValue = {
         appState,
@@ -113,16 +104,11 @@ const useAppState = () => {
         existingTags,
         pageNumber: currentPage,
         maxPage,
-        deletedCounter,
-        restoredPreviewsCounter,
-        restoredSamplesCounter,
-        addCounter,
         historyLength: history.length - 1,
         multiselectSelected: multiselectImages,
         config,
-        downloadedFilePath,
         showOriginal,
-        scanReportFilePath,
+        notifications,
         sendQuery,
         handleQueryChange,
         onImagePreviewClick,
@@ -151,7 +137,8 @@ const useAppState = () => {
         onSaveModifiedTagsClickInBatchTagEditor,
         onPageNavClickInMultiselect,
         onClickSaveImage,
-        onToggleShowOriginal
+        onToggleShowOriginal,
+        onClickNotification
     };
 
     return {
