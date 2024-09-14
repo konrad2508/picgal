@@ -364,9 +364,9 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
         requestService
             .scanForDuplicates(scanRequest, viewEncrypted)
             .then((scanResult) => {
-                const { raportFile } = scanResult;
+                const { reportFile } = scanResult;
 
-                setNotifications([...notifications, notificationService.scanReportNotification(raportFile)]);
+                setNotifications([...notifications, notificationService.scanReportNotification(reportFile)]);
             });
 
         setAppState(AppState.START);
