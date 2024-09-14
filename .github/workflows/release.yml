@@ -77,7 +77,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         run: |
           cd frontend
-          npx electron-packager . Picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --icon=./build/icon.ico --ignore="(^/node_modules/@.*|^/node_modules/.cache|^/node_modules/.package-lock.json|^/public*|^/src/components*|^/src/context*|^/src/enums*|^/src/forms*|^/src/services*|^/src/index.jsx|^/src/index.css)"
+          npx electron-packager . Picgal --out=out/ --win32metadata.ProductName="Picgal" --win32metadata.CompanyName="konrad2508" --platform=win32 --arch=x64 --icon=./build/icon.ico --ignore="(^/node_modules/@.*|^/node_modules/.cache|^/node_modules/.package-lock.json|^/public*|^/src/components*|^/src/context*|^/src/enums*|^/src/forms*|^/src/services*|^/src/fonts*|^/src/index.jsx|^/src/index.css)"
           mv ../backend/dist/picgal-server.exe out/${{ matrix.name }}/resources/app
           mv ../config.json out/${{ matrix.name }}
 
@@ -85,7 +85,7 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           cd frontend
-          npx electron-packager . Picgal --out=out/ --platform=linux --arch=x64 --icon=./build/icon.ico --ignore="(^/node_modules/@.*|^/node_modules/\.cache|^/node_modules/\.package-lock\.json|^/public*|^/src/components*|^/src/context*|^/src/enums*|^/src/forms*|^/src/services*|^/src/index\.jsx|^/src/index\.css)"
+          npx electron-packager . Picgal --out=out/ --platform=linux --arch=x64 --icon=./build/icon.ico --ignore="(^/node_modules/@.*|^/node_modules/\.cache|^/node_modules/\.package-lock\.json|^/public*|^/src/components*|^/src/context*|^/src/enums*|^/src/forms*|^/src/services*|^/src/fonts*|^/src/index\.jsx|^/src/index\.css)"
           mv ../backend/dist/picgal-server out/${{ matrix.name }}/resources/app
           mv ../config.json out/${{ matrix.name }}
 
