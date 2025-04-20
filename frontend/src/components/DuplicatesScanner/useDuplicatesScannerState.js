@@ -2,9 +2,10 @@ import React from 'react';
 import AppContext from '../../context/AppContext';
 
 const useDuplicatesScannerState = () => {
-    const { onStartScanning } = React.useContext(AppContext);
+    const { config, onStartScanning } = React.useContext(AppContext);
 
     const usedContextValue = {
+        config,
         onStartScanning
     };
 
