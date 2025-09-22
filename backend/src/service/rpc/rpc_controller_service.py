@@ -502,10 +502,10 @@ class RPCControllerService(IRPCControllerService):
             w_hashes[scn_pic.w_hash].add(scn_pic.path)
         
         for bas_pic in base_pics:
-            avg_hashes[bas_pic.avg_hash].add(bas_pic.path)
-            p_hashes[bas_pic.p_hash].add(bas_pic.path)
-            d_hashes[bas_pic.d_hash].add(bas_pic.path)
-            w_hashes[bas_pic.w_hash].add(bas_pic.path)
+            avg_hashes[bas_pic.avg_hash].add(bas_pic.path)  if bas_pic.avg_hash in avg_hashes else ...
+            p_hashes[bas_pic.p_hash].add(bas_pic.path)      if bas_pic.p_hash in p_hashes else ...
+            d_hashes[bas_pic.d_hash].add(bas_pic.path)      if bas_pic.d_hash in d_hashes else ...
+            w_hashes[bas_pic.w_hash].add(bas_pic.path)      if bas_pic.w_hash in w_hashes else ...
 
         dupes = { tuple(sorted(v)) for hashes in [ avg_hashes, p_hashes, d_hashes, w_hashes ] for _, v in hashes.items() if len(v) > 1 }
         dupes = list(dupes)
