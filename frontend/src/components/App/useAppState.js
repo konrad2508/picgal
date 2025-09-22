@@ -79,7 +79,7 @@ const useAppState = () => {
     const onStartBatchTagEditor = () => hookService.startBatchTagEditorCommand(viewEncrypted);
     const onStartSettings = () => hookService.startSettingsCommand();
     const onStartEncryptor = () => hookService.startEncryptorCommand(viewEncrypted);
-    const onStartScanning = (scanDir, outDir, viewEncrypted) => hookService.startScanningCommand(scanDir, outDir, viewEncrypted);
+    const onStartScanning = (baseDir, scanDir, outDir, viewEncrypted) => hookService.startScanningCommand(baseDir, scanDir, outDir, viewEncrypted);
     const onClickEncrypt = () => hookService.clickEncryptCommand(viewEncrypted);
     const onClickViewEncrypted = () => hookService.clickViewEncrypted(viewEncrypted);
     const onSaveSettings = (modifications) => hookService.saveSettingsCommand(modifications);

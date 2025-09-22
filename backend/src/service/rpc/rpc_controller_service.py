@@ -3,12 +3,13 @@ import glob
 import io
 import json
 import os
-import playhouse.migrate as migrate
 import subprocess
+from collections import defaultdict
 from pathlib import Path
 
 import imagehash
 import pillow_avif
+import playhouse.migrate as migrate
 from PIL import Image as Img
 from PIL import UnidentifiedImageError
 from peewee import SqliteDatabase, DoesNotExist
@@ -28,6 +29,7 @@ from model.rpc.data.authenticate_result import AuthenticateResult
 from model.rpc.data.scan_result import ScanResult
 from model.rpc.data.sync_database_result import SyncDatabaseResult
 from model.rpc.data.config_data import ConfigData
+from model.rpc.object.scan_picture import ScanPicture
 from model.rpc.request.config_request import ConfigRequest
 from model.rpc.request.scan_request import ScanRequest
 
@@ -148,6 +150,7 @@ class RPCControllerService(IRPCControllerService):
 
             except IndexError:
                 return None
+
 
         # verify database integrity
         self.db.create_tables([Image, Tag, ImageTag, Query, VirtualTag, ImageVirtualTag], safe=True)
@@ -441,41 +444,71 @@ class RPCControllerService(IRPCControllerService):
         return new_config
 
     def scan_directory_for_duplicates(self, scan_request: ScanRequest, view_encrypted: ViewEncrypted) -> ScanResult:
-        scanned_pictures = glob.glob(f'{scan_request.scan_dir}/**/*.*', recursive=True)
+        def get_pics_from_dir(directory: str) -> list[ScanPicture]:
+            pictures = glob.glob(f'{directory}/**/*.*', recursive=True)
 
-        scanned_pics = []
-        for scanned_picture in scanned_pictures:
-            if Path(scanned_picture).suffix not in self.VALID_EXTENSIONS:
-                continue
+            pics = []
+            for pic in pictures:
+                if Path(pic).suffix not in self.VALID_EXTENSIONS:
+                    continue
+                
+                try:
+                    with Img.open(pic) as pic_content:
+                        pics.append(ScanPicture(
+                            path=pic,
+                            avg_hash=imagehash.average_hash(pic_content),
+                            p_hash=imagehash.phash(pic_content),
+                            d_hash=imagehash.dhash(pic_content),
+                            w_hash=imagehash.whash(pic_content)
+                        ))
+
+                except UnidentifiedImageError:
+                    continue
             
-            try:
-                with Img.open(scanned_picture) as opened:
-                    scanned_pics.append({
-                        'path': scanned_picture,
-                        'a': imagehash.average_hash(opened),
-                        'd': imagehash.dhash(opened),
-                        'p': imagehash.phash(opened),
-                        'w': imagehash.whash(opened)
-                    })
+            return pics
 
-            except UnidentifiedImageError:
-                continue
+        def get_pics_from_db() -> list[ScanPicture]:
+            pics = Image.select(Image.file, Image.avg_hash, Image.p_hash, Image.d_hash, Image.w_hash)
+
+            if view_encrypted != ViewEncrypted.YES:
+                pics = pics.where(Image.encrypted == False)
+
+            pics = [
+                ScanPicture(
+                    path=str(Path(self.cfg.PICTURES_ROOT) / Path(p.file).relative_to('/')),
+                    avg_hash=imagehash.hex_to_hash(p.avg_hash),
+                    p_hash=imagehash.hex_to_hash(p.p_hash),
+                    d_hash=imagehash.hex_to_hash(p.d_hash),
+                    w_hash=imagehash.hex_to_hash(p.w_hash)
+                ) for p in pics
+            ]
+
+            return pics
+
+
+        scanned_pics = get_pics_from_dir(scan_request.scan_dir)
+        base_pics = get_pics_from_db() if scan_request.base_dir == '' else get_pics_from_dir(scan_request.base_dir)
+
+        # assume duplicates have the exact same hash (of at least one type)
+        avg_hashes = defaultdict(set)
+        p_hashes = defaultdict(set)
+        d_hashes = defaultdict(set)
+        w_hashes = defaultdict(set)
+
+        for scn_pic in scanned_pics:
+            avg_hashes[scn_pic.avg_hash].add(scn_pic.path)
+            p_hashes[scn_pic.p_hash].add(scn_pic.path)
+            d_hashes[scn_pic.d_hash].add(scn_pic.path)
+            w_hashes[scn_pic.w_hash].add(scn_pic.path)
         
-        gallery_pics = Image.select(Image.file, Image.avg_hash, Image.p_hash, Image.d_hash, Image.w_hash)
-        if view_encrypted != ViewEncrypted.YES:
-            gallery_pics = gallery_pics.where(Image.encrypted == False)
-        gallery_pics = list(gallery_pics)
+        for bas_pic in base_pics:
+            avg_hashes[bas_pic.avg_hash].add(bas_pic.path)
+            p_hashes[bas_pic.p_hash].add(bas_pic.path)
+            d_hashes[bas_pic.d_hash].add(bas_pic.path)
+            w_hashes[bas_pic.w_hash].add(bas_pic.path)
 
-        dupes = [
-            {'file': gal_pic.file, 'dupe': scn_pic['path']}
-            for scn_pic in scanned_pics
-            for gal_pic in gallery_pics
-            if (scn_pic['a'] - imagehash.hex_to_hash(gal_pic.avg_hash) == 0
-                or scn_pic['p'] - imagehash.hex_to_hash(gal_pic.p_hash) == 0
-                or scn_pic['d'] - imagehash.hex_to_hash(gal_pic.d_hash) == 0
-                or scn_pic['w'] - imagehash.hex_to_hash(gal_pic.w_hash) == 0)
-                and scn_pic['path'] != str(Path(self.cfg.PICTURES_ROOT) / Path(gal_pic.file).relative_to('/'))
-        ]
+        dupes = { tuple(sorted(v)) for hashes in [ avg_hashes, p_hashes, d_hashes, w_hashes ] for _, v in hashes.items() if len(v) > 1 }
+        dupes = list(dupes)
 
         output = Path(scan_request.out_dir) / 'Picgal_dupescan_result.json'
         output.parent.mkdir(parents=True, exist_ok=True)

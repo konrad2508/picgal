@@ -358,8 +358,8 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
         setCurrentPage(1);
     };
 
-    const startScanningCommand = (scanDir, outDir, viewEncrypted) => {
-        const scanRequest = { scanDir, outDir };
+    const startScanningCommand = (baseDir, scanDir, outDir, viewEncrypted) => {
+        const scanRequest = { baseDir, scanDir, outDir };
 
         requestService
             .scanForDuplicates(scanRequest, viewEncrypted)
