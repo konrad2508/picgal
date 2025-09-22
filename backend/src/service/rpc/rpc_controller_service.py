@@ -10,6 +10,7 @@ from pathlib import Path
 import imagehash
 import pillow_avif
 from PIL import Image as Img
+from PIL import UnidentifiedImageError
 from peewee import SqliteDatabase, DoesNotExist
 
 from config import Config
@@ -248,29 +249,33 @@ class RPCControllerService(IRPCControllerService):
                 except DoesNotExist:
                     picture_dirs = list(picture_file_pathobj.parts[1:-1])
 
-                    with Img.open(picture) as opened:
-                        # ignore apng disguised as png because it cannot be converted to webp thumbnail
-                        if picture_file_pathobj.suffix == '.png' and opened.is_animated:
-                            continue
+                    try:
+                        with Img.open(picture) as opened:
+                            # ignore apng disguised as png because it cannot be converted to webp thumbnail
+                            if picture_file_pathobj.suffix == '.png' and opened.is_animated:
+                                continue
 
-                        width, height = opened.size
+                            width, height = opened.size
 
-                        avg_hash = imagehash.average_hash(opened)
-                        p_hash = imagehash.phash(opened)
-                        d_hash = imagehash.dhash(opened)
-                        w_hash = imagehash.whash(opened)
+                            avg_hash = imagehash.average_hash(opened)
+                            p_hash = imagehash.phash(opened)
+                            d_hash = imagehash.dhash(opened)
+                            w_hash = imagehash.whash(opened)
 
-                        preview_file = picture_file_pathobj.with_suffix('.webp')
-                        sample_file = picture_file_pathobj.with_suffix('.webp')
-                        
-                        preview_loc = Path(self.cfg.PREVIEWS_DIR) / preview_file.relative_to('/')
-                        preview_loc.parent.mkdir(parents=True, exist_ok=True)
-                        
-                        sample_loc = Path(self.cfg.SAMPLES_DIR) / sample_file.relative_to('/')
-                        sample_loc.parent.mkdir(parents=True, exist_ok=True)
+                            preview_file = picture_file_pathobj.with_suffix('.webp')
+                            sample_file = picture_file_pathobj.with_suffix('.webp')
+                            
+                            preview_loc = Path(self.cfg.PREVIEWS_DIR) / preview_file.relative_to('/')
+                            preview_loc.parent.mkdir(parents=True, exist_ok=True)
+                            
+                            sample_loc = Path(self.cfg.SAMPLES_DIR) / sample_file.relative_to('/')
+                            sample_loc.parent.mkdir(parents=True, exist_ok=True)
 
-                        make_thumbnail(opened, preview_loc, self.cfg.PREVIEW_SIZE)
-                        make_thumbnail(opened, sample_loc, self.cfg.SAMPLE_SIZE)
+                            make_thumbnail(opened, preview_loc, self.cfg.PREVIEW_SIZE)
+                            make_thumbnail(opened, sample_loc, self.cfg.SAMPLE_SIZE)
+
+                    except UnidentifiedImageError:
+                        continue
 
                     pic = {
                         'file': picture_file,
@@ -442,15 +447,19 @@ class RPCControllerService(IRPCControllerService):
         for scanned_picture in scanned_pictures:
             if Path(scanned_picture).suffix not in self.VALID_EXTENSIONS:
                 continue
+            
+            try:
+                with Img.open(scanned_picture) as opened:
+                    scanned_pics.append({
+                        'path': scanned_picture,
+                        'a': imagehash.average_hash(opened),
+                        'd': imagehash.dhash(opened),
+                        'p': imagehash.phash(opened),
+                        'w': imagehash.whash(opened)
+                    })
 
-            with Img.open(scanned_picture) as opened:
-                scanned_pics.append({
-                    'path': scanned_picture,
-                    'a': imagehash.average_hash(opened),
-                    'd': imagehash.dhash(opened),
-                    'p': imagehash.phash(opened),
-                    'w': imagehash.whash(opened)
-                })
+            except UnidentifiedImageError:
+                continue
         
         gallery_pics = Image.select(Image.file, Image.avg_hash, Image.p_hash, Image.d_hash, Image.w_hash)
         if view_encrypted != ViewEncrypted.YES:
