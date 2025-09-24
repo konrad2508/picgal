@@ -6,6 +6,7 @@ import os
 import subprocess
 from collections import defaultdict
 from pathlib import Path
+from typing import Callable
 
 import imagehash
 import pillow_avif
@@ -451,21 +452,36 @@ class RPCControllerService(IRPCControllerService):
             for pic in pictures:
                 if Path(pic).suffix not in self.VALID_EXTENSIONS:
                     continue
-                
+
                 try:
-                    with Img.open(pic) as pic_content:
+                    with Img.open(pic):
                         pics.append(ScanPicture(
                             path=pic,
-                            avg_hash=imagehash.average_hash(pic_content),
-                            p_hash=imagehash.phash(pic_content),
-                            d_hash=imagehash.dhash(pic_content),
-                            w_hash=imagehash.whash(pic_content)
+                            avg_hash=None,
+                            p_hash=None,
+                            d_hash=None,
+                            w_hash=None
                         ))
 
                 except UnidentifiedImageError:
                     continue
             
             return pics
+
+        def calculate_hashes(pics: list[ScanPicture], do_ahash: bool = False, do_phash: bool = False, do_dhash: bool = False, do_whash: bool = False) -> None:
+            for pic in pics:
+                with Img.open(pic.path) as pic_content:
+                    if do_ahash and pic.avg_hash is None:
+                        pic.avg_hash = imagehash.average_hash(pic_content)
+
+                    if do_phash and pic.p_hash is None:
+                        pic.p_hash = imagehash.phash(pic_content)
+                    
+                    if do_dhash and pic.d_hash is None:
+                        pic.d_hash = imagehash.dhash(pic_content)
+                    
+                    if do_whash and pic.w_hash is None:
+                        pic.w_hash = imagehash.whash(pic_content)
 
         def get_pics_from_db() -> list[ScanPicture]:
             pics = Image.select(Image.file, Image.avg_hash, Image.p_hash, Image.d_hash, Image.w_hash)
@@ -485,38 +501,95 @@ class RPCControllerService(IRPCControllerService):
 
             return pics
 
+        def clusterize(pics: list[ScanPicture], is_same: Callable[[ScanPicture, ScanPicture], bool]) -> dict[imagehash.ImageHash, set[ScanPicture]]:
+            address = [ img.path for img in pics ]
+            clusters = defaultdict(set)
+
+            for i in range(len(pics)):
+                clusters[address[i]].add(pics[i])
+
+                for j in range(len(pics)):
+                    if i == j:
+                        continue
+
+                    cluster_i = clusters[address[i]]
+                    cluster_j = clusters[address[j]]
+
+                    if is_same(pics[i], pics[j]) and (pics[i] not in cluster_j or pics[j] not in cluster_i):
+                        if len(cluster_i) > len(cluster_j):
+                            move_from = j
+                            move_to = i
+                        
+                        elif len(cluster_i) < len(cluster_j):
+                            move_from = i
+                            move_to = j
+                        
+                        else:
+                            move_from = max(i, j)
+                            move_to = min(i, j)
+                        
+                        if pics[move_from] in clusters[address[move_from]]:
+                            clusters[address[move_from]].remove(pics[move_from])
+                        clusters[address[move_to]].add(pics[move_from])
+
+                        address[move_from] = address[move_to]
+
+            return clusters
+
+        def add_to_cluster(clusters: dict[imagehash.ImageHash, set[ScanPicture]], pic: ScanPicture, is_same: Callable[[ScanPicture, ScanPicture], bool]) -> None:
+            for hash, cluster in clusters.items():
+                for img in cluster:
+                    if is_same(img, pic):
+                        clusters[hash].add(pic)
+
+                        return
+
+        def decluster(clusters: dict[imagehash.ImageHash, set[ScanPicture]]) -> list[ScanPicture]:
+            pics = []
+
+            for _, cluster in clusters.items():
+                for pic in cluster:
+                    pics.append(pic)
+            
+            return pics
+
+        use_db = scan_request.base_dir == ''
 
         scanned_pics = get_pics_from_dir(scan_request.scan_dir)
-        base_pics = get_pics_from_db() if scan_request.base_dir == '' else get_pics_from_dir(scan_request.base_dir)
+        base_pics = get_pics_from_db() if use_db else get_pics_from_dir(scan_request.base_dir)
 
-        # assume duplicates have the exact same hash (of at least one type)
-        avg_hashes = defaultdict(set)
-        p_hashes = defaultdict(set)
-        d_hashes = defaultdict(set)
-        w_hashes = defaultdict(set)
+        # 1st pass - hamming distance for dhash <= 10
+        metric = lambda a, b: a.d_hash - b.d_hash <= 10
 
-        for scn_pic in scanned_pics:
-            avg_hashes[scn_pic.avg_hash].add(scn_pic.path)
-            p_hashes[scn_pic.p_hash].add(scn_pic.path)
-            d_hashes[scn_pic.d_hash].add(scn_pic.path)
-            w_hashes[scn_pic.w_hash].add(scn_pic.path)
-        
+        calculate_hashes(scanned_pics, do_dhash=True)
+        calculate_hashes(base_pics, do_dhash=True) if not use_db else ...
+
+        clusters = clusterize(scanned_pics, metric)
+
         for bas_pic in base_pics:
-            avg_hashes[bas_pic.avg_hash].add(bas_pic.path)  if bas_pic.avg_hash in avg_hashes else ...
-            p_hashes[bas_pic.p_hash].add(bas_pic.path)      if bas_pic.p_hash in p_hashes else ...
-            d_hashes[bas_pic.d_hash].add(bas_pic.path)      if bas_pic.d_hash in d_hashes else ...
-            w_hashes[bas_pic.w_hash].add(bas_pic.path)      if bas_pic.w_hash in w_hashes else ...
+            add_to_cluster(clusters, bas_pic, metric)
 
-        dupes = { tuple(sorted(v)) for hashes in [ avg_hashes, p_hashes, d_hashes, w_hashes ] for _, v in hashes.items() if len(v) > 1 }
-        dupes = list(dupes)
+        # 2nd pass - hamming distance for phash <= 4
+        metric = lambda a, b: a.p_hash - b.p_hash <= 4
 
-        output = Path(scan_request.out_dir) / 'Picgal_dupescan_result.json'
+        filtered_pics = decluster(clusters)
+        calculate_hashes(filtered_pics, do_phash=True)
+
+        clusters = clusterize(filtered_pics, metric)
+
+        # collect results
+        dupes = [ [ pic.path for pic in pics ] for _, pics in clusters.items() if len(pics) > 1 ]
+
+        time_now = datetime.datetime.now().astimezone()
+
+        output = Path(scan_request.out_dir) / f'Picgal_dupescan_result_{time_now.strftime("%d%m%Y-%H%M%S")}.json'
         output.parent.mkdir(parents=True, exist_ok=True)
 
         with output.open('w') as f:
-            json.dump(dupes, f, indent=4)
+            result = json.dumps(dupes, indent=4)
+            f.write(f'Base directory: {"Gallery" if use_db else scan_request.base_dir}\nScanned directory: {scan_request.scan_dir}\nScan ran on: {time_now.isoformat()}\n\n{result}')
 
-        return ScanResult(str(output))
+        return ScanResult(scan_request.out_dir)
 
     def authenticate(self) -> AuthenticateResult:
         return AuthenticateResult(self._is_gpg_password_correct())
