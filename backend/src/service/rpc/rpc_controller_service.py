@@ -10,7 +10,6 @@ from pathlib import Path
 from typing import Callable
 
 import imagehash
-import pillow_avif
 import playhouse.migrate as migrate
 from PIL import Image as Img
 from PIL import UnidentifiedImageError
