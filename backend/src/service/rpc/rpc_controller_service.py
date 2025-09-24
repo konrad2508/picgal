@@ -593,8 +593,8 @@ class RPCControllerService(IRPCControllerService):
         scanned_pics = get_pics_from_dir(scan_request.scan_dir)
         base_pics = get_pics_from_db() if use_db else get_pics_from_dir(scan_request.base_dir)
 
-        clusters = first_cluster_pass(scanned_pics, base_pics, lambda a, b: a.d_hash - b.d_hash <= 10, do_dhash=True)
-        # clusters = next_cluster_pass(clusters, lambda a, b: a.p_hash - b.p_hash <= 12, do_phash=True)
+        clusters = first_cluster_pass(scanned_pics, base_pics, lambda a, b: a.d_hash - b.d_hash <= 12, do_dhash=True)
+        clusters = next_cluster_pass(clusters, lambda a, b: a.p_hash - b.p_hash <= 12, do_phash=True)
 
         dupes = [ [ pic.path for pic in pics ] for _, pics in clusters.items() if len(pics) > 1 ]
 
