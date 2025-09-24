@@ -1,3 +1,4 @@
+import codecs
 import datetime
 import glob
 import io
@@ -605,6 +606,7 @@ class RPCControllerService(IRPCControllerService):
 
         with output.open('w') as f:
             result = json.dumps(dupes, indent=4)
+            result = codecs.decode(codecs.encode(result, 'utf-8', 'backslashreplace'), 'unicode-escape')
             f.write(f'Base directory: {"Gallery" if use_db else scan_request.base_dir}\nScanned directory: {scan_request.scan_dir}\nScan ran on: {time_now.isoformat()}\n\n{result}')
 
         return ScanResult(scan_request.out_dir)
