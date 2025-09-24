@@ -548,36 +548,54 @@ class RPCControllerService(IRPCControllerService):
             pics = []
 
             for _, cluster in clusters.items():
+                if len(cluster) < 2:
+                    continue
+
                 for pic in cluster:
                     pics.append(pic)
             
             return pics
+
+        def first_cluster_pass(
+                fst_input: list[ScanPicture],
+                snd_input: list[ScanPicture],
+                metric: Callable[[ScanPicture, ScanPicture], bool],
+                do_ahash: bool = False,
+                do_phash: bool = False,
+                do_dhash: bool = False,
+                do_whash: bool = False) -> dict[imagehash.ImageHash, set[ScanPicture]]:
+            calculate_hashes(fst_input, do_ahash=do_ahash, do_phash=do_phash, do_dhash=do_dhash, do_whash=do_whash)
+            calculate_hashes(snd_input, do_ahash=do_ahash, do_phash=do_phash, do_dhash=do_dhash, do_whash=do_whash)
+
+            clusters = clusterize(fst_input, metric)
+
+            for pic in snd_input:
+                add_to_cluster(clusters, pic, metric)
+            
+            return clusters
+        
+        def next_cluster_pass(
+                clusters: dict[imagehash.ImageHash, set[ScanPicture]],
+                metric: Callable[[ScanPicture, ScanPicture], bool],
+                do_ahash: bool = False,
+                do_phash: bool = False,
+                do_dhash: bool = False,
+                do_whash: bool = False) -> dict[imagehash.ImageHash, set[ScanPicture]]:
+            filtered_pics = decluster(clusters)
+            calculate_hashes(filtered_pics, do_ahash=do_ahash, do_phash=do_phash, do_dhash=do_dhash, do_whash=do_whash)
+
+            clusters = clusterize(filtered_pics, metric)
+
+            return clusters
 
         use_db = scan_request.base_dir == ''
 
         scanned_pics = get_pics_from_dir(scan_request.scan_dir)
         base_pics = get_pics_from_db() if use_db else get_pics_from_dir(scan_request.base_dir)
 
-        # 1st pass - hamming distance for dhash <= 10
-        metric = lambda a, b: a.d_hash - b.d_hash <= 10
+        clusters = first_cluster_pass(scanned_pics, base_pics, lambda a, b: a.d_hash - b.d_hash <= 10, do_dhash=True)
+        # clusters = next_cluster_pass(clusters, lambda a, b: a.p_hash - b.p_hash <= 12, do_phash=True)
 
-        calculate_hashes(scanned_pics, do_dhash=True)
-        calculate_hashes(base_pics, do_dhash=True) if not use_db else ...
-
-        clusters = clusterize(scanned_pics, metric)
-
-        for bas_pic in base_pics:
-            add_to_cluster(clusters, bas_pic, metric)
-
-        # 2nd pass - hamming distance for phash <= 4
-        metric = lambda a, b: a.p_hash - b.p_hash <= 4
-
-        filtered_pics = decluster(clusters)
-        calculate_hashes(filtered_pics, do_phash=True)
-
-        clusters = clusterize(filtered_pics, metric)
-
-        # collect results
         dupes = [ [ pic.path for pic in pics ] for _, pics in clusters.items() if len(pics) > 1 ]
 
         time_now = datetime.datetime.now().astimezone()
