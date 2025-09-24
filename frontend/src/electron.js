@@ -17,6 +17,12 @@ const backend = execFile(`${__dirname}/../${serverExeName}`, {cwd: `${__dirname}
     }
 });
 
+const dialog = electron.dialog;
+
+dialog.showErrorBox = (title, content) => {
+    console.log(`${title}\n${content}`);
+};
+
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
