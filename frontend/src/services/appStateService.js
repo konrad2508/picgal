@@ -232,14 +232,14 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                     setNotifications([...notifications, notificationService.noChangesNotification()]);
                 }
                 else {
-                    deletedCounter > 0 &&
-                        setNotifications([...notifications, notificationService.deletedNotification(deletedCounter)]);
-                    restoredPreviewsCounter > 0 &&
-                        setNotifications([...notifications, notificationService.restoredPreviewsNotification(restoredPreviewsCounter)]);
-                    restoredSamplesCounter > 0 &&
-                        setNotifications([...notifications, notificationService.restoredSamplesNotification(restoredSamplesCounter)]);
-                    addCounter > 0 &&
-                        setNotifications([...notifications, notificationService.addedNotification(addCounter)]);
+                    const newNotifications = [];
+
+                    deletedCounter > 0 && newNotifications.push(notificationService.deletedNotification(deletedCounter));
+                    restoredPreviewsCounter > 0 && newNotifications.push(notificationService.restoredPreviewsNotification(restoredPreviewsCounter));
+                    restoredSamplesCounter > 0 && newNotifications.push(notificationService.restoredSamplesNotification(restoredSamplesCounter));
+                    addCounter > 0 && newNotifications.push(notificationService.addedNotification(addCounter));
+
+                    setNotifications([...notifications, ...newNotifications]);
                 }
 
                 requestService
