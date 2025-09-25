@@ -528,34 +528,35 @@ class RPCControllerService(IRPCControllerService):
 
             return clusters
 
-        def add_to_cluster(clusters: dict[imagehash.ImageHash, set[ScanPicture]], pic: ScanPicture, is_same: Callable[[ScanPicture, ScanPicture], bool]) -> None:
-            for hash, cluster in clusters.items():
-                for img in cluster:
-                    if is_same(img, pic):
-                        clusters[hash].add(pic)
+        def filter_clusters(clusters: dict[imagehash.ImageHash, set[ScanPicture]], scanned_dir_path: str) -> None:
+            to_del = []
+            for h, cluster in clusters.items():
+                if len(cluster) < 2:
+                    to_del.append(h)
+                    continue
 
-                        return
+                delete = True
+                for pic in cluster:
+                    if pic.path.startswith(scanned_dir_path):
+                        delete = False
+                        break
 
-        def filter_clusters(clusters: dict[imagehash.ImageHash, set[ScanPicture]]) -> None:
-            to_del = [ h for h, cluster in clusters.items() if len(cluster) < 2 ]
+                if delete:
+                    to_del.append(h)
 
             for h in to_del:
                 del clusters[h]
 
         def first_cluster_pass(
-                fst_input: list[ScanPicture],
-                snd_input: list[ScanPicture],
+                input: list[ScanPicture],
+                scanned_dir_path: str,
                 metric: Callable[[ScanPicture, ScanPicture], bool],
                 **kwargs) -> dict[imagehash.ImageHash, set[ScanPicture]]:
-            calculate_hashes(fst_input, **kwargs)
-            calculate_hashes(snd_input, **kwargs)
+            calculate_hashes(input, **kwargs)
 
-            clusters = clusterize(fst_input, metric)
-
-            for pic in snd_input:
-                add_to_cluster(clusters, pic, metric)
+            clusters = clusterize(input, metric)
             
-            filter_clusters(clusters)
+            filter_clusters(clusters, scanned_dir_path)
 
             return clusters
 
@@ -569,13 +570,14 @@ class RPCControllerService(IRPCControllerService):
 
         def next_cluster_pass(
                 clusters: dict[imagehash.ImageHash, set[ScanPicture]],
+                scanned_dir_path: str,
                 metric: Callable[[ScanPicture, ScanPicture], bool],
                 **kwargs) -> dict[imagehash.ImageHash, set[ScanPicture]]:
             calculate_hashes([ i for img in clusters.values() for i in img ], **kwargs)
 
             clusters = verify_cluster(clusters, metric)
 
-            filter_clusters(clusters)
+            filter_clusters(clusters, scanned_dir_path)
 
             return clusters
 
@@ -583,9 +585,10 @@ class RPCControllerService(IRPCControllerService):
 
         scanned_pics = get_pics_from_dir(scan_request.scan_dir)
         base_pics = get_pics_from_db() if use_db else get_pics_from_dir(scan_request.base_dir)
+        pics = [ *scanned_pics, *base_pics ]
 
-        clusters = first_cluster_pass(scanned_pics, base_pics, lambda a, b: a.d_hash - b.d_hash <= 12, do_dhash=True)
-        clusters = next_cluster_pass(clusters, lambda a, b: a.p_hash - b.p_hash <= 10, do_phash=True)
+        clusters = first_cluster_pass(pics, scan_request.scan_dir, lambda a, b: a.d_hash - b.d_hash <= 12, do_dhash=True)
+        clusters = next_cluster_pass(clusters, scan_request.scan_dir, lambda a, b: a.p_hash - b.p_hash <= 10, do_phash=True)
 
         dupes = [ [ pic.path for pic in pics ] for _, pics in clusters.items() ]
 
