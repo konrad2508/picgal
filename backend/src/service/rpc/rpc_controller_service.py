@@ -5,7 +5,7 @@ import io
 import json
 import os
 import subprocess
-from collections import defaultdict
+from collections import deque
 from pathlib import Path
 from typing import Callable
 
@@ -502,37 +502,29 @@ class RPCControllerService(IRPCControllerService):
             return pics
 
         def clusterize(pics: list[ScanPicture], is_same: Callable[[ScanPicture, ScanPicture], bool]) -> dict[imagehash.ImageHash, set[ScanPicture]]:
-            address = [ img.path for img in pics ]
-            clusters = defaultdict(set)
+            clusters = dict()
 
+            visited = [ False for _ in pics ]
             for i in range(len(pics)):
-                clusters[address[i]].add(pics[i])
+                if visited[i]:
+                    continue
 
-                for j in range(len(pics)):
-                    if i == j:
-                        continue
+                cluster = set()
 
-                    cluster_i = clusters[address[i]]
-                    cluster_j = clusters[address[j]]
+                queue = deque()
+                queue.append(i)
+                visited[i] = True
 
-                    if is_same(pics[i], pics[j]) and (pics[i] not in cluster_j or pics[j] not in cluster_i):
-                        if len(cluster_i) > len(cluster_j):
-                            move_from = j
-                            move_to = i
-                        
-                        elif len(cluster_i) < len(cluster_j):
-                            move_from = i
-                            move_to = j
-                        
-                        else:
-                            move_from = max(i, j)
-                            move_to = min(i, j)
-                        
-                        if pics[move_from] in clusters[address[move_from]]:
-                            clusters[address[move_from]].remove(pics[move_from])
-                        clusters[address[move_to]].add(pics[move_from])
+                while queue:
+                    v = queue.popleft()
+                    cluster.add(pics[v])
 
-                        address[move_from] = address[move_to]
+                    for j in range(len(pics)):
+                        if not visited[j] and is_same(pics[j], pics[v]):
+                            visited[j] = True
+                            queue.append(j)
+
+                clusters[pics[i].path] = cluster
 
             return clusters
 
