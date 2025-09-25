@@ -70,6 +70,12 @@ class RPCControllerService(IRPCControllerService):
         def get_sample_path(file: str) -> Path:
             return Path(self.cfg.SAMPLES_DIR) / Path(file).relative_to('/')
 
+        def get_preview_filename(original_file: Path) -> Path:
+            return original_file.with_suffix(original_file.suffix + '.webp')
+        
+        def get_sample_filename(original_file: Path) -> Path:
+            return original_file.with_suffix(original_file.suffix + '.webp')
+
         def is_animated(image: Img.Image) -> bool:
             try:
                 return image.is_animated
@@ -238,6 +244,13 @@ class RPCControllerService(IRPCControllerService):
 
                     if not get_preview_path(existing_picture.preview).is_file():
                         try:
+                            preview_file = get_preview_filename(picture_file_pathobj)
+
+                            if Path(existing_picture.preview).name != preview_file.name:
+                                existing_picture.preview = preview_file
+
+                                Image.update(preview=preview_file).where(Image.image_id == existing_picture.image_id).execute()
+
                             restore_thumbnail(existing_picture, 'preview')
                             restored_previews_counter += 1
                         except:
@@ -245,6 +258,13 @@ class RPCControllerService(IRPCControllerService):
 
                     if not get_sample_path(existing_picture.sample).is_file():
                         try:
+                            sample_file = get_sample_filename(picture_file_pathobj)
+
+                            if Path(existing_picture.sample).name != sample_file.name:
+                                existing_picture.sample = sample_file
+
+                                Image.update(sample=sample_file).where(Image.image_id == existing_picture.image_id).execute()
+
                             restore_thumbnail(existing_picture, 'sample')
                             restored_samples_counter += 1
                         except:
@@ -255,10 +275,6 @@ class RPCControllerService(IRPCControllerService):
 
                     try:
                         with Img.open(picture) as opened:
-                            # ignore apng disguised as png because it cannot be converted to webp thumbnail
-                            if picture_file_pathobj.suffix == '.png' and opened.is_animated:
-                                continue
-
                             width, height = opened.size
 
                             avg_hash = imagehash.average_hash(opened)
@@ -266,8 +282,8 @@ class RPCControllerService(IRPCControllerService):
                             d_hash = imagehash.dhash(opened)
                             w_hash = imagehash.whash(opened)
 
-                            preview_file = picture_file_pathobj.with_suffix('.webp')
-                            sample_file = picture_file_pathobj.with_suffix('.webp')
+                            preview_file = get_preview_filename(picture_file_pathobj)
+                            sample_file = get_sample_filename(picture_file_pathobj)
                             
                             preview_loc = Path(self.cfg.PREVIEWS_DIR) / preview_file.relative_to('/')
                             preview_loc.parent.mkdir(parents=True, exist_ok=True)
