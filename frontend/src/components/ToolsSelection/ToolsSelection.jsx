@@ -7,7 +7,7 @@ const ToolsSelection = () => {
     const { usedContextValue } = useToolsSelectionState();
 
     return (
-        <div className={styles.container}>
+        <div className={styles.box}>
             <h1>Tools</h1>
             <div className={styles.buttonContainer}>
                 <button onClick={usedContextValue.onSyncDatabase} className={styles.button}>Sync Database</button>

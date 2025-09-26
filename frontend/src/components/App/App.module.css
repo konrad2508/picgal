@@ -1,9 +1,6 @@
-.main {
-    margin-left: 5px;
-}
-
 .app {
     margin-top: 10px;
     display: flex;
     flex-direction: row;
+    min-height: 92vh;
 }

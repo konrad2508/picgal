@@ -17,9 +17,15 @@ const Menu = () => {
 
         return (
             <>
-                <TagLists img={img}/>
-                <Metadata img={img}/>
-                <SaveImage id={img.id}/>
+                <div className={styles.boxIn}>
+                    <TagLists img={img}/>
+                </div>
+                <div className={styles.boxIn}>
+                    <Metadata img={img}/>
+                </div>
+                <div className={styles.boxIn}>
+                    <SaveImage id={img.id}/>
+                </div>
             </>
         );
     };
@@ -27,8 +33,12 @@ const Menu = () => {
     const renderBatchTagEditorTagList = () => {
         return (
             <>
-                <MultiselectCount/>
-                <TagLists/>
+                <div className={styles.boxIn}>
+                    <MultiselectCount/>
+                </div>
+                <div className={styles.boxIn}>
+                    <TagLists/>
+                </div>
             </>
         );
     };
@@ -36,8 +46,12 @@ const Menu = () => {
     const renderEncryptButton = () => {
         return (
             <>
-                <MultiselectCount/>
-                <Encrypt/>
+                <div className={styles.boxIn}>
+                    <MultiselectCount/>
+                </div>
+                <div className={styles.boxIn}>
+                    <Encrypt/>
+                </div>
             </>
         );
     };
@@ -59,9 +73,13 @@ const Menu = () => {
     };
 
     return (
-        <div className={styles.container}>
-            <Navigation/>
-            { renderAdditionalComponents() }
+        <div className={styles.boxOut}>
+            <div className={styles.container}>
+                <div className={styles.boxIn}>
+                    <Navigation/>
+                </div>
+                { renderAdditionalComponents() }
+            </div>
         </div>
     );
 };

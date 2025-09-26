@@ -32,8 +32,8 @@ const Image = ({ img }) => {
     };
 
     return (
-        <div className={styles.container}>
-            <div>
+        <div className={styles.box}>
+            <div className={styles.container}>
                 <img
                     className={styles.img}
                     src={networkService.getURLToBackend(url)}

@@ -47,7 +47,7 @@ const Settings = () => {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={styles.box}>
             <h3>Settings</h3>
             <div className={styles.options}>
                 {Object.keys(usedContextValue.config).map((k, i) => renderOption(k, i))}

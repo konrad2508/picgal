@@ -1,5 +1,7 @@
-.container {
-
+.box {
+    border-radius: 10px;
+    /* border: 2px solid; */
+    box-shadow: 0 0 10px #888888;
 }
 
 .buttonContainer {

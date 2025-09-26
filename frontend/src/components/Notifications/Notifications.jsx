@@ -6,13 +6,13 @@ const Notifications = () => {
     const { usedContextValue } = useNotificationsState();
 
     return (
-        <div className={styles.notificationsContainer}>
+        <>
             { usedContextValue.notifications.map((notif, i) => (
                 <div key={i} className={styles.notification} style={{backgroundColor: notif.colour}} onClick={() => usedContextValue.onClickNotification(notif.id)}>
                     {notif.text}
                 </div>
             ))}
-        </div>
+        </>
     );
 };
 

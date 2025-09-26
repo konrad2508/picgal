@@ -1,4 +1,21 @@
+.box, .boxPreviews {
+    border-radius: 10px;
+    /* border: 2px solid; */
+    box-shadow: 0 0 10px #888888;
+}
+
+.boxPreviews {
+    display: flex;
+    flex-direction: column;
+    flex: 1 0 auto;
+}
+
 .previews {
+    margin-top: 5px;
     display: grid;
     grid-template-columns: repeat(auto-fill, 160px);
+}
+
+.pager {
+    margin-top: auto;
 }

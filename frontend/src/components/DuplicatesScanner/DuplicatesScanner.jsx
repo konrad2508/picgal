@@ -13,7 +13,7 @@ const DuplicatesScanner = () => {
     };
 
     return (
-        <div className={styles.container}>
+        <div className={styles.box}>
             <h3>Duplicates Scanner</h3>
             <div className={styles.params}>
                 <div className={styles.paramContainer}>

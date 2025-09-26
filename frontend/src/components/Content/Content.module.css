@@ -1,5 +1,15 @@
-.container {
+.box {
+    flex: 1 0 auto;
     min-width: 500px;
     min-height: 500px;
-    flex: 1 0 auto;
+    border-radius: 10px;
+    /* border: 2px solid; */
+    box-shadow: 0 0 10px #888888;
+}
+
+.container {
+    margin-top: 5px;
+    height: calc(100% - 5px);
+    display: flex;
+    flex-direction: column;
 }

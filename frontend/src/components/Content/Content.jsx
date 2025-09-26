@@ -25,7 +25,7 @@ const Content = () => {
     else if (usedContextValue.appState === AppState.BATCH_TAG_EDITOR) {
         content = (
             <>
-                <Multiselect title='Batch Tag Editor'/>
+                <Multiselect/>
             </>
         );
     }
@@ -60,15 +60,17 @@ const Content = () => {
     else if (usedContextValue.appState === AppState.ENCRYPTOR) {
         content = (
             <>
-                <Multiselect title='Encryptor'/>
+                <Multiselect/>
             </>
         );
     }
 
     return (
-        <div className={styles.container}>
-            <Notifications/>
-            { content }
+        <div className={styles.box}>
+            <div className={styles.container}>
+                <Notifications/>
+                { content }
+            </div>
         </div>
     );
 };

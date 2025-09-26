@@ -11,12 +11,18 @@ const Browser = () => {
 
     return (
         <>
-            <UsedQuery/>
-            <Count/>
-            <div className={styles.previews}>
-                {usedContextValue.imagesToShow.map(img => <ImagePreview key={img.id} img={img}/>)}
+            <div className={styles.box}>
+                <UsedQuery/>
+                <Count/>
             </div>
-            <Pager/>
+            <div className={styles.boxPreviews}>
+                <div className={styles.previews}>
+                    {usedContextValue.imagesToShow.map(img => <ImagePreview key={img.id} img={img}/>)}
+                </div>
+                <div className={styles.pager}>
+                    <Pager/>
+                </div>
+            </div>
         </>
     );
 };
