@@ -11,9 +11,11 @@ const Browser = () => {
 
     return (
         <>
-            <div className={styles.box}>
-                <UsedQuery/>
-                <Count/>
+            <div className={styles.center}>
+                <div className={styles.box}>
+                    <UsedQuery/>
+                    <Count/>
+                </div>
             </div>
             <div className={styles.boxPreviews}>
                 <div className={styles.previews}>

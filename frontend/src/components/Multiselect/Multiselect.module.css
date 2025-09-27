@@ -1,6 +1,11 @@
+.center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .box, .boxPreviews {
     border-radius: 10px;
-    /* border: 2px solid; */
     box-shadow: 0 0 10px #888888;
 }
 
@@ -13,7 +18,9 @@
 .previews {
     margin-top: 5px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, 160px);
+    grid-template-columns: repeat(auto-fit, 150px);
+    justify-content: center;
+    gap: 10px;
 }
 
 .pager {

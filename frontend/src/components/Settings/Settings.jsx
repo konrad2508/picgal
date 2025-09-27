@@ -47,12 +47,18 @@ const Settings = () => {
     };
 
     return (
-        <div className={styles.box}>
-            <h3>Settings</h3>
-            <div className={styles.options}>
-                {Object.keys(usedContextValue.config).map((k, i) => renderOption(k, i))}
+        <div className={styles.center}>
+            <div className={styles.box}>
+                <div className={styles.center}>
+                    <h2>Settings</h2>
+                </div>
+                <div className={styles.options}>
+                    {Object.keys(usedContextValue.config).map((k, i) => renderOption(k, i))}
+                </div>
+                <div className={styles.center}>
+                    <button onClick={onPressSave} className={styles.button}>Save</button>
+                </div>
             </div>
-            <button onClick={onPressSave} className={styles.button}>Save</button>
         </div>
     );
 };

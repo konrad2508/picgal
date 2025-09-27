@@ -1,18 +1,23 @@
 .boxOut {
     border-radius: 10px;
-    /* border: 2px solid; */
     box-shadow: 0 0 10px #888888;
     margin-right: 10px;
 }
 
 .boxIn {
     border-radius: 10px;
-    /* border: 2px solid; */
     box-shadow: 0 0 10px #888888;
     margin-right: 10px;
     width: inherit;
 }
 
+.notifications {
+    margin-top: auto;
+}
+
 .container {
     width: 230px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }

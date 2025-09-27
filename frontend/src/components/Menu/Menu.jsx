@@ -1,7 +1,9 @@
 import styles from './Menu.module.css';
 import React from 'react';
 import Navigation from '../Navigation/Navigation';
+import Notifications from '../Notifications/Notifications';
 import TagLists from '../TagLists/TagLists';
+import Title from '../Title/Title';
 import Metadata from '../Metadata/Metadata';
 import MultiselectCount from '../MultiselectCount/MultiselectCount';
 import Encrypt from '../Encrypt/Encrypt';
@@ -76,9 +78,15 @@ const Menu = () => {
         <div className={styles.boxOut}>
             <div className={styles.container}>
                 <div className={styles.boxIn}>
+                    <Title/>
+                </div>
+                <div className={styles.boxIn}>
                     <Navigation/>
                 </div>
                 { renderAdditionalComponents() }
+                <div className={styles.notifications}>
+                    <Notifications/>
+                </div>
             </div>
         </div>
     );

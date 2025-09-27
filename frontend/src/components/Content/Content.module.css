@@ -1,15 +1,16 @@
-.box {
+.container {
     flex: 1 0 auto;
     min-width: 500px;
     min-height: 500px;
-    border-radius: 10px;
-    /* border: 2px solid; */
-    box-shadow: 0 0 10px #888888;
-}
-
-.container {
-    margin-top: 5px;
-    height: calc(100% - 5px);
+    height: inherit;
     display: flex;
     flex-direction: column;
 }
+
+.content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+

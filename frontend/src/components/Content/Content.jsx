@@ -6,7 +6,6 @@ import DuplicatesScanner from '../DuplicatesScanner/DuplicatesScanner';
 import Settings from '../Settings/Settings';
 import ToolsSelection from '../ToolsSelection/ToolsSelection';
 import Multiselect from '../Multiselect/Multiselect';
-import Notifications from '../Notifications/Notifications';
 import AppState from '../../enums/AppState';
 import useContentState from './useContentState';
 
@@ -66,9 +65,8 @@ const Content = () => {
     }
 
     return (
-        <div className={styles.box}>
-            <div className={styles.container}>
-                <Notifications/>
+        <div className={styles.container}>
+            <div className={styles.content}>
                 { content }
             </div>
         </div>
