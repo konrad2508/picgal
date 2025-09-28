@@ -10,14 +10,14 @@ const Browser = () => {
     const { usedContextValue } = useBrowserState();
 
     return (
-        <>
-            <div className={styles.center}>
-                <div className={styles.box}>
-                    <UsedQuery/>
-                    <Count/>
+        <div className={styles.box}>
+            <div className={styles.container}>
+                <div className={styles.center}>
+                    <div>
+                        <UsedQuery/>
+                        <Count/>
+                    </div>
                 </div>
-            </div>
-            <div className={styles.boxPreviews}>
                 <div className={styles.previews}>
                     {usedContextValue.imagesToShow.map(img => <ImagePreview key={img.id} img={img}/>)}
                 </div>
@@ -25,7 +25,7 @@ const Browser = () => {
                     <Pager/>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

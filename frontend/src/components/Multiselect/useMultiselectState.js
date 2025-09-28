@@ -2,9 +2,10 @@ import React from 'react';
 import AppContext from '../../context/AppContext';
 
 const useMultiselectState = () => {
-    const { imagesToShow, multiselectSelected } = React.useContext(AppContext);
+    const { appState, imagesToShow, multiselectSelected } = React.useContext(AppContext);
 
     const usedContextValue = {
+        appState,
         imagesToShow,
         multiselectSelected
     };

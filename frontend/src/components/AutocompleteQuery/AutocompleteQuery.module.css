@@ -27,6 +27,8 @@
 }
 
 .suggestion {
+    text-overflow: ellipsis;
+    overflow: hidden;
     margin: 2px;
 }
 

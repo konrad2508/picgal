@@ -12,8 +12,12 @@ const App = () => {
         <>
             <AppContext.Provider value={contextValue}>
                 <div className={styles.app}>
-                    <Menu/>
-                    <Content/>
+                    <div className={styles.menuContainer}>
+                        <Menu/>
+                    </div>
+                    <div className={styles.contentContainer}>
+                        <Content/>
+                    </div>
                 </div>
             </AppContext.Provider>
         </>

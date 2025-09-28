@@ -1,16 +1,6 @@
-.container {
-    flex: 1 0 auto;
-    min-width: 500px;
-    min-height: 500px;
-    height: inherit;
-    display: flex;
-    flex-direction: column;
-}
-
 .content {
-    flex: 1 1 auto;
+    flex: 1 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
-

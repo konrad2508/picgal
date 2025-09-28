@@ -5,7 +5,6 @@ import Notifications from '../Notifications/Notifications';
 import TagLists from '../TagLists/TagLists';
 import Title from '../Title/Title';
 import Metadata from '../Metadata/Metadata';
-import MultiselectCount from '../MultiselectCount/MultiselectCount';
 import Encrypt from '../Encrypt/Encrypt';
 import SaveImage from '../SaveImage/SaveImage';
 import AppState from '../../enums/AppState';
@@ -36,9 +35,6 @@ const Menu = () => {
         return (
             <>
                 <div className={styles.boxIn}>
-                    <MultiselectCount/>
-                </div>
-                <div className={styles.boxIn}>
                     <TagLists/>
                 </div>
             </>
@@ -48,9 +44,6 @@ const Menu = () => {
     const renderEncryptButton = () => {
         return (
             <>
-                <div className={styles.boxIn}>
-                    <MultiselectCount/>
-                </div>
                 <div className={styles.boxIn}>
                     <Encrypt/>
                 </div>
@@ -76,17 +69,15 @@ const Menu = () => {
 
     return (
         <div className={styles.boxOut}>
-            <div className={styles.container}>
-                <div className={styles.boxIn}>
-                    <Title/>
-                </div>
-                <div className={styles.boxIn}>
-                    <Navigation/>
-                </div>
-                { renderAdditionalComponents() }
-                <div className={styles.notifications}>
-                    <Notifications/>
-                </div>
+            <div className={styles.boxIn}>
+                <Title/>
+            </div>
+            <div className={styles.boxIn}>
+                <Navigation/>
+            </div>
+            { renderAdditionalComponents() }
+            <div className={styles.notifications}>
+                <Notifications/>
             </div>
         </div>
     );

@@ -65,11 +65,11 @@ const Content = () => {
     }
 
     return (
-        <div className={styles.container}>
+        <>
             <div className={styles.content}>
                 { content }
             </div>
-        </div>
+        </>
     );
 };
 

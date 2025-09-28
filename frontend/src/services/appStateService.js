@@ -131,14 +131,7 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                         setImagesToShow(images);
                         setAppState(AppState.BROWSING);
                     });
-                
-                requestService
-                    .getImagesStats(urlFormattedQuery, viewEncrypted)
-                    .then(stats => {
-                        setImagesCounter(stats.imagesCount);
-                        setMaxPage(Math.max(1, stats.pagesCount));
-                    });
-                
+
                 setUsedQuery(query);
                 setQuery('');
                 setCurrentPage(newPageNum);
@@ -269,7 +262,10 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
 
         requestService
             .getImagesStats(urlFormattedQuery, viewEncrypted)
-            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+            .then(stats => {
+                setImagesCounter(stats.imagesCount);
+                setMaxPage(Math.max(1, stats.pagesCount));
+            });
 
         requestService
             .getImages(urlFormattedQuery, 1, viewEncrypted)
@@ -299,7 +295,10 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
 
         requestService
             .getImagesStats(urlFormattedQuery, viewEncrypted)
-            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+            .then(stats => {
+                setImagesCounter(stats.imagesCount);
+                setMaxPage(Math.max(1, stats.pagesCount));
+            });
 
         requestService
             .getImages(urlFormattedQuery, 1, viewEncrypted)
@@ -433,7 +432,10 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
 
         requestService
             .getImagesStats(urlFormattedQuery, viewEncrypted)
-            .then(stats => setMaxPage(Math.max(1, stats.pagesCount)));
+            .then(stats => {
+                setImagesCounter(stats.imagesCount);
+                setMaxPage(Math.max(1, stats.pagesCount));
+            });
 
         requestService
             .getImages(urlFormattedQuery, 1, viewEncrypted)

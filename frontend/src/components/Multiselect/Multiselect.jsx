@@ -4,20 +4,22 @@ import Count from '../Count/Count';
 import UsedQuery from '../UsedQuery/UsedQuery';
 import ImagePreview from '../ImagePreview/ImagePreview';
 import Pager from '../Pager/Pager';
+import MultiselectCount from '../MultiselectCount/MultiselectCount';
 import useMultiselectState from './useMultiselectState';
 
 const Multiselect = () => {
     const { usedContextValue } = useMultiselectState();
 
     return (
-        <>
-            <div className={styles.center}>
-                <div className={styles.box}>
-                    <UsedQuery/>
-                    <Count/>
+        <div className={styles.box}>
+            <div className={styles.container}>
+                <div className={styles.center}>
+                    <div>
+                        <UsedQuery/>
+                        <Count/>
+                        <MultiselectCount/>
+                    </div>
                 </div>
-            </div>
-            <div className={styles.boxPreviews}>
                 <div className={styles.previews}>
                     {
                         usedContextValue.imagesToShow.map(img => 
@@ -34,7 +36,7 @@ const Multiselect = () => {
                     <Pager/>
                 </div>
             </div>
-        </>
+        </div>
     );
 };
 

@@ -4,15 +4,17 @@
     justify-content: center;
 }
 
-.box, .boxPreviews {
+.box {
     border-radius: 10px;
     box-shadow: 0 0 10px #888888;
+    flex: 1 0 auto;
 }
 
-.boxPreviews {
+.container {
     display: flex;
     flex-direction: column;
-    flex: 1 0 auto;
+    height: calc(100% - 10px);
+    margin: 5px 5px 5px 5px;
 }
 
 .previews {

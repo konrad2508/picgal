@@ -114,12 +114,56 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             };
         };
 
+        // const tagNameFormatter = (tagName) => tagName.includes(':') ? tagName.split(':')[1] : tagName;
+        const tagNameFormatter = (tagName) => tagName;
+
+        const tagCountFormatter = (tagCount) => {
+            const abbrevs = 'kMBTq';
+
+            if (isNaN(tagCount)) {
+                return '';
+            }
+
+            if (tagCount < 1e3) {
+                return tagCount;
+            }
+            
+            let i = 0;
+            let low = 1e3;
+            let high = 1e6;
+            while (i < abbrevs.length) {
+                if (!(low <= tagCount && tagCount < high)) {
+                    low *= 1e3;
+                    high *= 1e3;
+                    i++;
+
+                    continue;
+                }
+
+                // [1.0x, 10x)
+                if (tagCount < low * 1e1) {
+                    const hundreds = Math.floor(tagCount / (low / 1e1));
+                    
+                    return `${hundreds === 10 ? '1.0' : hundreds / 10}${abbrevs[i]}`;
+                }
+                
+                // [10x, 1000x)
+                else {
+                    const thousands = Math.floor(tagCount / low);
+
+                    return `${thousands}${abbrevs[i]}`;
+                }
+            }
+
+            return `999${abbrevs[abbrevs.length - 1]}+`;
+        };
+
         return (
             <div className={styles.fixedContainer}>
                 { getSuggestions().map((e, i) => (
                     <div key={i} onClick={() => handleSuggestionClick(e)} className={styles.suggestionBox}>
-                        <div style={suggestionTextColor(e)} className={styles.suggestion}>{e.name}</div>
-                        <div style={suggestionTextColor(e)} className={styles.counter}>{e.count}</div>
+                        <div style={suggestionTextColor(e)} className={styles.suggestion}>{tagNameFormatter(e.name)}</div>
+                        <div style={suggestionTextColor(e)} className={styles.counter}>{tagCountFormatter(e.count)}</div>
                     </div>
                 ))}
             </div>
