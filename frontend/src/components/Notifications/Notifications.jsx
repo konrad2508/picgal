@@ -7,7 +7,7 @@ const Notifications = () => {
 
     return (
         <>
-            { usedContextValue.notifications.map((_, i, a) => (
+            { usedContextValue.notifications.slice(-3).map((_, i, a) => (
                 <div
                     key={i}
                     className={styles.notification}

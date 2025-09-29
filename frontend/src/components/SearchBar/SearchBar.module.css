@@ -1,24 +1,17 @@
 .form {
     display: flex;
     flex-direction: row;
-}
-
-.backContainer {
-    width: 30px;
+    margin-top: 5px;
 }
 
 .back {
-    width: 100%;
+    width: 28px;
 }
 
 .inputContainer {
-    width: 170px;
-}
-
-.goContainer {
-    width: 30px;
+    width: 174px;
 }
 
 .go {
-    width: 100%;
+    width: 28px;
 }

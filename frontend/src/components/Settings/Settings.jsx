@@ -52,9 +52,11 @@ const Settings = () => {
                 <div className={styles.center}>
                     <h2>Settings</h2>
                 </div>
+                <hr/>
                 <div className={styles.options}>
                     {Object.keys(usedContextValue.config).map((k, i) => renderOption(k, i))}
                 </div>
+                <hr/>
                 <div className={styles.center}>
                     <button onClick={onPressSave} className={styles.button}>Save</button>
                 </div>

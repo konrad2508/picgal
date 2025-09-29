@@ -9,12 +9,13 @@ const SearchBar = () => {
     const { usedContextValue } = useSearchBarState();
 
     return (
-        <form onSubmit={
-            !AppState.isMultiselect(usedContextValue.appState)
-                ? usedContextValue.sendQuery
-                : usedContextValue.sendQueryInMultiselect}>
-            <div className={styles.form}>
-                <div className={styles.backContainer}>
+        <>
+            <h3>Navigation</h3>
+            <form onSubmit={
+                !AppState.isMultiselect(usedContextValue.appState)
+                    ? usedContextValue.sendQuery
+                    : usedContextValue.sendQueryInMultiselect}>
+                <div className={styles.form}>
                     <button
                         type='button'
                         className={styles.back}
@@ -29,21 +30,19 @@ const SearchBar = () => {
                             ? <FaArrowLeft className='fontAwesome'/>
                             : <FaTimes className='fontAwesome'/> }
                     </button>
-                </div>
-                <div className={styles.inputContainer}>
-                    <AutocompleteQuery
-                        query={usedContextValue.query}
-                        handleQueryChange={usedContextValue.handleQueryChange}
-                        existingTags={usedContextValue.existingTags}
-                    />
-                </div>
-                <div className={styles.goContainer}>
+                    <div className={styles.inputContainer}>
+                        <AutocompleteQuery
+                            query={usedContextValue.query}
+                            handleQueryChange={usedContextValue.handleQueryChange}
+                            existingTags={usedContextValue.existingTags}
+                        />
+                    </div>
                     <button type="submit" className={styles.go}>
                         <FaSearch className='fontAwesome'/>
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </>
     );
 };
 

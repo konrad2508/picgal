@@ -8,7 +8,10 @@ const serverExeName = 'picgal-server';
 
 contextMenu({
     showInspectElement: false,
-    shouldShowMenu: (event, parameters) => parameters.titleText === ' '
+    showSelectAll: false,
+    shouldShowMenu: (event, parameters) => parameters.mediaType === 'image' && parameters.titleText === ' ',
+    showSaveImageAs: true,
+    showSaveVideoAs: true
 });
 
 const backend = execFile(`${__dirname}/../${serverExeName}`, {cwd: `${__dirname}/..`}, (error) => {
@@ -40,7 +43,6 @@ const createWindow = () => {
     mainWindow.loadURL(startUrl);
 
     mainWindow.removeMenu();
-    mainWindow.setResizable(false);
 
     mainWindow.on('closed', () => mainWindow = null);
 };

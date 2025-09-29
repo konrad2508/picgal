@@ -10,6 +10,7 @@
 .suggestionsOuterContainer {
     position: relative;
     width: inherit;
+    z-index: 10;
 }
 
 .suggestionsInnerContainer {

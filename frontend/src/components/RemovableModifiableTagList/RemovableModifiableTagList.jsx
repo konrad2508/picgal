@@ -26,9 +26,7 @@ const RemovableModifiableTagList = ({ tagType }) => {
                     </button>
                 </div>
             </div>
-            <ul>
-                {usedContextValue.tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
-            </ul>
+            {usedContextValue.tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
         </>
     );
 };

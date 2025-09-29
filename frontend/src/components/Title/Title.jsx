@@ -13,9 +13,9 @@ const Title = () => {
     };
 
     return (
-        <div className={styles.box}>
+        <>
             <h1 className={styles.title} onClick={onClick}>Picgal</h1>
-        </div>
+        </>
     );
 };
 

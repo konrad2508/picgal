@@ -18,6 +18,7 @@ const DuplicatesScanner = () => {
                 <div className={styles.center}>
                     <h2>Duplicates Scanner</h2>
                 </div>
+                <hr/>
                 <div className={styles.params}>
                     <div className={styles.paramContainer}>
                         <h4 className={styles.paramTitle}>Original directory:</h4>
@@ -28,6 +29,7 @@ const DuplicatesScanner = () => {
                         <input id='scanDir' type="text" className={styles.paramValue}/>
                     </div>
                 </div>
+                <hr/>
                 <div className={styles.center}>
                     <button onClick={onPressScan} className={styles.button}>Scan</button>
                 </div>

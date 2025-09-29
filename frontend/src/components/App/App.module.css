@@ -2,15 +2,19 @@ html {
     background-color: #EEEEEE;
 }
 
+hr {
+    opacity: 0.75;
+}
+
 .app {
     margin-top: 10px;
     display: flex;
     flex-direction: row;
-    height: 98vh;
+    height: 97.8vh;
 }
 
 .app :global(.image-imgMaxHeight) {
-    max-height: 98vh;
+    max-height: 97.8vh;
 }
 
 .app * {
@@ -19,8 +23,7 @@ html {
 }
 
 .menuContainer {
-    width: 230px;
-    min-width: 230px;
+    width: 254px;
     margin-right: 10px;
     height: 100%;
     display: flex;
@@ -33,5 +36,5 @@ html {
     flex-direction: column;
     min-width: 500px;
     min-height: 500px;
-    max-width: calc(100% - 240px);
+    max-width: calc(100% - 264px);
 }

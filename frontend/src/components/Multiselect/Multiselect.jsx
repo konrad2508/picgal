@@ -13,13 +13,10 @@ const Multiselect = () => {
     return (
         <div className={styles.box}>
             <div className={styles.container}>
-                <div className={styles.center}>
-                    <div>
-                        <UsedQuery/>
-                        <Count/>
-                        <MultiselectCount/>
-                    </div>
-                </div>
+                <UsedQuery/>
+                <Count/>
+                <MultiselectCount/>
+                <hr className={styles.breakline}/>
                 <div className={styles.previews}>
                     {
                         usedContextValue.imagesToShow.map(img => 

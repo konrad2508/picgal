@@ -12,12 +12,9 @@ const Browser = () => {
     return (
         <div className={styles.box}>
             <div className={styles.container}>
-                <div className={styles.center}>
-                    <div>
-                        <UsedQuery/>
-                        <Count/>
-                    </div>
-                </div>
+                <UsedQuery/>
+                <Count/>
+                <hr className={styles.breakline}/>
                 <div className={styles.previews}>
                     {usedContextValue.imagesToShow.map(img => <ImagePreview key={img.id} img={img}/>)}
                 </div>

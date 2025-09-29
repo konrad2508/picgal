@@ -6,8 +6,8 @@ import SavedQueriesList from '../SavedQueriesList/SavedQueriesList';
 const Navigation = () => {
     return (
         <div className={styles.container}>
-            <h2>Navigate</h2>
             <SearchBar/>
+            <hr/>
             <SavedQueriesList/>
         </div>
     );

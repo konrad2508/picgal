@@ -1,5 +1,6 @@
 .notification {
     border-radius: 10px;
     box-shadow: 0 0 10px #888888;
-    margin: 2px 0px 2px 0px;
+    padding: 5px 5px 5px 5px;
+    margin: 10px 0px 5px 0px;
 }

@@ -20,23 +20,25 @@ const SavedQueriesList = () => {
 
     const renderSavedQueries = () => {
         return (
-            <div className={styles.savedQueriesOuterContainer}>
-                <div className={styles.savedQueriesInnerContainer}>
-                    {
-                        usedContextValue.savedQueries.map((e) =>
-                            <SavedQuery 
-                                key={e.id}
-                                savedQueryName={e.name}
-                                onClickSavedQuery={
-                                    () => AppState.isMultiselect(usedContextValue.appState)
-                                        ? contextValue.executeSavedQueryInMultiselect(e)
-                                        : contextValue.executeSavedQuery(e)
-                                }
-                            />
-                        )
-                    }
+            <>
+                <div className={styles.savedQueriesOuterContainer}>
+                    <div className={styles.savedQueriesInnerContainer}>
+                        {
+                            usedContextValue.savedQueries.map((e) =>
+                                <SavedQuery 
+                                    key={e.id}
+                                    savedQueryName={e.name}
+                                    onClickSavedQuery={
+                                        () => AppState.isMultiselect(usedContextValue.appState)
+                                            ? contextValue.executeSavedQueryInMultiselect(e)
+                                            : contextValue.executeSavedQuery(e)
+                                    }
+                                />
+                            )
+                        }
+                    </div>
                 </div>
-            </div>
+            </>
         );
     };
 

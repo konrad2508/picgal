@@ -1,6 +1,7 @@
 .savedQueryContainer {
     display: flex;
     flex-direction: row;
+    margin-top: 5px;
 }
 
 .savedQueryButtonContainer {

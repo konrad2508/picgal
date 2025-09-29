@@ -30,9 +30,7 @@ const AddableModifiableTagList = ({ tagType, existingTags }) => {
                     </button>
                 </div>
             </div>
-            <ul>
-                {usedContextValue.tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
-            </ul>
+            {usedContextValue.tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
             <form onSubmit={usedContextValue.onAddTag}>
                 <div className={styles.container}>
                     <div className={styles.inputContainer}>

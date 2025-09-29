@@ -6,7 +6,6 @@ import TagLists from '../TagLists/TagLists';
 import Title from '../Title/Title';
 import Metadata from '../Metadata/Metadata';
 import Encrypt from '../Encrypt/Encrypt';
-import SaveImage from '../SaveImage/SaveImage';
 import AppState from '../../enums/AppState';
 import useMenuState from './useMenuState';
 
@@ -23,9 +22,6 @@ const Menu = () => {
                 </div>
                 <div className={styles.boxIn}>
                     <Metadata img={img}/>
-                </div>
-                <div className={styles.boxIn}>
-                    <SaveImage id={img.id}/>
                 </div>
             </>
         );

@@ -114,8 +114,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             };
         };
 
-        // const tagNameFormatter = (tagName) => tagName.includes(':') ? tagName.split(':')[1] : tagName;
-        const tagNameFormatter = (tagName) => tagName;
+        const tagNameFormatter = (tagName) => tagName.includes(':') ? tagName.split(':')[1] : tagName;
 
         const tagCountFormatter = (tagCount) => {
             const abbrevs = 'kMBTq';

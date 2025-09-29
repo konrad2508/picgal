@@ -1,15 +1,24 @@
 .boxOut {
+    background-color: #FFFFFF;
+    border: 1px solid #999999;
     border-radius: 10px;
     box-shadow: 0 0 10px #888888;
-    height: 100%
+    display: flex;
+    flex-direction: column;
+    max-height: fit-content;
+    flex: 1 0 auto;
 }
 
 .boxIn {
+    background-color: #FFFFFF;
+    border: 1px solid #999999;
     border-radius: 10px;
-    box-shadow: 0 0 10px #888888;
+    box-shadow: 0 0 5px #888888;
     width: inherit;
+    padding: 5px 5px 5px 5px;
+    margin: 5px 5px 5px 5px;
 }
 
 .notifications {
-    margin-top: auto;
+    margin: auto 5px 0px 5px;
 }

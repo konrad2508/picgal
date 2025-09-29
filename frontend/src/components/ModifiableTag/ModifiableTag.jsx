@@ -30,7 +30,7 @@ const ModifiableTag = ({ tag }) => {
     if (usedContextValue.tagListState === TagListState.REMOVE && tag.type === TagState.NORMAL) {
         return (
             <div className={styles.container}>
-                <li style={tagStyle}>{displayName}</li>
+                <p style={tagStyle}>{displayName}</p>
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} onClick={() => usedContextValue.onRemoveTag(tag.name)}>
                         <FaRegTrashAlt className='fontAwesome'/>
@@ -41,13 +41,13 @@ const ModifiableTag = ({ tag }) => {
     }
     else if (usedContextValue.tagListState === TagListState.REMOVE || tag.type === TagState.NORMAL) {
         return (
-            <li style={tagStyle}>{displayName}</li>
+            <p style={tagStyle}>{displayName}</p>
         );
     }
     else {
         return (
             <div className={styles.container}>
-                <li style={tagStyle}>{displayName}</li>
+                <p style={tagStyle}>{displayName}</p>
                 <div className={styles.buttonContainer}>
                     <button className={styles.button} onClick={() => usedContextValue.onCancelModification(tag.name, tag.type)}>
                         <FaTimes className='fontAwesome'/>

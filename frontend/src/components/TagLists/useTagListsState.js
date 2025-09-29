@@ -4,7 +4,7 @@ import tagListsStateService from '../../services/tagListsStateService';
 import AppContext from '../../context/AppContext';
 
 const useTagListsState = (img) => {
-    const { onSaveModifiedTagsClick, onSaveModifiedTagsClickInBatchTagEditor } = React.useContext(AppContext);
+    const { appState, onSaveModifiedTagsClick, onSaveModifiedTagsClickInBatchTagEditor } = React.useContext(AppContext);
 
     const { form: modificationsForm, formComplements } = modificationForm();
 
@@ -19,6 +19,7 @@ const useTagListsState = (img) => {
         hookService.switchModeCommand(mode, null, modifications, onSaveModifiedTagsClickInBatchTagEditor, modificationsForm);
 
     const usedContextValue = {
+        appState,
         onSaveModifiedTagsClick,
         onSaveModifiedTagsClickInBatchTagEditor
     };

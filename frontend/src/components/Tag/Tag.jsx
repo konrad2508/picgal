@@ -8,7 +8,7 @@ const Tag = ({ tag, color }) => {
     const displayName = queryService.inputTagToNormalTag(tag);
 
     return (
-        <li onClick={() => usedContextValue.onClickTag(tag)} style={{color: color}}>{displayName}</li>
+        <p onClick={() => usedContextValue.onClickTag(tag)} style={{color: color}}>{displayName}</p>
     );
 };
 
