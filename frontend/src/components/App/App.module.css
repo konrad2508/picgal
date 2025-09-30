@@ -6,6 +6,10 @@ hr {
     opacity: 0.75;
 }
 
+button {
+    cursor: pointer;
+}
+
 .app {
     margin-top: 10px;
     display: flex;

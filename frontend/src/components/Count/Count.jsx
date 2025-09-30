@@ -7,7 +7,8 @@ const Count = () => {
 
     return (
         <div className={styles.container}>
-            <h3>Count: {usedContextValue.imagesCounter}</h3>
+            <h3 className={styles.title}>Count</h3>
+            <p className={styles.value}>{usedContextValue.imagesCounter}</p>
         </div>
     );
 };

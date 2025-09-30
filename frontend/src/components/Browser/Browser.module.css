@@ -4,6 +4,7 @@
     border-radius: 10px;
     box-shadow: 0 0 10px #888888;
     flex: 1 0 auto;
+    max-height: fit-content;
 }
 
 .breakline {
@@ -13,16 +14,17 @@
 .container {
     display: flex;
     flex-direction: column;
-    height: calc(100% - 10px);
+    min-height: calc(100% - 10px);
     margin: 5px 5px 5px 5px;
+    max-height: fit-content;
 }
 
 .previews {
-    margin-top: 5px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, 150px);
+    grid-template-columns: repeat(auto-fill, 150px);
     justify-content: center;
     gap: 10px;
+    max-height: fit-content;
 }
 
 .pager {

@@ -16,16 +16,16 @@ const DuplicatesScanner = () => {
         <div className={styles.center}>
             <div className={styles.box}>
                 <div className={styles.center}>
-                    <h2>Duplicates Scanner</h2>
+                    <h3>Duplicates Scanner</h3>
                 </div>
                 <hr/>
                 <div className={styles.params}>
                     <div className={styles.paramContainer}>
-                        <h4 className={styles.paramTitle}>Original directory:</h4>
+                        <p className={styles.paramTitle}>Original directory</p>
                         <input id='baseDir' type="text" className={styles.paramValue} placeholder='database'/>
                     </div>
                     <div className={styles.paramContainer}>
-                        <h4 className={styles.paramTitle}>Directory to scan:</h4>
+                        <p className={styles.paramTitle}>Directory to scan</p>
                         <input id='scanDir' type="text" className={styles.paramValue}/>
                     </div>
                 </div>

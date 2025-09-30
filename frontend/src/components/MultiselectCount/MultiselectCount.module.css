@@ -1,6 +1,12 @@
 .container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    margin-bottom: 5px;
+}
+
+.title {
+    margin-right: 10px;
+}
+
+.value {
+    margin-top: auto;
 }

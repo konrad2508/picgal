@@ -16,59 +16,50 @@ const Content = () => {
 
     if (usedContextValue.appState === AppState.BROWSING) {
         content = (
-            <>
+            <div className={styles.content}>
                 <Browser/>
-            </>
+            </div>
         );
     }
-    else if (usedContextValue.appState === AppState.BATCH_TAG_EDITOR) {
+    else if ([AppState.BATCH_TAG_EDITOR, AppState.ENCRYPTOR].includes(usedContextValue.appState)) {
         content = (
-            <>
+            <div className={styles.content}>
                 <Multiselect/>
-            </>
+            </div>
         );
     }
     else if (usedContextValue.appState === AppState.PREVIEW) {
         content = (
-            <>
+            <div className={styles.conterCenter}>
                 <Image img={usedContextValue.imagesToShow[0]}/>
-            </>
+            </div>
         );
     }
     else if (usedContextValue.appState === AppState.START) {
         content = (
-            <>
+            <div className={styles.conterCenter}>
                 <ToolsSelection/>
-            </>
+            </div>
         );
     }
     else if (usedContextValue.appState === AppState.SETTINGS) {
         content = (
-            <>
+            <div className={styles.conterCenter}>
                 <Settings/>
-            </>
+            </div>
         );
     }
     else if (usedContextValue.appState === AppState.DUPLICATES_SCANNER) {
         content = (
-            <>
+            <div className={styles.conterCenter}>
                 <DuplicatesScanner/>
-            </>
-        );
-    }
-    else if (usedContextValue.appState === AppState.ENCRYPTOR) {
-        content = (
-            <>
-                <Multiselect/>
-            </>
+            </div>
         );
     }
 
     return (
         <>
-            <div className={styles.content}>
-                { content }
-            </div>
+            { content }
         </>
     );
 };

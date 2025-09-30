@@ -1,6 +1,9 @@
-.content {
+.content, .conterCenter {
     flex: 1 0 auto;
     display: flex;
     flex-direction: column;
+}
+
+.conterCenter {
     justify-content: center;
 }

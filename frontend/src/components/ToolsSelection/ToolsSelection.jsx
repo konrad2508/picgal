@@ -1,10 +1,15 @@
 import styles from './ToolsSelection.module.css';
 import React from 'react';
+import SyncDatabaseTool from '../SyncDatabaseTool/SyncDatabaseTool';
+import DuplicatesScannerTool from '../DuplicatesScannerTool/DuplicatesScannerTool';
+import BatchTagEditorTool from '../BatchTagEditorTool/BatchTagEditorTool';
+import SettingsTool from '../SettingsTool/SettingsTool';
+import EncryptorTool from '../EncryptorTool/EncryptorTool';
 import ViewEncryptedTool from '../ViewEncryptedTool/ViewEncryptedTool';
-import useToolsSelectionState from './useToolsSelectionState';
+// import useToolsSelectionState from './useToolsSelectionState';
 
 const ToolsSelection = () => {
-    const { usedContextValue } = useToolsSelectionState();
+    // const {  } = useToolsSelectionState();
 
     return (
         <div className={styles.center}>
@@ -12,13 +17,14 @@ const ToolsSelection = () => {
                 <div className={styles.center}>
                     <h2>Tools</h2>
                 </div>
+                <hr/>
                 <div className={styles.buttonContainer}>
-                    <button onClick={usedContextValue.onSyncDatabase} className={styles.button}>Sync Database</button>
-                    <button onClick={usedContextValue.onStartDuplicatesScanner} className={styles.button}>Duplicates Scanner</button>
-                    <button onClick={usedContextValue.onStartBatchTagEditor} className={styles.button}>Batch Tag Editor</button>
-                    <button onClick={usedContextValue.onStartSettings} className={styles.button}>Settings</button>
-                    <button onClick={usedContextValue.onStartEncryptor} className={styles.button}>Encryptor</button>
-                    <ViewEncryptedTool style={styles.button}/>
+                    <SyncDatabaseTool/>
+                    <DuplicatesScannerTool/>
+                    <BatchTagEditorTool/>
+                    <SettingsTool/>
+                    <EncryptorTool/>
+                    <ViewEncryptedTool/>
                 </div>
             </div>
         </div>

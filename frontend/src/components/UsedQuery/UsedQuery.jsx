@@ -7,7 +7,8 @@ const UsedQuery = () => {
 
     return (
         <div className={styles.container}>
-            <h3>Query: {usedContextValue.usedQuery}</h3>
+            <h3 className={styles.title}>Query</h3>
+            <p className={styles.value}>{usedContextValue.usedQuery}</p>
         </div>
     );
 };

@@ -1,3 +1,9 @@
+.center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
 .title {
     width: fit-content;
 }

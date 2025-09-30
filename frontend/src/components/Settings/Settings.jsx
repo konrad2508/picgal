@@ -32,7 +32,7 @@ const Settings = () => {
 
         return (
             <div key={i} className={styles.optionContainer}>
-                <h4 className={styles.optionTitle}>{k}</h4>
+                <p className={styles.optionTitle}>{k}</p>
                 { inputField() }
             </div>
         );
@@ -50,7 +50,7 @@ const Settings = () => {
         <div className={styles.center}>
             <div className={styles.box}>
                 <div className={styles.center}>
-                    <h2>Settings</h2>
+                    <h3>Settings</h3>
                 </div>
                 <hr/>
                 <div className={styles.options}>

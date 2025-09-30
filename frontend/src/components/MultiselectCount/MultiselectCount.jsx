@@ -7,7 +7,8 @@ const MultiselectCount = () => {
 
     return (
         <div className={styles.container}>
-            <h3>Selected: {usedContextValue.multiselectSelected.length}</h3>
+            <h3 className={styles.title}>Selected</h3>
+            <p className={styles.value}>{usedContextValue.multiselectSelected.length}</p>
         </div>
     );
 };

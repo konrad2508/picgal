@@ -13,9 +13,9 @@ const Title = () => {
     };
 
     return (
-        <>
-            <h1 className={styles.title} onClick={onClick}>Picgal</h1>
-        </>
+        <div className={styles.center} >
+            <h1 className={styles.title} onClick={onClick} style={{cursor: usedContextValue.appState === AppState.START ? 'auto' : 'pointer'}}>Picgal</h1>
+        </div>
     );
 };
 

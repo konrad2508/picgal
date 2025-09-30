@@ -25,6 +25,7 @@ const SearchBar = () => {
                                 : usedContextValue.onCancelMultiselect
                         }
                         disabled={usedContextValue.historyLength === 0 && !AppState.isMultiselect(usedContextValue.appState)}
+                        style={{cursor: (usedContextValue.historyLength === 0 && !AppState.isMultiselect(usedContextValue.appState)) ? 'auto' : 'pointer'}}
                     >
                         { !AppState.isMultiselect(usedContextValue.appState)
                             ? <FaArrowLeft className='fontAwesome'/>
