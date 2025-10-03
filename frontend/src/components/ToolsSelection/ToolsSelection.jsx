@@ -15,7 +15,7 @@ const ToolsSelection = () => {
         <div className={styles.center}>
             <div className={styles.box}>
                 <div className={styles.center}>
-                    <h2>Tools</h2>
+                    <h2>Menu</h2>
                 </div>
                 <hr/>
                 <div className={styles.buttonContainer}>
