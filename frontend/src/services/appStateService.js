@@ -152,13 +152,14 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
         requestService
             .modifyImage(id, modifications)
             .then(modifiedImage => {
-                setImagesToShow([modifiedImage]);
-
                 requestService
                     .getTags(viewEncrypted)
                     .then(tags => setExistingTags(tags));
                 
                 setNotifications([...notifications, notificationService.tagModificationSuccessfulNotification()]);
+
+                setHistory(history.slice(0, -1));
+                previewCommand(modifiedImage);
             },
             _ => {
                 setNotifications([...notifications, notificationService.tagModificationFailedNotification()]);
