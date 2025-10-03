@@ -3,10 +3,13 @@ const url = require('url');
 const { execFile, exec } = require('child_process');
 const electron = require('electron');
 const contextMenu = require('electron-context-menu');
-const axios = require('axios');
+const http = require('http');
 
 const serverExeName = 'picgal-server';
-const serverApiUrl = 'http://localhost:3001/api/v1';
+
+const serverHost = 'localhost';
+const serverPort = 3001;
+const serverApi = '/api/v1';
 
 const backend = execFile(`${__dirname}/../${serverExeName}`, {cwd: `${__dirname}/..`}, (error) => {
     if (error) {
@@ -42,7 +45,22 @@ contextMenu({
                     return;
                 }
 
-                await axios.post(`${serverApiUrl}/image/${imageId}/save`, {filename: filePath});
+                const body = JSON.stringify({ filename: filePath });
+
+                const req = http.request({
+                    hostname: serverHost,
+                    port: serverPort,
+                    path: `${serverApi}/image/${imageId}/save`,
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Content-Length': Buffer.byteLength(body)
+                    }
+                },
+                _ => {});
+
+                req.write(body);
+                req.end();
             }
         },
         menuElements.copyImage()
