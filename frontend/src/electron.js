@@ -3,16 +3,10 @@ const url = require('url');
 const { execFile, exec } = require('child_process');
 const electron = require('electron');
 const contextMenu = require('electron-context-menu');
+const axios = require('axios');
 
 const serverExeName = 'picgal-server';
-
-contextMenu({
-    showInspectElement: false,
-    showSelectAll: false,
-    shouldShowMenu: (event, parameters) => parameters.mediaType === 'image' && parameters.titleText === ' ',
-    showSaveImageAs: true,
-    showSaveVideoAs: true
-});
+const serverApiUrl = 'http://localhost:3001/api/v1';
 
 const backend = execFile(`${__dirname}/../${serverExeName}`, {cwd: `${__dirname}/..`}, (error) => {
     if (error) {
@@ -28,6 +22,32 @@ dialog.showErrorBox = (title, content) => {
 
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+
+contextMenu({
+    shouldShowMenu: (event, parameters) => parameters.mediaType === 'image' && parameters.titleText === ' ',
+    menu: (menuElements, params, browserWindow, dictionarySuggestions) => [
+        {
+            label: 'Save Image As...',
+            visible: true,
+            click: async () => {
+                const imageId = params.srcURL.split('/').pop();
+                imageId;
+
+                const { filePath } = await dialog.showSaveDialog({
+                    title: 'Save Image',
+                    defaultPath: `${app.getPath('downloads')}/${imageId}`
+                });
+
+                if (!filePath) {
+                    return;
+                }
+
+                await axios.post(`${serverApiUrl}/image/${imageId}/save`, {filename: filePath});
+            }
+        },
+        menuElements.copyImage()
+    ]
+});
 
 let mainWindow;
 

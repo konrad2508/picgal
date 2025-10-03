@@ -1,6 +1,6 @@
 import io
-import os
 import subprocess
+from pathlib import Path
 
 from config import Config
 from model.image.data.download_result import DownloadResult
@@ -165,9 +165,9 @@ class ImageControllerService(IImageControllerService):
                 img = f.read()
         
         file_ext = file_location.split('.')[1]
-        fn = f'{filename.dir}/{filename.filename}.{file_ext}'
+        fn = f'{filename.filename}.{file_ext}'
 
-        os.makedirs(filename.dir, exist_ok=True)
+        Path(fn).parent.mkdir(parents=True, exist_ok=True)
         with open(f'{fn}', 'wb') as f:
             f.write(img)
 
