@@ -6,15 +6,23 @@ import useTitleState from './useTitleState';
 const Title = () => {
     const { usedContextValue } = useTitleState();
 
+    const isActive = () => usedContextValue.appState !== AppState.START && !AppState.isMultiselect(usedContextValue.appState);
+
     const onClick = () => {
-        if (usedContextValue.appState !== AppState.START && !AppState.isMultiselect(usedContextValue.appState)) {
+        if (isActive()) {
             usedContextValue.onClickTitle();
         }
     };
 
     return (
         <div className={styles.center} >
-            <h1 className={styles.title} onClick={onClick} style={{cursor: usedContextValue.appState === AppState.START ? 'default' : 'pointer'}}>Picgal</h1>
+            <h1
+                className={styles.title}
+                onClick={onClick}
+                style={{cursor: isActive() ? 'pointer' : 'default'}}
+            >
+                Picgal
+            </h1>
         </div>
     );
 };
