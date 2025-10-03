@@ -18,8 +18,8 @@
         800
     ],
     "countPerPage": 40,
-    "highLevelName": "Sources",
-    "lowLevelName": "Characters",
+    "highLevelName": "Origin",
+    "lowLevelName": "Identifier",
     "gpgBin": "",
     "recipient": "",
     "saveDir": ""
