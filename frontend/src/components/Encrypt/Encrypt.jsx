@@ -1,14 +1,21 @@
 import styles from './Encrypt.module.css';
 import React from 'react';
+import { FaEyeLowVision } from 'react-icons/fa6';
 import useEncryptState from './useEncryptState';
 
 const Encrypt = () => {
     const { usedContextValue } = useEncryptState();
 
     return (
-        <>
-            <button onClick={usedContextValue.onClickEncrypt} className={styles.button}>Toggle Encryption</button>
-        </>
+        <div className={styles.container}>
+            <h3>Toggle encryption</h3>
+            <button
+                onClick={usedContextValue.onClickEncrypt}
+                className={styles.button}
+            >
+                <FaEyeLowVision/>
+            </button>
+        </div>
     );
 };
 
