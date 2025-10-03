@@ -8,3 +8,11 @@
     margin-left: auto;
     margin-right: 0px;
 }
+
+.button1, .button2 {
+    width: 28px;
+}
+
+.button2 {
+    margin-left: -1px;
+}

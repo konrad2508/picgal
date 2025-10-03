@@ -1,6 +1,8 @@
 .container {
     display: flex;
     flex-direction: row;
+    margin-top: 3px;
+    height: 22px;
 }
 
 .buttonContainer {
@@ -10,4 +12,5 @@
 
 .button {
     height: 100%;
+    width: 28px;
 }

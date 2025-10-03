@@ -12,6 +12,11 @@
     margin-right: 0px;
 }
 
-.button {
+.button1, .button2 {
     height: 100%;
+    width: 28px;
+}
+
+.button2 {
+    margin-left: -1px;
 }

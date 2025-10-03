@@ -10,7 +10,7 @@ const EditModifiableSavedQuery = () => {
     return (
         <div className={styles.savedQueryContainer}>
             <div className={styles.formContainer}>
-                <input className={styles.nameInput} value={usedContextValue.inputName} onInput={usedContextValue.handleInputNameChange}/>
+                <input className={styles.nameInput} value={usedContextValue.inputName} onInput={usedContextValue.handleInputNameChange} placeholder='enter name...'/>
                 <div className={styles.queryInput}>
                     <AutocompleteQuery
                         query={usedContextValue.inputQuery}
@@ -20,10 +20,10 @@ const EditModifiableSavedQuery = () => {
                 </div>
             </div>
             <div className={styles.buttonContainer}>
-                <button className={styles.button} onClick={usedContextValue.modifyQuery}>
+                <button className={styles.button1} onClick={usedContextValue.modifyQuery}>
                     <FaPlus className='fontAwesome'/>
                 </button>
-                <button className={styles.button} onClick={usedContextValue.cancelModify}>
+                <button className={styles.button2} onClick={usedContextValue.cancelModify}>
                     <FaTimes className='fontAwesome'/>
                 </button>
             </div>

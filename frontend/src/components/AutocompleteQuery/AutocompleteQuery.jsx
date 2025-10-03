@@ -89,7 +89,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             .slice(0, 5);
     };
 
-    const renderSuggestions = () => {
+    const renderSuggestions = (suggestions) => {
         const suggestionTextColor = (sug) => {
             let color;
 
@@ -159,15 +159,17 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
 
         return (
             <div className={styles.fixedContainer}>
-                { getSuggestions().map((e, i) => (
+                { suggestions.map((e, i) => (
                     <div key={i} onClick={() => handleSuggestionClick(e)} className={styles.suggestionBox}>
                         <div style={suggestionTextColor(e)} className={styles.suggestion}>{tagNameFormatter(e.name)}</div>
-                        <div style={suggestionTextColor(e)} className={styles.counter}>{tagCountFormatter(e.count)}</div>
+                        <div className={styles.counter}>{tagCountFormatter(e.count)}</div>
                     </div>
                 ))}
             </div>
         );
     };
+
+    const suggestedTags = getSuggestions();
 
     return (
         <div className={styles.container} ref={contextValue.wrapperRef}>
@@ -176,11 +178,12 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
                 onChange={handleQueryChange}
                 className={styles.input}
                 onClick={contextValue.enableDisplay}
+                placeholder='enter query...'
             />
-            { contextValue.display && (
+            { contextValue.display && suggestedTags.length > 0 && (
                 <div className={styles.suggestionsOuterContainer}>
                     <div className={styles.suggestionsInnerContainer}>
-                        { renderSuggestions() }
+                        { renderSuggestions(suggestedTags) }
                     </div>
                 </div>
             )}

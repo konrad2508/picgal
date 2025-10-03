@@ -20,11 +20,6 @@
 }
 
 .buttonContainer button {
-    background-color: #FFFFFF;
-    border: 1px solid #999999;
     border-radius: 10px;
     box-shadow: 0 0 5px #888888;
-}
-.buttonContainer button:hover {
-    background-color: #F7F7F7;
 }

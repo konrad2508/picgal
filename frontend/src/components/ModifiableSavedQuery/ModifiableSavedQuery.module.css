@@ -9,6 +9,10 @@
     margin-right: 0px;
 }
 
-.savedQueryButton {
-    height: 100%;
+.button1, .button2 {
+    width: 28px;
+}
+
+.button1 {
+    margin-right: -1px;
 }

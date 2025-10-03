@@ -7,7 +7,7 @@ const SavedQuery = ({ savedQueryName, onClickSavedQuery }) => {
         <div className={styles.savedQueryContainer}>
             <p>{savedQueryName}</p>
             <div className={styles.savedQueryButtonContainer}>
-                <button className={styles.savedQueryButton} onClick={onClickSavedQuery}>
+                <button className={styles.button} onClick={onClickSavedQuery}>
                     <FaArrowRight className='fontAwesome'/>
                 </button>
             </div>

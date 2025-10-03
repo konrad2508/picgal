@@ -8,8 +8,13 @@
     margin-right: 0px;
 }
 
-.titleBoxButton {
+.titleBoxButton1, .titleBoxButton2 {
     height: 100%;
+    width: 28px;
+}
+
+.titleBoxButton1 {
+    margin-right: -1px;
 }
 
 .savedQueriesOuterContainer {

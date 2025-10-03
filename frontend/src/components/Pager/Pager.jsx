@@ -41,27 +41,54 @@ const Pager = () => {
 
     return (
         <div className={styles.container}>
-            <button onClick={() => onClick(1)} disabled={usedContextValue.pageNumber === 1}>
+            <button
+                className={styles.button1}
+                onClick={() => onClick(1)}
+                disabled={usedContextValue.pageNumber === 1}
+                style={{cursor: usedContextValue.pageNumber === 1 ? 'default' : 'pointer'}}
+            >
                 <FaAngleDoubleLeft className='fontAwesome'/>
             </button>
 
-            <button onClick={() => onClick(usedContextValue.pageNumber - 1)} disabled={usedContextValue.pageNumber === 1}>
+            <button
+                className={styles.button2}
+                onClick={() => onClick(usedContextValue.pageNumber - 1)}
+                disabled={usedContextValue.pageNumber === 1}
+                style={{cursor: usedContextValue.pageNumber === 1 ? 'default' : 'pointer'}}
+            >
                 <FaAngleLeft className='fontAwesome'/>
             </button>
 
             <div className={styles.pageCounter}>
-                <div contentEditable={true} className={styles.currentPage} onKeyPress={validator} onFocus={onFocus} onBlur={onBlur}>
+                <div
+                    contentEditable={usedContextValue.maxPage !== 1}
+                    className={styles.currentPage}
+                    onKeyPress={validator}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
+                    style={{cursor: usedContextValue.maxPage === 1 ? 'default' : 'text'}}
+                >
                     {usedContextValue.pageNumber}
                 </div>
                 <p>/</p>
                 <p className={styles.maxPage}>{usedContextValue.maxPage}</p>
             </div>
 
-            <button onClick={() => onClick(usedContextValue.pageNumber + 1)} disabled={usedContextValue.pageNumber === usedContextValue.maxPage}>
+            <button
+                className={styles.button1}
+                onClick={() => onClick(usedContextValue.pageNumber + 1)}
+                disabled={usedContextValue.pageNumber === usedContextValue.maxPage}
+                style={{cursor: usedContextValue.pageNumber === usedContextValue.maxPage ? 'default' : 'pointer'}}
+            >
                 <FaAngleRight className='fontAwesome'/>
             </button>
             
-            <button onClick={() => onClick(usedContextValue.maxPage)} disabled={usedContextValue.pageNumber === usedContextValue.maxPage}>
+            <button
+                className={styles.button2}
+                onClick={() => onClick(usedContextValue.maxPage)}
+                disabled={usedContextValue.pageNumber === usedContextValue.maxPage}
+                style={{cursor: usedContextValue.pageNumber === usedContextValue.maxPage ? 'default' : 'pointer'}}
+            >
                 <FaAngleDoubleRight className='fontAwesome'/>
             </button>
         </div>

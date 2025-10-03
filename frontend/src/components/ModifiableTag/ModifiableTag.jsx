@@ -39,9 +39,15 @@ const ModifiableTag = ({ tag }) => {
             </div>
         );
     }
-    else if (usedContextValue.tagListState === TagListState.REMOVE || tag.type === TagState.NORMAL) {
+    else if (
+        usedContextValue.tagListState === TagListState.ADD ||
+        usedContextValue.tagListState === TagListState.REMOVE ||
+        tag.type === TagState.NORMAL
+    ) {
         return (
-            <p style={tagStyle}>{displayName}</p>
+            <div className={styles.container}>
+                <p style={tagStyle}>{displayName}</p>
+            </div>
         );
     }
     else {
@@ -49,7 +55,11 @@ const ModifiableTag = ({ tag }) => {
             <div className={styles.container}>
                 <p style={tagStyle}>{displayName}</p>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={() => usedContextValue.onCancelModification(tag.name, tag.type)}>
+                    <button
+                        className={styles.button}
+                        onClick={() => usedContextValue.onCancelModification(tag.name, tag.type)}
+                        disabled={usedContextValue.tagListState !== TagListState.NORMAL}
+                    >
                         <FaTimes className='fontAwesome'/>
                     </button>
                 </div>

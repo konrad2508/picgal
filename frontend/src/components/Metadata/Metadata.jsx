@@ -18,10 +18,10 @@ const Metadata = ({ img }) => {
             <div className={styles.titleContainer}>
                 <h2>Metadata</h2>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} onClick={flipShowOriginal}>
+                    <button className={styles.button1} onClick={flipShowOriginal}>
                         {usedContextValue.showOriginal ? <FaExpand className='fontAwesome'/> : <FaCompress className='fontAwesome'/>}
                     </button>
-                    <button className={styles.button} onClick={flipFavourite}>
+                    <button className={styles.button2} onClick={flipFavourite}>
                         {img.favourite ? <FaHeart className='fontAwesome'/> : <FaRegHeart className='fontAwesome'/>}
                     </button>
                 </div>

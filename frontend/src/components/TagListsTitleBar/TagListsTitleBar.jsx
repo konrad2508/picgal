@@ -23,14 +23,14 @@ const TagListsTitleBar = () => {
                 <h2>Tags</h2>
                 <div className={styles.buttonContainer}>
                     <button
-                        className={styles.button}
+                        className={styles.button1}
                         onClick={() => onClickHandler(ModificationMode.SEND)}
                     >
                         <FaSave className='fontAwesome'/>
                     </button>
                     { usedContextValue.appState !== AppState.BATCH_TAG_EDITOR &&
                     <button
-                        className={styles.button}
+                        className={styles.button2}
                         onClick={() => onClickHandler(ModificationMode.CANCEL)}
                     >
                         <FaTimes className='fontAwesome'/>
@@ -45,7 +45,7 @@ const TagListsTitleBar = () => {
                 <h2>Tags</h2>
                 <div className={styles.buttonContainer}>
                     <button
-                        className={styles.button}
+                        className={styles.button2}
                         onClick={() => onClickHandler(ModificationMode.START)}
                     >
                         <FaPen className='fontAwesome'/>

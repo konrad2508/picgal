@@ -29,6 +29,7 @@ input::-webkit-inner-spin-button {
 .optionTitle {
     display: inline-block;
     margin-right: 25px;
+    height: 24px;
 }
 
 .optionValue {
@@ -38,5 +39,6 @@ input::-webkit-inner-spin-button {
 }
 
 .button {
+    height: 25px;
     width: 100px;
 }

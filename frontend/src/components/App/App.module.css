@@ -1,3 +1,8 @@
+* {
+    cursor: default;
+    outline: none;
+}
+
 html {
     background-color: #EEEEEE;
 }
@@ -7,7 +12,23 @@ hr {
 }
 
 button {
+    background-color: #FFFFFF;
+    border: 1px solid #999999;
     cursor: pointer;
+}
+
+button * {
+    cursor: inherit;
+}
+
+button:hover:enabled {
+    background-color: #F7F7F7;
+}
+
+input {
+    border: 1px solid #999999;
+    padding: 2px;
+    cursor: text;
 }
 
 .app {

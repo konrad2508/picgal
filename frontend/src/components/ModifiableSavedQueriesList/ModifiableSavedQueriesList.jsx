@@ -15,13 +15,14 @@ const ModifiableSavedQueriesList = () => {
                 <h3>Saved queries</h3>
                 <div className={styles.titleBoxButtonContainer}>
                     <button
-                        className={styles.titleBoxButton}
+                        className={styles.titleBoxButton1}
                         onClick={contextValue.startAddingSavedQuery}
                         disabled={contextValue.addingSavedQuery}
+                        style={{cursor: contextValue.addingSavedQuery ? 'default' : 'pointer'}}
                     >
                         <FaPlus className='fontAwesome'/>
                     </button>
-                    <button className={styles.titleBoxButton} onClick={usedContextValue.exitModificationMode}>
+                    <button className={styles.titleBoxButton2} onClick={usedContextValue.exitModificationMode}>
                         <FaTimes className='fontAwesome'/>
                     </button>
                 </div>

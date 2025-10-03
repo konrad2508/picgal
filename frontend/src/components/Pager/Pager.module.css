@@ -18,3 +18,11 @@
 .maxPage {
     margin-left: 1ch;
 }
+
+.button1, .button2 {
+    width: 28px;
+}
+
+.button1 {
+    margin-right: -1px;
+}

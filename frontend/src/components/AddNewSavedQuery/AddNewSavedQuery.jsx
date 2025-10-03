@@ -10,7 +10,7 @@ const AddNewSavedQuery = () => {
     return (
         <div className={styles.container}>
             <div className={styles.formContainer}>
-                <input className={styles.nameInput} value={usedContextValue.inputNewName} onInput={usedContextValue.handleInputNewName}/>
+                <input className={styles.nameInput} value={usedContextValue.inputNewName} onInput={usedContextValue.handleInputNewName} placeholder='enter name...'/>
                 <div className={styles.queryInput}>
                     <AutocompleteQuery
                         query={usedContextValue.inputNewQuery}
@@ -20,10 +20,10 @@ const AddNewSavedQuery = () => {
                 </div>
             </div>
             <div className={styles.buttonContainer}>
-                <button className={styles.button} onClick={usedContextValue.addNewSavedQuery}>
+                <button className={styles.button1} onClick={usedContextValue.addNewSavedQuery}>
                     <FaPlus className='fontAwesome'/>
                 </button>
-                <button className={styles.button} onClick={usedContextValue.cancelAddingSavedQuery}>
+                <button className={styles.button2} onClick={usedContextValue.cancelAddingSavedQuery}>
                     <FaTimes className='fontAwesome'/>
                 </button>
             </div>

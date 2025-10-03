@@ -16,14 +16,15 @@ const CancelableModifiableTagList = ({ tagType }) => {
                 <h3>{tagType.overridedBy ? usedContextValue.config[tagType.overridedBy] : tagType.name}</h3>
                 <div className={styles.buttonContainer}>
                     <button
-                        className={styles.button}
+                        className={styles.button1}
                         onClick={usedContextValue.switchStateAdd}
                     >
                         <FaPlus className='fontAwesome'/>
                     </button>
                     <button 
-                        className={styles.button}
+                        className={styles.button2}
                         disabled={normalTags === 0 ? true : false}
+                        style={{cursor: normalTags === 0 ? 'default' : 'pointer'}}
                         onClick={usedContextValue.switchStateRemove}
                     >
                         <FaRegTrashAlt className='fontAwesome'/>

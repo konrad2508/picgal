@@ -4,7 +4,8 @@
 }
 
 .inputContainer {
-    width: 174px;
+    width: 176px;
+    margin-right: -1px;
 }
 
 .buttonContainer {
@@ -12,8 +13,17 @@
     margin-right: 0px;
 }
 
-.button {
+.button1, .button2 {
     height: 100%;
+    width: 28px;
+}
+
+.button2 {
+    margin-left: -1px;
+}
+
+.form {
+    margin-top: 3px;
 }
 
 .input {

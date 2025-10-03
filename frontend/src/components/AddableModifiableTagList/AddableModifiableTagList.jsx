@@ -22,26 +22,28 @@ const AddableModifiableTagList = ({ tagType, existingTags }) => {
             <div className={styles.container}>
                 <h3>{tagType.overridedBy ? usedContextValue.config[tagType.overridedBy] : tagType.name}</h3>
                 <div className={styles.buttonContainer}>
-                    <button className={styles.button} disabled={true}>
+                    <button className={styles.button1} disabled={true} style={{cursor: 'default'}}>
                         <FaPlus className='fontAwesome'/>
                     </button>
-                    <button className={styles.button} disabled={true}>
+                    <button className={styles.button2} disabled={true} style={{cursor: 'default'}}>
                         <FaRegTrashAlt className='fontAwesome'/>
                     </button>
                 </div>
             </div>
             {usedContextValue.tagList.map((e, i) => <ModifiableTag key={i} tag={e}/>)}
-            <form onSubmit={usedContextValue.onAddTag}>
+            <form className={styles.form} onSubmit={usedContextValue.onAddTag}>
                 <div className={styles.container}>
                     <div className={styles.inputContainer}>
                         <AutocompleteNewTag existingTags={filterUsedTags()}/>
                     </div>
-                    <button type='submit'>
-                        <FaSave className='fontAwesome'/>
-                    </button>
-                    <button type='button' onClick={usedContextValue.switchStateNormal}>
-                        <FaTimes className='fontAwesome'/>
-                    </button>
+                    <div className={styles.buttonContainer}>
+                        <button className={styles.button1} type='submit'>
+                            <FaSave className='fontAwesome'/>
+                        </button>
+                        <button className={styles.button2} type='button' onClick={usedContextValue.switchStateNormal}>
+                            <FaTimes className='fontAwesome'/>
+                        </button>
+                    </div>
                 </div>
             </form>
         </>

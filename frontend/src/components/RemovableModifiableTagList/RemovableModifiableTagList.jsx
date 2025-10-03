@@ -13,13 +13,14 @@ const RemovableModifiableTagList = ({ tagType }) => {
                 <h3>{tagType.overridedBy ? usedContextValue.config[tagType.overridedBy] : tagType.name}</h3>
                 <div className={styles.buttonContainer}>
                     <button 
-                        className={styles.button}
+                        className={styles.button1}
                         disabled={true}
+                        style={{cursor: 'default'}}
                     >
                         <FaSave className='fontAwesome'/>
                     </button>
                     <button
-                        className={styles.button}
+                        className={styles.button2}
                         onClick={usedContextValue.switchStateNormal}
                     >
                         <FaTimes className='fontAwesome'/>

@@ -65,9 +65,7 @@ const Menu = () => {
 
     return (
         <div className={styles.boxOut}>
-            <div className={styles.boxIn}>
-                <Title/>
-            </div>
+            <Title/>
             <div className={styles.boxIn}>
                 <Navigation/>
             </div>

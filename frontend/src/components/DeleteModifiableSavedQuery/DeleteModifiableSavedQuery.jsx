@@ -8,12 +8,12 @@ const DeleteModifiableSavedQuery = ({ savedQuery }) => {
 
     return (
         <div className={styles.savedQueryContainer}>
-            <h4>{savedQuery.name}</h4>
+            <p>{savedQuery.name}</p>
             <div className={styles.savedQueryButtonContainer}>
-                <button onClick={() => usedContextValue.onDeleteSavedQuery(savedQuery.id)}>
+                <button className={styles.button1} onClick={() => usedContextValue.onDeleteSavedQuery(savedQuery.id)}>
                     <FaRegTrashAlt className='fontAwesome'/>
                 </button>
-                <button onClick={usedContextValue.disableDeletable}>
+                <button className={styles.button2} onClick={usedContextValue.disableDeletable}>
                     <FaTimes className='fontAwesome'/>
                 </button>
             </div>

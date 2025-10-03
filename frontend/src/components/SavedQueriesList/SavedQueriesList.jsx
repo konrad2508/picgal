@@ -12,7 +12,7 @@ const SavedQueriesList = () => {
 
     const renderModifyButton = () => {
         return (
-            <button className={styles.titleBoxButton} onClick={contextValue.enterModificationMode}>
+            <button className={styles.titleBoxButton1} onClick={contextValue.enterModificationMode}>
                 <FaPen className='fontAwesome'/>
             </button>
         );
@@ -55,7 +55,7 @@ const SavedQueriesList = () => {
                         <h3>Saved queries</h3>
                         <div className={styles.titleBoxButtonContainer}>
                             { contextValue.displaySavedQueries && renderModifyButton() }
-                            <button className={styles.titleBoxButton} onClick={contextValue.toggleDisplaySavedQueries}>
+                            <button className={styles.titleBoxButton2} onClick={contextValue.toggleDisplaySavedQueries}>
                                 { contextValue.displaySavedQueries
                                     ? <FaAngleDown className='fontAwesome'/>
                                     : <FaAngleRight className='fontAwesome'/> }

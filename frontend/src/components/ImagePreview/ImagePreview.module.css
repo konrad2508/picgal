@@ -11,6 +11,7 @@
     max-width: 136px;
     border-radius: 10px;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .selected {

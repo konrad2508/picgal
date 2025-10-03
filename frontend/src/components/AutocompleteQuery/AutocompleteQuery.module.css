@@ -19,9 +19,6 @@
 }
 
 .suggestionBox {
-    border-width: 1px 0px 0px 0px;
-    border-style: solid;
-    border-color: gray;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -31,17 +28,20 @@
     text-overflow: ellipsis;
     overflow: hidden;
     margin: 2px;
+    font-size: 12px;
 }
 
 .counter {
+    color: #9B9B9B;
     margin: 2px;
+    font-size: 12px;
 }
 
 .fixedContainer {
     position: fixed;
-    width: inherit;
+    width: 174px;
     border-width: 0px 1px 1px 1px;
     border-style: solid;
-    border-color: gray;
-    background-color: white;
+    border-color: #999999;
+    background-color: #FFFFFF;
 }

@@ -1,20 +1,22 @@
 .container {
     display: flex;
     flex-direction: row;
-    margin-top: 5px;
+    margin-top: 3px;
 }
 
 .formContainer {
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .nameInput {
-    width: 166px;
+    width: 170px;
+    margin-bottom: -1px;
 }
 
 .queryInput {
-    width: 174px;
+    width: 176px;
 }
 
 .buttonContainer {
@@ -22,6 +24,14 @@
     flex-direction: row;
 }
 
-.button {
-    height: 100%;
+.button1, .button2 {
+    width: 28px;
+}
+
+.button1 {
+    margin-left: -1px;
+}
+
+.button2 {
+    margin-left: -1px;
 }
