@@ -1,6 +1,6 @@
 flask==2.2.5
-flask-cors==3.0.10
-waitress==2.1.2
+flask-cors==6.0.1
+waitress==3.0.2
 peewee==3.14.8
 Pillow==11.3.0
 imagehash==4.3.2
