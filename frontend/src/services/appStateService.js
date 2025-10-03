@@ -277,19 +277,12 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
     };
 
     const startDuplicatesScannerCommand = () => {
-        const cmd = () => (
-            () => {
-                setAppState(AppState.DUPLICATES_SCANNER);
-                setUsedQuery('');
-                setQuery('');
-                setCurrentPage(1);
-                setMaxPage(1);
-                setImagesToShow([]);
-            }
-        )();
-
-        cmd();
-        setHistory([...history, cmd]);
+        setAppState(AppState.DUPLICATES_SCANNER);
+        setUsedQuery('');
+        setQuery('');
+        setCurrentPage(1);
+        setMaxPage(1);
+        setImagesToShow([]);
     };
 
     const startBatchTagEditorCommand = (viewEncrypted) => {
@@ -350,19 +343,12 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
     };
 
     const startSettingsCommand = () => {
-        const cmd = () => (
-            () => {
-                setAppState(AppState.SETTINGS);
-                setUsedQuery('');
-                setQuery('');
-                setCurrentPage(1);
-                setMaxPage(1);
-                setImagesToShow([]);
-            }
-        )();
-
-        cmd();
-        setHistory([...history, cmd]);
+        setAppState(AppState.SETTINGS);
+        setUsedQuery('');
+        setQuery('');
+        setCurrentPage(1);
+        setMaxPage(1);
+        setImagesToShow([]);
     };
 
     const saveSettingsCommand = (modifications) => {
