@@ -143,6 +143,12 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
     };
 
     const modifyImageCommand = (id, modifications, viewEncrypted) => {
+        if (Object.values(modifications).every(e => e === false || e === true || e.length === 0)) {
+            setNotifications([...notifications, notificationService.noModificationNotification()]);
+
+            return;
+        }
+
         requestService
             .modifyImage(id, modifications)
             .then(modifiedImage => {
@@ -151,6 +157,11 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 requestService
                     .getTags(viewEncrypted)
                     .then(tags => setExistingTags(tags));
+                
+                setNotifications([...notifications, notificationService.tagModificationSuccessfulNotification()]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.tagModificationFailedNotification()]);
             });
     };
 
@@ -184,6 +195,12 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
     };
 
     const modifySavedQueryCommand = (id, modifications, savedQueries) => {
+        if (savedQueries.some(e => e.name === modifications.name && e.query === modifications.query)) {
+            setNotifications([...notifications, notificationService.noModificationNotification()]);
+
+            return;
+        }
+
         requestService
             .modifySavedQuery(id, modifications)
             .then(modifiedSavedQuery => {
@@ -193,6 +210,10 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 newSavedQueries[idx] = modifiedSavedQuery;
                 
                 setSavedQueries(newSavedQueries);
+                setNotifications([...notifications, notificationService.savedQueryModificationSuccessfulNotification()]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.savedQueryModificationFailedNotification()]);
             });
     };
 
@@ -206,13 +227,23 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 newSavedQueries.splice(idx, 1);
 
                 setSavedQueries(newSavedQueries);
+                setNotifications([...notifications, notificationService.savedQueryDeletionSuccessfulNotification()]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.savedQueryDeletionFailedNotification()]);
             });
     };
 
     const addSavedQueryCommand = (newSavedQuery, savedQueries) => {
         requestService
             .createSavedQuery(newSavedQuery)
-            .then((createdSavedQuery) => setSavedQueries([...savedQueries, createdSavedQuery]));
+            .then((createdSavedQuery) => {
+                setSavedQueries([...savedQueries, createdSavedQuery]);
+                setNotifications([...notifications, notificationService.savedQueryAdditionSuccessfulNotification()]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.savedQueryAdditionFailedNotification()]);
+            });
     };
 
     const syncDatabase = (viewEncrypted) => {
@@ -238,6 +269,9 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 requestService
                     .getTags(viewEncrypted)
                     .then(tags => setExistingTags(tags));
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.failedSyncNotification()]);
             });
     };
 
@@ -333,7 +367,13 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
     const saveSettingsCommand = (modifications) => {
         requestService
             .modifyConfig(modifications)
-            .then(modifiedConfig => setConfig(modifiedConfig));
+            .then(modifiedConfig => {
+                setConfig(modifiedConfig);
+                setNotifications([...notifications, notificationService.settingsUpdateSuccessfulNotification()]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.settingsUpdateFailedNotification()]);
+            });
 
         setAppState(AppState.START);
     };
@@ -366,12 +406,27 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 const { reportFile } = scanResult;
 
                 setNotifications([...notifications, notificationService.scanReportNotification(reportFile)]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.scanFailedNotification()]);
             });
 
         setAppState(AppState.START);
     };
 
     const clickEncryptCommand = (viewEncrypted) => {
+        const exitTool = () => {
+            setAppState(AppState.START);
+            setMultiselectImages([]);
+        };
+
+        if (multiselectImages.length === 0) {
+            setNotifications([...notifications, notificationService.noModificationNotification()]);
+            
+            exitTool();
+            return;
+        }
+
         const imagesToEncrypt = {ids: multiselectImages.map((v) => v.id)};
 
         requestService
@@ -380,10 +435,14 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 requestService
                     .getTags(viewEncrypted)
                     .then(tags => setExistingTags(tags));
+                
+                setNotifications([...notifications, notificationService.toggleEncryptionSuccessfulNotification()]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.toggleEncryptionFailedNotification()]);
             });
 
-        setAppState(AppState.START);
-        setMultiselectImages([]);
+        exitTool();
     };
 
     const clickViewEncrypted = (viewEncrypted) => {
@@ -403,11 +462,19 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
 
                     if (success) {
                         setCorrectView(ViewEncrypted.YES);
+                        setNotifications([...notifications, notificationService.authenticationSuccessfulNotification()]);
                     }
+                    else {
+                        setNotifications([...notifications, notificationService.authenticationFailedNotification()]);
+                    }
+                },
+                _ => {
+                    setNotifications([...notifications, notificationService.authenticationFailedNotification()]);
                 });
         }
         else {
             setCorrectView(ViewEncrypted.NO);
+            setNotifications([...notifications, notificationService.deauthenticationSuccessfulNotification()]);
         }
     };
 
@@ -447,6 +514,18 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
     };
 
     const modifyImageInBatchTagEditorCommand = (modifications, viewEncrypted) => {
+        const exitTool = () => {
+            setAppState(AppState.START);
+            setMultiselectImages([]);
+        };
+
+        if (Object.values(modifications).every(e => e === false || e === true || e.length === 0) || multiselectImages.length === 0) {
+            setNotifications([...notifications, notificationService.noModificationNotification()]);
+
+            exitTool();
+            return;
+        }
+
         const batchModifications = {...modifications, ids: multiselectImages.map((v) => v.id)};
 
         requestService
@@ -455,10 +534,14 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 requestService
                     .getTags(viewEncrypted)
                     .then(tags => setExistingTags(tags));
+                
+                setNotifications([...notifications, notificationService.batchModificationSuccessfulNotification()]);
+            },
+            _ => {
+                setNotifications([...notifications, notificationService.batchModificationFailedNotification()]);
             });
 
-        setAppState(AppState.START);
-        setMultiselectImages([]);
+        exitTool();
     };
 
     const pageNavInMultiselectCommand = (usedQuery, newPageNum, viewEncrypted) => {

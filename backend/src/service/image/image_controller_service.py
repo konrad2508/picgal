@@ -97,18 +97,16 @@ class ImageControllerService(IImageControllerService):
 
             f = [ self._decrypt_image, self._encrypt_image ] if is_encrypted else [ self._encrypt_image, self._decrypt_image ]
 
-            try:
-                f[0](file_path, preview_path, sample_path)
-
-            except:
-                continue
+            f[0](file_path, preview_path, sample_path)
 
             try:
                 img = self.repository.toggle_encrypt_image(id)
                 result.images.append(img)
 
-            except:
+            except Exception as e:
                 f[1](file_path, preview_path, sample_path)
+
+                raise e
 
         self.repository.refresh_virtual_tags(images_to_encrypt.ids)
 
