@@ -8,7 +8,7 @@ const ViewEncryptedTool = () => {
     const { usedContextValue } = useViewEncryptedToolState();
 
     return (
-        <button onClick={usedContextValue.onStartEncryptor} className={styles.button}>
+        <button onClick={usedContextValue.onClickViewEncrypted} className={styles.button}>
             <div className={styles.container}>
                 <div className={styles.icon}>
                     {usedContextValue.viewEncrypted === ViewEncrypted.NO ? <FaEye size={30}/> : <FaEyeSlash size={30}/>}
