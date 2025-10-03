@@ -45,7 +45,7 @@ const TagListsTitleBar = () => {
                 <h2>Tags</h2>
                 <div className={styles.buttonContainer}>
                     <button
-                        className={styles.button2}
+                        className={styles.button1}
                         onClick={() => onClickHandler(ModificationMode.START)}
                     >
                         <FaPen className='fontAwesome'/>
