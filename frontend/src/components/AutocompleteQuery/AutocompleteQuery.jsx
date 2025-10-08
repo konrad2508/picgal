@@ -86,7 +86,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         return suggestions
             .filter(e => e.name.toLowerCase().includes(rightQuery) && rightQuery)
             .sort(sortingFunction)
-            .slice(0, 5);
+            .slice(0, 10);
     };
 
     const renderSuggestions = (suggestions) => {
@@ -161,7 +161,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             <div className={styles.fixedContainer}>
                 { suggestions.map((e, i) => (
                     <div key={i} onClick={() => handleSuggestionClick(e)} className={styles.suggestionBox}>
-                        <div style={suggestionTextColor(e)} className={styles.suggestion}>{tagNameFormatter(e.name)}</div>
+                        <div style={suggestionTextColor(e)} className={styles.suggestion} title={e.name}>{tagNameFormatter(e.name)}</div>
                         <div className={styles.counter}>{tagCountFormatter(e.count)}</div>
                     </div>
                 ))}

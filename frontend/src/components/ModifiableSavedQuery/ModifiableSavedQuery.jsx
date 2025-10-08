@@ -27,7 +27,7 @@ const ModifiableSavedQuery = ({ savedQuery }) => {
 
     return (
         <div className={styles.savedQueryContainer}>
-            <p>{savedQuery.name}</p>
+            <p className={styles.savedQuery} title={savedQuery.name}>{savedQuery.name}</p>
             <div className={styles.savedQueryButtonContainer}>
                 <button className={styles.button1} onClick={contextValue.enableModifiable}>
                     <FaPen className='fontAwesome'/>

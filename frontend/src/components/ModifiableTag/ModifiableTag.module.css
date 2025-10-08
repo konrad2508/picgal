@@ -5,6 +5,12 @@
     height: 22px;
 }
 
+.tag {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .buttonContainer {
     margin-left: auto;
     margin-right: 0px;

@@ -9,6 +9,13 @@
     margin-right: 0px;
 }
 
+.savedQuery {
+    max-width: calc(100% - 56px);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .button1, .button2 {
     width: 28px;
 }

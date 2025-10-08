@@ -5,7 +5,7 @@ import { FaArrowRight } from 'react-icons/fa';
 const SavedQuery = ({ savedQueryName, onClickSavedQuery }) => {
     return (
         <div className={styles.savedQueryContainer}>
-            <p>{savedQueryName}</p>
+            <p className={styles.savedQuery} title={savedQueryName}>{savedQueryName}</p>
             <div className={styles.savedQueryButtonContainer}>
                 <button className={styles.button} onClick={onClickSavedQuery}>
                     <FaArrowRight className='fontAwesome'/>

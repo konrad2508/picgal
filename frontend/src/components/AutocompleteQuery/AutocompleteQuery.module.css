@@ -22,6 +22,9 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+.suggestionBox, .suggestionBox * {
     cursor: pointer;
 }
 
@@ -32,6 +35,7 @@
 .suggestion {
     text-overflow: ellipsis;
     overflow: hidden;
+    white-space: nowrap;
     margin: 2px;
     font-size: 12px;
 }

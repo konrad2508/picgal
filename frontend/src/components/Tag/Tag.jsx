@@ -10,7 +10,14 @@ const Tag = ({ tag, color }) => {
 
     return (
         <div className={styles.container}>
-            <p className={styles.tag} onClick={() => usedContextValue.onClickTag(tag)} style={{color: color}}>{displayName}</p>
+            <p
+                className={styles.tag}
+                onClick={() => usedContextValue.onClickTag(tag)}
+                style={{color: color}}
+                title={displayName}
+            >
+                {displayName}
+            </p>
         </div>
     );
 };
