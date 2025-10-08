@@ -180,43 +180,6 @@ class RPCControllerService(IRPCControllerService):
                     *[ migrator.add_column(*args) for args in to_add ]
                 )
 
-        # migrate lowlevel tags to "lowlevel (high_level)" format
-        # TODO: remove in next version
-        ## remove existing lowlevel tags
-        lowlevels: list[Tag] = Tag.select().where(Tag.type == TagType.LOWLEVEL).execute()
-
-        for lowlevel in lowlevels:
-            ImageTag.delete().where(ImageTag.tag_id == lowlevel.tag_id).execute()
-            Tag.delete().where(Tag.tag_id == lowlevel.tag_id).execute()
-        
-        ## tag images with lowlevel tags in new format
-        existing_pictures: list[Image] = Image.select()
-
-        for existing_picture in existing_pictures:
-            image_path = Path(existing_picture.file)
-
-            img_dirs = list(image_path.parts[1:-1])
-
-            hlvl = listpop(img_dirs)
-            llvl = listpop(img_dirs)
-
-            # high level tag
-            if hlvl is not None and hlvl.lower() != self.cfg.NOTAG_DIR:
-                htag = f' ({hlvl.lower()})'
-
-            else:
-                htag = ''
-
-            # low level tag
-            if llvl is not None and llvl.lower() != self.cfg.NOTAG_DIR:
-                ltag_obj = {
-                    'name': f'{llvl.lower()}{htag}',
-                    'type': TagType.LOWLEVEL
-                }
-
-                ltag_ref, _ = Tag.get_or_create(**ltag_obj)
-                ImageTag.create(image_id=existing_picture.image_id, tag_id=ltag_ref)
-
         # deleting
         deleted_counter = 0
 
