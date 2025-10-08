@@ -180,6 +180,43 @@ class RPCControllerService(IRPCControllerService):
                     *[ migrator.add_column(*args) for args in to_add ]
                 )
 
+        # migrate lowlevel tags to "lowlevel (high_level)" format
+        # TODO: remove in next version
+        ## remove existing lowlevel tags
+        lowlevels: list[Tag] = Tag.select().where(Tag.type == TagType.LOWLEVEL).execute()
+
+        for lowlevel in lowlevels:
+            ImageTag.delete().where(ImageTag.tag_id == lowlevel.tag_id).execute()
+            Tag.delete().where(Tag.tag_id == lowlevel.tag_id).execute()
+        
+        ## tag images with lowlevel tags in new format
+        existing_pictures: list[Image] = Image.select()
+
+        for existing_picture in existing_pictures:
+            image_path = Path(existing_picture.file)
+
+            img_dirs = list(image_path.parts[1:-1])
+
+            hlvl = listpop(img_dirs)
+            llvl = listpop(img_dirs)
+
+            # high level tag
+            if hlvl is not None and hlvl.lower() != self.cfg.NOTAG_DIR:
+                htag = f' ({hlvl.lower()})'
+
+            else:
+                htag = ''
+
+            # low level tag
+            if llvl is not None and llvl.lower() != self.cfg.NOTAG_DIR:
+                ltag_obj = {
+                    'name': f'{llvl.lower()}{htag}',
+                    'type': TagType.LOWLEVEL
+                }
+
+                ltag_ref, _ = Tag.get_or_create(**ltag_obj)
+                ImageTag.create(image_id=existing_picture.image_id, tag_id=ltag_ref)
+
         # deleting
         deleted_counter = 0
 
@@ -326,16 +363,21 @@ class RPCControllerService(IRPCControllerService):
                         high_tag_ref, _ = Tag.get_or_create(**high_tag_obj)
                         ImageTag.create(image_id=img_ref, tag_id=high_tag_ref)
 
+                        high_tag = f' ({high_tag.lower()})'
+
+                    else:
+                        high_tag = ''
+
                     # low level tag
                     low_tag = listpop(picture_dirs)
                     if low_tag is not None and low_tag.lower() != self.cfg.NOTAG_DIR:
                         low_tag_obj = {
-                            'name': low_tag.lower(),
+                            'name': f'{low_tag.lower()}{high_tag}',
                             'type': TagType.LOWLEVEL
                         }
 
-                        gen_tag_ref, _ = Tag.get_or_create(**low_tag_obj)
-                        ImageTag.create(image_id=img_ref, tag_id=gen_tag_ref)
+                        low_tag_ref, _ = Tag.get_or_create(**low_tag_obj)
+                        ImageTag.create(image_id=img_ref, tag_id=low_tag_ref)
 
                     # general tags (if any)
                     for gen_tag in picture_dirs:
