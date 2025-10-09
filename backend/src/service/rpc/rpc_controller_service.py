@@ -158,6 +158,14 @@ class RPCControllerService(IRPCControllerService):
             except IndexError:
                 return None
 
+        def preprocess_dir_to_tag(dir: str | None) -> str | None:
+            if dir is None:
+                return None
+            
+            preprocessed = dir.lower().replace('_', ' ').strip()
+
+            return None if preprocessed == '' else preprocessed
+
 
         # verify database integrity
         self.db.create_tables([Image, Tag, ImageTag, Query, VirtualTag, ImageVirtualTag], safe=True)
@@ -316,26 +324,28 @@ class RPCControllerService(IRPCControllerService):
                     img_ref = Image.create(**pic)
 
                     # high level tag
-                    high_tag = listpop(picture_dirs)
-                    if high_tag is not None and high_tag.lower() != self.cfg.NOTAG_DIR:
+                    extracted_high_tag = listpop(picture_dirs)
+                    high_tag = preprocess_dir_to_tag(extracted_high_tag)
+                    if high_tag is not None and extracted_high_tag.lower() != self.cfg.NOTAG_DIR:
                         high_tag_obj = {
-                            'name': high_tag.lower(),
+                            'name': high_tag,
                             'type': TagType.HIGHLEVEL
                         }
 
                         high_tag_ref, _ = Tag.get_or_create(**high_tag_obj)
                         ImageTag.create(image_id=img_ref, tag_id=high_tag_ref)
 
-                        high_tag = f' ({high_tag.lower()})'
+                        high_tag = f' ({high_tag})'
 
                     else:
                         high_tag = ''
 
                     # low level tag
-                    low_tag = listpop(picture_dirs)
-                    if low_tag is not None and low_tag.lower() != self.cfg.NOTAG_DIR:
+                    extracted_low_tag = listpop(picture_dirs)
+                    low_tag = preprocess_dir_to_tag(extracted_low_tag)
+                    if low_tag is not None and extracted_low_tag.lower() != self.cfg.NOTAG_DIR:
                         low_tag_obj = {
-                            'name': f'{low_tag.lower()}{high_tag}',
+                            'name': f'{low_tag}{high_tag}',
                             'type': TagType.LOWLEVEL
                         }
 
@@ -343,9 +353,14 @@ class RPCControllerService(IRPCControllerService):
                         ImageTag.create(image_id=img_ref, tag_id=low_tag_ref)
 
                     # general tags (if any)
-                    for gen_tag in picture_dirs:
+                    for extracted_gen_tag in picture_dirs:
+                        gen_tag = preprocess_dir_to_tag(extracted_gen_tag)
+
+                        if gen_tag is None:
+                            continue
+
                         gen_tag_obj = {
-                            'name': gen_tag.lower(),
+                            'name': gen_tag,
                             'type': TagType.GENERAL
                         }
 
