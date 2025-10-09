@@ -6,6 +6,7 @@ const useAutocompleteQueryState = () => {
     const [ virtualTagMode, setVirtualTagMode ] = React.useState(false);
     const [ subtagList, setSubtagList ] = React.useState([]);
     const wrapperRef = React.useRef(null);
+    const inputRef = React.useRef(null);
 
     const hookService = autocompleteStateService({ setDisplay, setVirtualTagMode, setSubtagList }, wrapperRef);
 
@@ -21,6 +22,7 @@ const useAutocompleteQueryState = () => {
         virtualTagMode,
         subtagList,
         wrapperRef,
+        inputRef,
         enableDisplay,
         disableDisplay,
         enableVirtualTagMode,

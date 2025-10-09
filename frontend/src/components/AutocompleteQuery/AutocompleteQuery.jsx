@@ -26,6 +26,15 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
         }
     }
 
+    const handleInputClick = () => {
+        const inputElement = contextValue.inputRef.current;
+
+        inputElement.setSelectionRange(-1, -1);
+        inputElement.scrollLeft = inputElement.scrollWidth;
+
+        contextValue.enableDisplay();
+    };
+
     const handleSuggestionClick = (suggestion) => {
         if (suggestion.tagCategory === TagCategory.VIRTUAL) {
             activateSubtags(suggestion);
@@ -84,7 +93,7 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
             : existingTags;
 
         return suggestions
-            .filter(e => e.name.toLowerCase().includes(rightQuery) && rightQuery)
+            .filter(e => rightQuery && (e.name.toLowerCase().includes(rightQuery) || e.name.toLowerCase().includes(rightQuery.replaceAll('_', ' '))))
             .sort(sortingFunction)
             .slice(0, 10);
     };
@@ -174,10 +183,11 @@ const AutocompleteQuery = ({ query, handleQueryChange, existingTags }) => {
     return (
         <div className={styles.container} ref={contextValue.wrapperRef}>
             <input
+                ref={contextValue.inputRef}
                 value={query}
                 onChange={handleQueryChange}
                 className={styles.input}
-                onClick={contextValue.enableDisplay}
+                onClick={handleInputClick}
                 placeholder='enter query...'
             />
             { contextValue.display && suggestedTags.length > 0 && (
