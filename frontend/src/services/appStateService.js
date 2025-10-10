@@ -24,17 +24,17 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
     } = setters;
 
     const fetchSavedDataEffect = () => {
-        requestService
-            .getTags(ViewEncrypted.NO)
-            .then(tags => setExistingTags(tags));
-        
-        requestService
-            .getSavedQueries()
-            .then(queries => setSavedQueries(queries));
-        
-        requestService
-            .getConfig()
-            .then(config => setConfig(config));
+        const retryPromise = (promise, promiseArgs, thenCb) => {
+            const cooldown = 3000 + (Math.random() * 1000 - 500);
+
+            promise(...promiseArgs)
+                .then(thenCb)
+                .catch(_ => setTimeout(retryPromise(promise, promiseArgs, thenCb), cooldown));
+        };
+
+        retryPromise(requestService.getTags, [ViewEncrypted.NO], tags => setExistingTags(tags));
+        retryPromise(requestService.getSavedQueries, [], queries => setSavedQueries(queries));
+        retryPromise(requestService.getConfig, [], config => setConfig(config));
     };
 
     const searchCommand = (q, viewEncrypted) => {
