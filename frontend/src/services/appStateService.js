@@ -126,6 +126,13 @@ const appStateService = (setters, history, multiselectImages, notifications) => 
                 const urlFormattedQuery = queryService.inputQueryToUrlQuery(query);
 
                 requestService
+                    .getImagesStats(urlFormattedQuery, viewEncrypted)
+                    .then(stats => {
+                        setImagesCounter(stats.imagesCount);
+                        setMaxPage(Math.max(1, stats.pagesCount));
+                    });
+
+                requestService
                     .getImages(urlFormattedQuery, newPageNum, viewEncrypted)
                     .then(images => {
                         setImagesToShow(images);
